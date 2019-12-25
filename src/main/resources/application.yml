@@ -1,0 +1,46 @@
+micronaut:
+  application:
+    name: tadoexporter
+  metrics:
+    enabled: true
+
+    export:
+      prometheus:
+        enabled: true
+        step: ${tado.prometheus-step-interval}
+        descriptions: true
+
+    binders:
+      web:
+        enabled: false
+      files:
+        enabled: false
+      logback:
+        enabled: false
+      processor:
+        enabled: false
+      uptime:
+        enabled: false
+      jvm:
+        enabled: false
+
+  caches:
+    tado-zonestate:
+      expire-after-write: ${tado.api-cache-interval}
+    tado-weather:
+      expire-after-write: ${tado.api-cache-interval}
+
+endpoints:
+  metrics:
+    enabled: false
+  prometheus:
+    enabled: true
+    sensitive: false
+
+tado:
+  client-id: "public-api-preview"
+  client-secret: "4HJGRffVR8xb3XdEUQpjgZ1VplJi6Xgw"
+  scope: "home.user"
+  zone-discovery-interval: 5m
+  api-cache-interval: 55s
+  prometheus-step-interval: PT1M

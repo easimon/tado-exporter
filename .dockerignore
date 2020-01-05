@@ -2,3 +2,5 @@
 ./target
 ./.gitignore
 ./.github
+./.editorconfig
+./README.md

@@ -1,0 +1,14 @@
+name: Build and publish Docker container
+on: [push]
+
+jobs:
+  build:
+    name: Build and publish Docker container
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@master
+      - name: Build the Docker image
+        run:  docker build . -t tado-exporter
+      - name: Push
+        run:  echo TODO.

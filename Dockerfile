@@ -13,7 +13,7 @@ COPY src/main/api /build/src/main/api
 RUN ./mvnw generate-sources
 
 COPY src /build/src/
-RUN ./mvnw package
+RUN ./mvnw package -DskipTests
 
 
 FROM adoptopenjdk/openjdk8:alpine-slim

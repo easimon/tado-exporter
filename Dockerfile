@@ -8,12 +8,12 @@ WORKDIR /build
 # stuff
 COPY mvnw pom.xml /build/
 COPY .mvn /build/.mvn/
-RUN ./mvnw dependency:resolve dependency:resolve-plugins dependency:go-offline
+RUN ./mvnw -B dependency:resolve dependency:resolve-plugins dependency:go-offline
 COPY src/main/api /build/src/main/api
-RUN ./mvnw generate-sources
+RUN ./mvnw -B generate-sources
 
 COPY src /build/src/
-RUN ./mvnw package -DskipTests
+RUN ./mvnw -B package -DskipTests
 
 
 FROM adoptopenjdk/openjdk8:alpine-slim

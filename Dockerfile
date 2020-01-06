@@ -2,10 +2,9 @@ FROM adoptopenjdk/openjdk8:alpine-slim as builder
 
 WORKDIR /build
 
-# TODO:
-# goal of splitting the build like this, is, to download all dependencies in a separate layer and make the builder
-# cacheable. But this is obviously not working completely for now, since the following mvnw package still downloads
-# stuff
+# TODO: Make this work. Goal of splitting the build like this, is, to download all dependencies in a separate layer
+# and make the builder cacheable. The following `mvnw package` should work offline. But this is obviously not working
+# completely for now, `mvnw package` still downloads a lot of stuff
 COPY mvnw pom.xml /build/
 COPY .mvn /build/.mvn/
 RUN ./mvnw -B dependency:resolve dependency:resolve-plugins dependency:go-offline
@@ -13,6 +12,7 @@ COPY src/main/api /build/src/main/api
 RUN ./mvnw -B generate-sources
 
 COPY src /build/src/
+# TODO: Add proper test coverage, and tests that don't require valid Tado credentials to execute.
 RUN ./mvnw -B package -DskipTests
 
 

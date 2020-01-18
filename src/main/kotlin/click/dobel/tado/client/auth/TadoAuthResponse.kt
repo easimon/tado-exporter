@@ -2,8 +2,10 @@ package click.dobel.tado.client.auth
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
+import io.micronaut.core.annotation.Introspected
 import java.time.Instant
 
+@Introspected
 data class TadoAuthResponse(
 
   @JsonProperty("access_token")
@@ -17,14 +19,15 @@ data class TadoAuthResponse(
   @JsonProperty("scope")
   val scope: String,
   @JsonProperty("jti")
-  val jti: String,
-
-  @JsonIgnore
-  val expiresAt: Instant = Instant.now().plusSeconds(expiresIn - EXPIRY_RESERVE)
+  val jti: String
 ) {
+
   companion object {
     const val EXPIRY_RESERVE = 50
   }
+
+  @JsonIgnore
+  val expiresAt: Instant = Instant.now().plusSeconds(expiresIn - EXPIRY_RESERVE)
 
   fun isExpired() = Instant.now() > expiresAt
 }

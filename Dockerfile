@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk8:alpine-slim as builder
+FROM adoptopenjdk/openjdk11-openj9:alpine as builder
 
 WORKDIR /build
 
@@ -16,7 +16,7 @@ COPY src /build/src/
 RUN ./mvnw -B package -DskipTests
 
 
-FROM adoptopenjdk/openjdk8:alpine-slim
+FROM adoptopenjdk/openjdk11-openj9:alpine-jre
 
 COPY --from=builder /build/target/tadoexporter-*.jar tadoexporter.jar
 EXPOSE 8080

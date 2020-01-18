@@ -2,7 +2,9 @@ package click.dobel.tado.client.auth
 
 import click.dobel.tado.client.TadoConfiguration
 import com.fasterxml.jackson.annotation.JsonProperty
+import io.micronaut.core.annotation.Introspected
 
+@Introspected
 sealed class TadoAuthRequest {
 
   /* TODO: find how to convince micronaut to use snake case when serializing for form request */

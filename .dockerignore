@@ -3,4 +3,8 @@
 ./.gitignore
 ./.github
 ./.editorconfig
+./.java-version
+./.project
+./.settings
+./.classpath
 ./README.md

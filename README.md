@@ -76,11 +76,8 @@ by calling the prometheus metrics endpoint (at most every 55 seconds by default)
 
 ## Known Issues and TODOs
 
-- Test coverage is more or less non-existant. Test contain a smoke test against the Tado° API only, 
-  and requires valid credentials to do so.
-- For some reason the Oauth authentication did not work when using the (Micronaut default) Eclipse OpenJ9 VM. 
-  The serialized [Auth request](./src/main/kotlin/click/dobel/tado/client/auth/TadoAuthRequest.kt) was empty.
-  Switching to OpenJDK 8 solved this issue.
+- Test coverage is more or less non-existant. Tests contain a smoke test against the Tado° API only, 
+  and require valid credentials to run.
 
 ## Disclaimer
 

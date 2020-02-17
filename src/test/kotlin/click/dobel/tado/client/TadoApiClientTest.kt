@@ -14,17 +14,17 @@ internal class TadoApiClientTest(
   private val tadoConfiguration: TadoConfiguration
 ) : StringSpec({
   "/me succeeds" {
-    val me = tadoClient.me().blockingGet()
+    val me = tadoClient.me()
     me.username shouldBe tadoConfiguration.username
   }
 
   "/zones succeeds" {
-    val zones = tadoClient.zones(homeId).blockingGet()
+    val zones = tadoClient.zones(homeId)
     zones shouldHaveAtLeastSize 1
   }
 
   "/weather succeeds" {
-    val weather = tadoClient.weather(homeId).blockingGet()
+    val weather = tadoClient.weather(homeId)
     weather.weatherState.value shouldNotBe null
   }
 }) {
@@ -34,7 +34,7 @@ internal class TadoApiClientTest(
 
   override fun beforeSpec(spec: Spec) {
     super.beforeSpec(spec)
-    homeId = tadoClient.me().blockingGet().homes[0].id
+    homeId = tadoClient.me().homes[0].id
     homeId shouldNotBeLessThan 0
   }
 }

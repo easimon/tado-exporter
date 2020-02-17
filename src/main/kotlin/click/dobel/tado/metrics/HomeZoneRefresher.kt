@@ -20,8 +20,8 @@ class HomeZoneRefresher(
   init {
     LOGGER.info("Initializing homes from API.")
     homeModel = HomeModel(
-      tadoApiClient.me().blockingGet().homes
-        .map { userHome -> tadoApiClient.homes(userHome.id).blockingGet() }
+      tadoApiClient.me().homes
+        .map { userHome -> tadoApiClient.homes(userHome.id) }
         .map { homeInfo -> tadoMeterFactory.createHomeMeters(homeInfo) }
         .map { homeInfo -> homeInfo.id to homeInfo }
         .toMap()
@@ -43,7 +43,7 @@ class HomeZoneRefresher(
       /* since the model is the source of "references to things being monitored by micrometer",
       * try to modify it in a minimal way */
       val knownZones = homeModel.homeZones(homeInfo.id)
-      val allZones = tadoApiClient.zones(homeInfo.id).blockingGet()
+      val allZones = tadoApiClient.zones(homeInfo.id)
       val zonesToAdd = allZones.filter { !knownZones.contains(it) }
       val zonesToDelete = knownZones.filter { !allZones.contains(it) }
 

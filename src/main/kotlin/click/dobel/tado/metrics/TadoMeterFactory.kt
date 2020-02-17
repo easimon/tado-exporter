@@ -30,13 +30,13 @@ class TadoMeterFactory(
     val homeTags = homeTags(home)
 
     gauge("solar_intensity_percentage", homeTags, home) { h ->
-      tadoApiClient.weather(h.id).blockingGet().solarIntensity.percentage
+      tadoApiClient.weather(h.id).solarIntensity.percentage
     }
     gauge("temperature_outside_celsius", homeTags, home) { h ->
-      tadoApiClient.weather(h.id).blockingGet().outsideTemperature.celsius
+      tadoApiClient.weather(h.id).outsideTemperature.celsius
     }
     gauge("temperature_outside_fahrenheit", homeTags, home) { h ->
-      tadoApiClient.weather(h.id).blockingGet().outsideTemperature.fahrenheit
+      tadoApiClient.weather(h.id).outsideTemperature.fahrenheit
     }
     return home
   }
@@ -64,16 +64,16 @@ class TadoMeterFactory(
 
   private fun createGenericZoneMeters(home: HomeInfo, zone: Zone, zoneTags: Tags) {
     gauge("temperature_measured_celsius", zoneTags, zone) { z ->
-      tadoApiClient.zoneState(home.id, z.id).blockingGet().sensorDataPoints.insideTemperature.celsius
+      tadoApiClient.zoneState(home.id, z.id).sensorDataPoints.insideTemperature.celsius
     }
     gauge("temperature_measured_fahrenheit", zoneTags, zone) { z ->
-      tadoApiClient.zoneState(home.id, z.id).blockingGet().sensorDataPoints.insideTemperature.fahrenheit
+      tadoApiClient.zoneState(home.id, z.id).sensorDataPoints.insideTemperature.fahrenheit
     }
     gauge("humidity_measured_percentage", zoneTags, zone) { z ->
-      tadoApiClient.zoneState(home.id, z.id).blockingGet().sensorDataPoints.humidity.percentage
+      tadoApiClient.zoneState(home.id, z.id).sensorDataPoints.humidity.percentage
     }
     boolGauge("is_window_open", zoneTags, zone) { z ->
-      tadoApiClient.zoneState(home.id, z.id).blockingGet().isOpenWindowDetected == true
+      tadoApiClient.zoneState(home.id, z.id).isOpenWindowDetected == true
     }
   }
 
@@ -81,16 +81,16 @@ class TadoMeterFactory(
     LOGGER.info("Adding gauges for heating zone '{}' ({}).", zone.name, zone.id)
     createGenericZoneMeters(home, zone, zoneTags)
     gauge("heating_power_percentage", zoneTags, zone) { z ->
-      tadoApiClient.zoneState(home.id, z.id).blockingGet().activityDataPoints.heatingPower.percentage
+      tadoApiClient.zoneState(home.id, z.id).activityDataPoints.heatingPower.percentage
     }
     gauge("temperature_set_celsius", zoneTags, zone) { z ->
-      (tadoApiClient.zoneState(home.id, z.id).blockingGet().setting as HeatingZoneSetting).temperature.celsius
+      (tadoApiClient.zoneState(home.id, z.id).setting as HeatingZoneSetting).temperature.celsius
     }
     gauge("temperature_set_fahrenheit", zoneTags, zone) { z ->
-      (tadoApiClient.zoneState(home.id, z.id).blockingGet().setting as HeatingZoneSetting).temperature.fahrenheit
+      (tadoApiClient.zoneState(home.id, z.id).setting as HeatingZoneSetting).temperature.fahrenheit
     }
     boolGauge("is_zone_powered", zoneTags, zone) { z ->
-      (tadoApiClient.zoneState(home.id, z.id).blockingGet().setting as HeatingZoneSetting).power == Power.ON
+      (tadoApiClient.zoneState(home.id, z.id).setting as HeatingZoneSetting).power == Power.ON
     }
   }
 
@@ -99,20 +99,20 @@ class TadoMeterFactory(
     LOGGER.info("Adding gauges for AC zone '{}' ({}).", zone.name, zone.id)
     createGenericZoneMeters(home, zone, zoneTags)
     gauge("temperature_set_celsius", zoneTags, zone) { z ->
-      (tadoApiClient.zoneState(home.id, z.id).blockingGet().setting as CoolingZoneSetting).temperature.celsius
+      (tadoApiClient.zoneState(home.id, z.id).setting as CoolingZoneSetting).temperature.celsius
     }
     gauge("temperature_set_fahrenheit", zoneTags, zone) { z ->
-      (tadoApiClient.zoneState(home.id, z.id).blockingGet().setting as CoolingZoneSetting).temperature.fahrenheit
+      (tadoApiClient.zoneState(home.id, z.id).setting as CoolingZoneSetting).temperature.fahrenheit
     }
     boolGauge("is_zone_powered", zoneTags, zone) { z ->
-      (tadoApiClient.zoneState(home.id, z.id).blockingGet().setting as CoolingZoneSetting).power == Power.ON
+      (tadoApiClient.zoneState(home.id, z.id).setting as CoolingZoneSetting).power == Power.ON
     }
   }
 
   private fun createHotWaterZoneMeters(home: HomeInfo, zone: Zone, zoneTags: Tags) {
     LOGGER.info("Adding gauges for hot water zone '{}' ({}).", zone.name, zone.id)
     boolGauge("is_zone_powered", zoneTags, zone) { z ->
-      (tadoApiClient.zoneState(home.id, z.id).blockingGet().setting as HotWaterZoneSetting).power == Power.ON
+      (tadoApiClient.zoneState(home.id, z.id).setting as HotWaterZoneSetting).power == Power.ON
     }
   }
 

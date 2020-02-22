@@ -1,5 +1,7 @@
 # Tado exporter
 
+[![Build status](https://github.com/easimon/tado-exporter/workflows/Build%20and%20publish%20Docker%20container/badge.svg)](https://github.com/easimon/tado-exporter/packages)
+
 A simple Prometheus exporter for Tado° smart home installations, scraping temperatures, humidity etc. from the Tado° API.
 
 Idea taken from [this python variant](https://github.com/vide/tado-exporter).
@@ -76,7 +78,7 @@ by calling the prometheus metrics endpoint (at most every 55 seconds by default)
 
 ## Known Issues and TODOs
 
-- Test coverage is more or less non-existant. Tests contain a smoke test against the Tado° API only, 
+- Test coverage is more or less non-existant. Tests contain a smoke test against the Tado° API only,
   and require valid credentials to run.
 
 ## Disclaimer

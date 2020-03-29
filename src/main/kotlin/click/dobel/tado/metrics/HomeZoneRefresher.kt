@@ -2,10 +2,12 @@ package click.dobel.tado.metrics
 
 import click.dobel.tado.client.TadoApiClient
 import click.dobel.tado.logger
+import io.micronaut.context.annotation.Requires
 import io.micronaut.scheduling.annotation.Scheduled
 import javax.inject.Singleton
 
 @Singleton
+@Requires(notEnv = ["test"])
 class HomeZoneRefresher(
   private val tadoMeterFactory: TadoMeterFactory,
   private val tadoApiClient: TadoApiClient

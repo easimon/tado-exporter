@@ -12,8 +12,9 @@
 
     <logback-classic.version>1.2.3</logback-classic.version>
     <mockk.version>1.9.3</mockk.version>
-    <kotlintest.version>3.3.2</kotlintest.version>
     <junit-jupiter-engine.version>5.3.1</junit-jupiter-engine.version>
+    <wiremock.version>2.19.0</wiremock.version>
+    <micronaut-test.version>1.1.5</micronaut-test.version>
 
     <jdk.version>11</jdk.version>
 
@@ -114,6 +115,13 @@
     <dependency>
       <groupId>io.micronaut.test</groupId>
       <artifactId>micronaut-test-kotlintest</artifactId>
+      <version>${micronaut-test.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.micronaut.test</groupId>
+      <artifactId>micronaut-test-core</artifactId>
+      <version>${micronaut-test.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -123,9 +131,9 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>io.kotlintest</groupId>
-      <artifactId>kotlintest-runner-junit5</artifactId>
-      <version>${kotlintest.version}</version>
+      <groupId>com.github.tomakehurst</groupId>
+      <artifactId>wiremock</artifactId>
+      <version>${wiremock.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

@@ -9,11 +9,11 @@ import io.micronaut.cache.annotation.Cacheable
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.client.annotation.Client
 
-@Client(TadoApiClient.SERVER, path = TadoApiClient.BASE_URL)
+@Client(TadoApiClient.SERVICE_ID, path = TadoApiClient.BASE_URL)
 interface TadoApiClient {
 
   companion object {
-    const val SERVER = "https://my.tado.com"
+    const val SERVICE_ID = "tado-api"
     const val BASE_URL = "/api/v2"
   }
 

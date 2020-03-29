@@ -11,7 +11,7 @@ import io.micronaut.http.filter.ClientFilterChain
 import io.micronaut.http.filter.HttpClientFilter
 import org.reactivestreams.Publisher
 
-@Filter(TadoApiClient.BASE_URL + "/**", serviceId = [TadoApiClient.SERVER])
+@Filter(TadoApiClient.BASE_URL + "/**", serviceId = ["tado-api"])
 class TadoAuthFilter(
   private val authClient: AuthClient,
   private val tadoConfiguration: TadoConfiguration

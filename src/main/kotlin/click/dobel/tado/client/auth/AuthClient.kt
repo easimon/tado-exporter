@@ -5,9 +5,14 @@ import io.micronaut.http.annotation.Body
 import io.micronaut.http.annotation.Post
 import io.micronaut.http.client.annotation.Client
 
-@Client("https://auth.tado.com")
+@Client(AuthClient.SERVICE_ID)
 interface AuthClient {
 
-  @Post("/oauth/token", produces = [MediaType.APPLICATION_FORM_URLENCODED])
+  companion object {
+    const val SERVICE_ID = "tado-auth"
+    const val TOKEN_PATH = "/oauth/token"
+  }
+
+  @Post(TOKEN_PATH, produces = [MediaType.APPLICATION_FORM_URLENCODED])
   fun token(@Body auth: TadoAuthRequest): TadoAuthResponse
 }

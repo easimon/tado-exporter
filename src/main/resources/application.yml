@@ -30,6 +30,15 @@ micronaut:
     tado-weather:
       expire-after-write: ${tado.api-cache-interval}
 
+  http:
+    services:
+      tado-auth:
+        urls:
+          - ${tado.auth-server}
+      tado-api:
+        urls:
+          - ${tado.api-server}
+
 endpoints:
   metrics:
     enabled: false
@@ -44,3 +53,5 @@ tado:
   zone-discovery-interval: 5m
   api-cache-interval: 55s
   prometheus-step-interval: PT1M
+  auth-server: https://auth.tado.com
+  api-server: https://my.tado.com

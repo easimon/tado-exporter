@@ -23,15 +23,6 @@ class TadoMeterFactory(
   companion object {
     private const val PREFIX = "tado_"
     private val LOGGER = logger()
-
-    private enum class BaseUnit(
-      val stringValue: String
-    ) {
-      PERCENT("percent"),
-      CELSIUS("celsius"),
-      FAHRENHEIT("fahrenheit"),
-      BOOLEAN("boolean")
-    }
   }
 
   fun createHomeMeters(home: HomeInfo): HomeInfo {
@@ -42,7 +33,6 @@ class TadoMeterFactory(
     registerGauge(
       "solar_intensity_percentage",
       "Current solar intensity at the home's location.",
-      BaseUnit.PERCENT,
       homeTags,
       home) { h ->
       tadoApiClient.weather(h.id).solarIntensity.percentage
@@ -50,7 +40,6 @@ class TadoMeterFactory(
     registerGauge(
       "temperature_outside_celsius",
       "Current outside temperature at the home's location, in degrees celsius.",
-      BaseUnit.CELSIUS,
       homeTags,
       home) { h ->
       tadoApiClient.weather(h.id).outsideTemperature.celsius
@@ -58,7 +47,6 @@ class TadoMeterFactory(
     registerGauge(
       "temperature_outside_fahrenheit",
       "Current outside temperature at the home's location, in degrees fahrenheit.",
-      BaseUnit.FAHRENHEIT,
       homeTags,
       home) { h ->
       tadoApiClient.weather(h.id).outsideTemperature.fahrenheit
@@ -91,7 +79,6 @@ class TadoMeterFactory(
     registerGauge(
       "temperature_measured_celsius",
       "The currently measured temperature in degrees celsius.",
-      BaseUnit.CELSIUS,
       zoneTags,
       zone) { z ->
       tadoApiClient.zoneState(home.id, z.id).sensorDataPoints.insideTemperature.celsius
@@ -99,7 +86,6 @@ class TadoMeterFactory(
     registerGauge("" +
       "temperature_measured_fahrenheit",
       "The currently measured temperature in degrees fahrenheit.",
-      BaseUnit.FAHRENHEIT,
       zoneTags,
       zone) { z ->
       tadoApiClient.zoneState(home.id, z.id).sensorDataPoints.insideTemperature.fahrenheit
@@ -107,7 +93,6 @@ class TadoMeterFactory(
     registerGauge(
       "humidity_measured_percentage",
       "The currently measured humidity in percent.",
-      BaseUnit.PERCENT,
       zoneTags,
       zone) { z ->
       tadoApiClient.zoneState(home.id, z.id).sensorDataPoints.humidity.percentage
@@ -115,7 +100,6 @@ class TadoMeterFactory(
     registerBooleanGauge(
       "is_window_open",
       "Window open detection, 1 if window is open, 0 otherwise.",
-      BaseUnit.BOOLEAN,
       zoneTags,
       zone) { z ->
       tadoApiClient.zoneState(home.id, z.id).isOpenWindowDetected == true
@@ -128,7 +112,6 @@ class TadoMeterFactory(
     registerGauge(
       "heating_power_percentage",
       "Heating power percentage.",
-      BaseUnit.PERCENT,
       zoneTags,
       zone) { z ->
       tadoApiClient.zoneState(home.id, z.id).activityDataPoints.heatingPower.percentage
@@ -136,7 +119,6 @@ class TadoMeterFactory(
     registerGauge(
       "temperature_set_celsius",
       "The current target temperature in degrees celsius.",
-      BaseUnit.CELSIUS,
       zoneTags,
       zone) { z ->
       (tadoApiClient.zoneState(home.id, z.id).setting as HeatingZoneSetting).temperature.celsius
@@ -144,7 +126,6 @@ class TadoMeterFactory(
     registerGauge(
       "temperature_set_fahrenheit",
       "The current target temperature in degrees fahrenheit.",
-      BaseUnit.FAHRENHEIT,
       zoneTags,
       zone) { z ->
       (tadoApiClient.zoneState(home.id, z.id).setting as HeatingZoneSetting).temperature.fahrenheit
@@ -152,7 +133,6 @@ class TadoMeterFactory(
     registerBooleanGauge(
       "is_zone_powered",
       "Zone power state. 1 if powered, 0 otherwise",
-      BaseUnit.BOOLEAN,
       zoneTags,
       zone) { z ->
       (tadoApiClient.zoneState(home.id, z.id).setting as HeatingZoneSetting).power == Power.ON
@@ -166,7 +146,6 @@ class TadoMeterFactory(
     registerGauge(
       "temperature_set_celsius",
       "The current target temperature in degrees celsius.",
-      BaseUnit.CELSIUS,
       zoneTags,
       zone) { z ->
       (tadoApiClient.zoneState(home.id, z.id).setting as CoolingZoneSetting).temperature.celsius
@@ -174,7 +153,6 @@ class TadoMeterFactory(
     registerGauge(
       "temperature_set_fahrenheit",
       "The current target temperature in degrees fahrenheit.",
-      BaseUnit.FAHRENHEIT,
       zoneTags,
       zone) { z ->
       (tadoApiClient.zoneState(home.id, z.id).setting as CoolingZoneSetting).temperature.fahrenheit
@@ -182,7 +160,6 @@ class TadoMeterFactory(
     registerBooleanGauge(
       "is_zone_powered",
       "Zone power state. 1 if powered, 0 otherwise",
-      BaseUnit.BOOLEAN,
       zoneTags,
       zone) { z ->
       (tadoApiClient.zoneState(home.id, z.id).setting as CoolingZoneSetting).power == Power.ON
@@ -194,7 +171,6 @@ class TadoMeterFactory(
     registerBooleanGauge(
       "is_zone_powered",
       "Zone power state. 1 if powered, 0 otherwise",
-      BaseUnit.BOOLEAN,
       zoneTags,
       zone) { z ->
       (tadoApiClient.zoneState(home.id, z.id).setting as HotWaterZoneSetting).power == Power.ON
@@ -206,7 +182,6 @@ class TadoMeterFactory(
   private fun <T : Any> registerGauge(
     name: String,
     description: String,
-    baseUnit: BaseUnit,
     tags: Tags,
     item: T,
     getter: (T) -> Number
@@ -214,17 +189,15 @@ class TadoMeterFactory(
     .builder(gaugeName(name), item, numberToDouble(getter))
     .tags(tags)
     .description(description)
-    .baseUnit(baseUnit.stringValue)
     .register(meterRegistry)
 
   private fun <T : Any> registerBooleanGauge(
     name: String,
     description: String,
-    baseUnit: BaseUnit,
     tags: Tags,
     item: T,
     getter: (T) -> Boolean
-  ) = registerGauge(name, description, baseUnit, tags, item, booleanToDouble(getter))
+  ) = registerGauge(name, description, tags, item, booleanToDouble(getter))
 
   private fun <T : Any> numberToDouble(f: (T) -> Number): (T) -> Double = { n ->
     f(n).toDouble()

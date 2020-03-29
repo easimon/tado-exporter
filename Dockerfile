@@ -12,8 +12,7 @@ COPY src/main/api /build/src/main/api
 RUN ./mvnw -B generate-sources
 
 COPY src /build/src/
-# TODO: Add proper test coverage, and tests that don't require valid Tado credentials to execute.
-RUN ./mvnw -B package -DskipTests
+RUN ./mvnw -B package
 
 
 FROM adoptopenjdk/openjdk11:alpine-jre

@@ -121,14 +121,14 @@ class TadoMeterFactory(
       "The current target temperature in degrees celsius.",
       zoneTags,
       zone) { z ->
-      (tadoApiClient.zoneState(home.id, z.id).setting as HeatingZoneSetting).temperature.celsius
+      (tadoApiClient.zoneState(home.id, z.id).setting as HeatingZoneSetting).temperature?.celsius
     }
     registerGauge(
       "temperature_set_fahrenheit",
       "The current target temperature in degrees fahrenheit.",
       zoneTags,
       zone) { z ->
-      (tadoApiClient.zoneState(home.id, z.id).setting as HeatingZoneSetting).temperature.fahrenheit
+      (tadoApiClient.zoneState(home.id, z.id).setting as HeatingZoneSetting).temperature?.fahrenheit
     }
     registerBooleanGauge(
       "is_zone_powered",
@@ -148,14 +148,14 @@ class TadoMeterFactory(
       "The current target temperature in degrees celsius.",
       zoneTags,
       zone) { z ->
-      (tadoApiClient.zoneState(home.id, z.id).setting as CoolingZoneSetting).temperature.celsius
+      (tadoApiClient.zoneState(home.id, z.id).setting as CoolingZoneSetting).temperature?.celsius
     }
     registerGauge(
       "temperature_set_fahrenheit",
       "The current target temperature in degrees fahrenheit.",
       zoneTags,
       zone) { z ->
-      (tadoApiClient.zoneState(home.id, z.id).setting as CoolingZoneSetting).temperature.fahrenheit
+      (tadoApiClient.zoneState(home.id, z.id).setting as CoolingZoneSetting).temperature?.fahrenheit
     }
     registerBooleanGauge(
       "is_zone_powered",
@@ -184,7 +184,7 @@ class TadoMeterFactory(
     description: String,
     tags: Tags,
     item: T,
-    getter: (T) -> Number
+    getter: (T) -> Number?
   ) = Gauge
     .builder(gaugeName(name), item, numberToDouble(getter))
     .tags(tags)
@@ -196,15 +196,15 @@ class TadoMeterFactory(
     description: String,
     tags: Tags,
     item: T,
-    getter: (T) -> Boolean
+    getter: (T) -> Boolean?
   ) = registerGauge(name, description, tags, item, booleanToDouble(getter))
 
-  private fun <T : Any> numberToDouble(f: (T) -> Number): (T) -> Double = { n ->
-    f(n).toDouble()
+  private fun <T : Any> numberToDouble(f: (T) -> Number?): (T) -> Double = { n ->
+    f(n)?.toDouble() ?: 0.0
   }
 
-  private fun <T : Any> booleanToDouble(f: (T) -> Boolean): (T) -> Double = { b ->
-    if (f(b)) 1.0 else 0.0
+  private fun <T : Any> booleanToDouble(f: (T) -> Boolean?): (T) -> Double = { b ->
+    if (f(b) == true) 1.0 else 0.0
   }
 
   private fun homeTags(home: HomeInfo): Tags {

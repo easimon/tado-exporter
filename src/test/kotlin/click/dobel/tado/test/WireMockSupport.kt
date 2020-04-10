@@ -8,6 +8,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.equalTo
 import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder
 import io.micronaut.http.HttpHeaders
 import io.micronaut.http.MediaType
+import java.net.URI
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 import javax.inject.Singleton
@@ -22,11 +23,17 @@ internal class WireMockSupport(
   private val apiPort = configuration.apiServer.getPort()
   val apiServer = WireMockServer(apiPort)
 
-  private fun String.getPort() =
-    this
-      .replaceBeforeLast(":", "")
-      .removePrefix(":")
-      .toInt()
+  private fun String.getPort(): Int {
+    val uri = URI.create(this)
+
+    return if (uri.port >= 0) {
+      uri.port
+    } else when (uri.scheme) {
+      "http" -> 80
+      "https" -> 443
+      else -> throw IllegalArgumentException("Unsupported test URL: $this")
+    }
+  }
 }
 
 private fun utf8(value: String) =

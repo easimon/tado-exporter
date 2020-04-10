@@ -47,11 +47,26 @@ jobs:
             --target builder \
             -t ${DOCKER_NAME}:${DOCKER_TAG}-builder \
             .
+          docker push ${DOCKER_NAME}:${DOCKER_TAG}-builder
+      - name: Build the Docker test image
+        run: |
+          docker pull ${DOCKER_NAME}:${DOCKER_TAG}-builder || echo "No previous builder image found"
+          docker pull ${DOCKER_NAME}:${DOCKER_TAG}-test || echo "No previous test image found"
+          docker build \
+            --cache-from=${DOCKER_NAME}:${DOCKER_TAG}-builder \
+            --cache-from=${DOCKER_NAME}:${DOCKER_TAG}-test \
+            --target test \
+            -t ${DOCKER_NAME}:${DOCKER_TAG}-test \
+            .
+          docker push ${DOCKER_NAME}:${DOCKER_TAG}-test
       - name: Build the Docker image
         run: |
           docker pull ${DOCKER_NAME}:latest || echo "No previous latest image found"
+          docker pull ${DOCKER_NAME}:${DOCKER_TAG}-builder || echo "No previous builder image found"
+          docker pull ${DOCKER_NAME}:${DOCKER_TAG}-test || echo "No previous test image found"
           docker build \
             --cache-from=${DOCKER_NAME}:${DOCKER_TAG}-builder \
+            --cache-from=${DOCKER_NAME}:${DOCKER_TAG}-test \
             --cache-from=${DOCKER_NAME}:latest \
             -t ${DOCKER_NAME}:${{ github.sha }} \
             -t ${DOCKER_NAME}:${DOCKER_TAG} \
@@ -59,6 +74,5 @@ jobs:
 
       - name: Push the Docker images
         run: |
-          docker push ${DOCKER_NAME}:${DOCKER_TAG}-builder
           docker push ${DOCKER_NAME}:${{ github.sha }}
           docker push ${DOCKER_NAME}:${DOCKER_TAG}

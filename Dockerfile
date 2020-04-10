@@ -1,4 +1,8 @@
-FROM adoptopenjdk/openjdk11:alpine as builder
+ARG BUILD_IMAGE=openjdk:8
+ARG TEST_IMAGE=adoptopenjdk/openjdk12:alpine
+ARG RUNTIME_IMAGE=adoptopenjdk/openjdk12:alpine-jre
+
+FROM $BUILD_IMAGE as builder
 
 WORKDIR /build
 
@@ -7,15 +11,26 @@ WORKDIR /build
 # completely for now, `mvnw package` still downloads a lot of stuff
 COPY mvnw pom.xml /build/
 COPY .mvn /build/.mvn/
-RUN ./mvnw -B dependency:resolve dependency:resolve-plugins dependency:go-offline
+RUN ./mvnw -B clean dependency:resolve dependency:resolve-plugins dependency:go-offline
 COPY src/main/api /build/src/main/api
 RUN ./mvnw -B generate-sources
 
 COPY src /build/src/
 RUN ./mvnw -B package
 
+# Integration tests
+FROM $TEST_IMAGE as test
 
-FROM adoptopenjdk/openjdk11:alpine-jre
+WORKDIR /build
+
+COPY --from=builder /root/.m2/repository /root/.m2/repository
+COPY mvnw pom.xml /build/
+COPY .mvn /build/.mvn/
+COPY src /build/src/
+RUN ./mvnw -B clean test
+
+# Build runtime image
+FROM $RUNTIME_IMAGE
 
 COPY --from=builder /build/target/tadoexporter-*.jar tadoexporter.jar
 EXPOSE 8080

@@ -1,4 +1,4 @@
-name: Build and publish Docker container
+name: Docker container build
 on: push
 
 env:

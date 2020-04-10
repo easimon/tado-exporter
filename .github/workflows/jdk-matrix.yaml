@@ -1,8 +1,8 @@
-name: Test against various JDKs
+name: JDK compatibility tests
 on:
   push:
-#    branches:
-#      - master
+    branches:
+      - master
 
 env:
   DOCKER_REGISTRY: docker.pkg.github.com
@@ -51,6 +51,7 @@ jobs:
           - amazoncorretto:8
           - amazoncorretto:11
       fail-fast: false
+      timeout-minutes: 10
     steps:
       - name: Check out repository
         uses: actions/checkout@master

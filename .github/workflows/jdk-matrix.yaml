@@ -31,7 +31,7 @@ jobs:
           docker push ${DOCKER_NAME}:jdk-matrix-builder
 
   test:
-    name: Run tests on ${{ matrix.testimage }}
+    name: ${{ matrix.testimage }}
     runs-on: ubuntu-latest
     needs: build
     timeout-minutes: 10

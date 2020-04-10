@@ -34,6 +34,7 @@ jobs:
     name: Run tests on ${{ matrix.testimage }}
     runs-on: ubuntu-latest
     needs: build
+    timeout-minutes: 10
     strategy:
       matrix:
         testimage:
@@ -51,7 +52,6 @@ jobs:
           - amazoncorretto:8
           - amazoncorretto:11
       fail-fast: false
-      timeout-minutes: 10
     steps:
       - name: Check out repository
         uses: actions/checkout@master

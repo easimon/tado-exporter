@@ -37,7 +37,7 @@ internal class WireMockSupport(
 }
 
 private fun utf8(value: String) =
-  URLEncoder.encode(value, StandardCharsets.UTF_8)
+  URLEncoder.encode(value, StandardCharsets.UTF_8.name())
 
 internal fun RequestPatternBuilder.withFormParam(name: String, value: String) =
   withRequestBody(

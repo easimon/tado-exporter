@@ -12,7 +12,6 @@
 
     <logback-classic.version>1.2.3</logback-classic.version>
     <mockk.version>1.9.3</mockk.version>
-    <junit-jupiter-engine.version>5.3.1</junit-jupiter-engine.version>
     <wiremock.version>2.19.0</wiremock.version>
     <micronaut-test.version>1.1.5</micronaut-test.version>
     <snakeyaml.version>1.26</snakeyaml.version>
@@ -370,13 +369,6 @@
               <include>**/*Test.*</include>
             </includes>
           </configuration>
-          <dependencies>
-            <dependency>
-              <groupId>org.junit.jupiter</groupId>
-              <artifactId>junit-jupiter-engine</artifactId>
-              <version>${junit-jupiter-engine.version}</version>
-            </dependency>
-          </dependencies>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>

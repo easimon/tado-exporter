@@ -1,0 +1,70 @@
+name: JDK compatibility tests
+on:
+  push:
+    branches:
+      - master
+
+env:
+  DOCKER_REGISTRY: docker.pkg.github.com
+  DOCKER_NAME: docker.pkg.github.com/${{ github.repository }}/tado-exporter
+
+jobs:
+  build:
+    name: Build application for matrix test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@master
+
+      - name: Log in to Docker Registry
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ${DOCKER_REGISTRY} -u ${{ github.actor }} --password-stdin
+
+      - name: Build the Docker builder image
+        run: |
+          docker pull ${DOCKER_NAME}:jdk-matrix-builder || echo "No previous builder image found"
+          docker build \
+            --cache-from=${DOCKER_NAME}:jdk-matrix-builder \
+            --target builder \
+            -t ${DOCKER_NAME}:jdk-matrix-builder \
+            .
+          docker push ${DOCKER_NAME}:jdk-matrix-builder
+
+  test:
+    name: Run tests on ${{ matrix.testimage }}
+    runs-on: ubuntu-latest
+    needs: build
+    strategy:
+      matrix:
+        testimage:
+          - adoptopenjdk/openjdk8:alpine
+          - adoptopenjdk/openjdk9:alpine
+          - adoptopenjdk/openjdk10:alpine
+          - adoptopenjdk/openjdk11:alpine
+          - adoptopenjdk/openjdk12:alpine
+          - adoptopenjdk:8-hotspot
+          - adoptopenjdk:11-hotspot
+          - adoptopenjdk:12-hotspot
+          - adoptopenjdk:8-openj9
+          - adoptopenjdk:11-openj9
+          - adoptopenjdk:12-openj9
+          - amazoncorretto:8
+          - amazoncorretto:11
+      fail-fast: false
+      timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@master
+
+      - name: Log in to Docker Registry
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ${DOCKER_REGISTRY} -u ${{ github.actor }} --password-stdin
+
+      - name: Build the Docker test image
+        run: |
+          docker pull ${DOCKER_NAME}:jdk-matrix-builder || echo "No previous builder image found"
+          docker build \
+            --cache-from=${DOCKER_NAME}:jdk-matrix-builder \
+            --build-arg TEST_IMAGE=${{ matrix.testimage }} \
+            --target test \
+            .

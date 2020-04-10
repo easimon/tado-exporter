@@ -79,8 +79,11 @@ internal class AuthClientIntegrationTest(
   }
 
   override fun afterTest(testCase: TestCase, result: TestResult) {
-    mock.authServer.findAllUnmatchedRequests().size shouldBe 0
-    mock.authServer.resetAll()
-    mock.authServer.shutdown()
+    try {
+      mock.authServer.findAllUnmatchedRequests().size shouldBe 0
+    } finally {
+      mock.authServer.resetAll()
+      mock.authServer.shutdown()
+    }
   }
 }

@@ -75,9 +75,13 @@ internal class TadoApiClientIntegrationTest(
   }
 
   override fun afterTest(testCase: TestCase, result: TestResult) {
-    mock.apiServer.findAllUnmatchedRequests().size shouldBe 0
-    mock.apiServer.resetAll()
-    mock.apiServer.shutdown()
-    mock.authServer.shutdown()
+    try {
+      mock.apiServer.findAllUnmatchedRequests().size shouldBe 0
+    } finally {
+      mock.apiServer.resetAll()
+      mock.authServer.resetAll()
+      mock.apiServer.shutdown()
+      mock.authServer.shutdown()
+    }
   }
 }

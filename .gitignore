@@ -12,4 +12,4 @@ out/
 .settings
 .classpath
 dependency-reduced-pom.xml
-src/test/resources/application-test.yml
+.kotlintest/

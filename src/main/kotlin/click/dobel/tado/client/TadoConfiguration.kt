@@ -16,4 +16,6 @@ class TadoConfiguration {
   lateinit var clientId: String
   lateinit var clientSecret: String
   lateinit var scope: String
+  lateinit var apiServer: String
+  lateinit var authServer: String
 }

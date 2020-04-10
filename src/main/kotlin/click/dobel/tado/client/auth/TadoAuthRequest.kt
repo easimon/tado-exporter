@@ -7,6 +7,19 @@ import io.micronaut.core.annotation.Introspected
 @Introspected
 sealed class TadoAuthRequest {
 
+  companion object {
+    const val P_CLIENT_ID = "client_id"
+    const val P_CLIENT_SECRET = "client_secret"
+    const val P_SCOPE = "scope"
+    const val P_USERNAME = "username"
+    const val P_PASSWORD = "password"
+    const val P_REFRESH_TOKEN = "refresh_token"
+    const val P_GRANT_TYPE = "grant_type"
+
+    const val P_GRANT_TYPE_PASSWORD = P_PASSWORD
+    const val P_GRANT_TYPE_REFRESH_TOKEN = P_REFRESH_TOKEN
+  }
+
   /* TODO: find how to convince micronaut to use snake case when serializing for form request */
   abstract val client_id: String
   abstract val client_secret: String
@@ -14,19 +27,19 @@ sealed class TadoAuthRequest {
   abstract val grant_type: String
 
   data class TadoAuthLoginRequest(
-    @JsonProperty("client_id")
+    @JsonProperty(P_CLIENT_ID)
     override val client_id: String,
-    @JsonProperty("client_secret")
+    @JsonProperty(P_CLIENT_SECRET)
     override val client_secret: String,
-    @JsonProperty("scope")
+    @JsonProperty(P_SCOPE)
     override val scope: String,
-    @JsonProperty("username")
+    @JsonProperty(P_USERNAME)
     val username: String,
-    @JsonProperty("password")
+    @JsonProperty(P_PASSWORD)
     val password: String
   ) : TadoAuthRequest() {
-    @JsonProperty("grant_type")
-    override val grant_type = "password"
+    @JsonProperty(P_GRANT_TYPE)
+    override val grant_type = P_GRANT_TYPE_PASSWORD
 
     constructor(tadoConfiguration: TadoConfiguration) :
       this(
@@ -39,17 +52,17 @@ sealed class TadoAuthRequest {
   }
 
   data class TadoAuthRefreshRequest(
-    @JsonProperty("client_id")
+    @JsonProperty(P_CLIENT_ID)
     override val client_id: String,
-    @JsonProperty("client_secret")
+    @JsonProperty(P_CLIENT_SECRET)
     override val client_secret: String,
-    @JsonProperty("scope")
+    @JsonProperty(P_SCOPE)
     override val scope: String,
-    @JsonProperty("refresh_token")
+    @JsonProperty(P_REFRESH_TOKEN)
     val refresh_token: String
   ) : TadoAuthRequest() {
-    @JsonProperty("grant_type")
-    override val grant_type = "refresh_token"
+    @JsonProperty(P_GRANT_TYPE)
+    override val grant_type = P_GRANT_TYPE_REFRESH_TOKEN
 
     constructor(tadoConfiguration: TadoConfiguration, refreshToken: String) :
       this(
@@ -57,12 +70,6 @@ sealed class TadoAuthRequest {
         tadoConfiguration.clientSecret,
         tadoConfiguration.scope,
         refreshToken
-      )
-
-    constructor(tadoConfiguration: TadoConfiguration, tadoAuthResponse: TadoAuthResponse) :
-      this(
-        tadoConfiguration,
-        tadoAuthResponse.refreshToken
       )
   }
 }

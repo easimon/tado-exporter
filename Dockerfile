@@ -1,6 +1,6 @@
 ARG BUILD_IMAGE=openjdk:8
-ARG TEST_IMAGE=adoptopenjdk/openjdk12:alpine
-ARG RUNTIME_IMAGE=adoptopenjdk/openjdk12:alpine-jre
+ARG TEST_IMAGE=adoptopenjdk/openjdk11:alpine
+ARG RUNTIME_IMAGE=adoptopenjdk/openjdk11:alpine-jre
 
 FROM $BUILD_IMAGE as builder
 

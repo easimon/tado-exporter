@@ -1,6 +1,6 @@
 package click.dobel.tado.client.auth
 
-import click.dobel.tado.test.AuthMock
+import click.dobel.tado.test.AuthMockMappings
 import click.dobel.tado.test.TestConfiguration
 import io.kotlintest.TestCase
 import io.kotlintest.matchers.types.shouldBeSameInstanceAs
@@ -26,12 +26,12 @@ internal class TadoAuthFilterTest : StringSpec() {
       every {
         authClient.token(any())
       } returns TadoAuthResponse(
-        AuthMock.DEFAULT_ACCESS_TOKEN,
-        AuthMock.DEFAULT_TOKEN_TYPE,
-        AuthMock.DEFAULT_REFRESH_TOKEN,
-        AuthMock.DEFAULT_EXPIRES_IN,
-        AuthMock.DEFAULT_SCOPE,
-        AuthMock.DEFAULT_JTI
+        AuthMockMappings.DEFAULT_ACCESS_TOKEN,
+        AuthMockMappings.DEFAULT_TOKEN_TYPE,
+        AuthMockMappings.DEFAULT_REFRESH_TOKEN,
+        AuthMockMappings.DEFAULT_EXPIRES_IN,
+        AuthMockMappings.DEFAULT_SCOPE,
+        AuthMockMappings.DEFAULT_JTI
       )
 
       val request = mockk<MutableHttpRequest<TadoAuthRequest>>()
@@ -45,7 +45,7 @@ internal class TadoAuthFilterTest : StringSpec() {
 
       verifySequence {
         authClient.token(TadoAuthRequest.TadoAuthLoginRequest(tadoConfiguration))
-        request.bearerAuth(AuthMock.DEFAULT_ACCESS_TOKEN)
+        request.bearerAuth(AuthMockMappings.DEFAULT_ACCESS_TOKEN)
         chain.proceed(request)
         // no checks on publisher
       }
@@ -55,12 +55,12 @@ internal class TadoAuthFilterTest : StringSpec() {
       every {
         authClient.token(any())
       } returns TadoAuthResponse(
-        AuthMock.DEFAULT_ACCESS_TOKEN,
-        AuthMock.DEFAULT_TOKEN_TYPE,
-        AuthMock.DEFAULT_REFRESH_TOKEN,
+        AuthMockMappings.DEFAULT_ACCESS_TOKEN,
+        AuthMockMappings.DEFAULT_TOKEN_TYPE,
+        AuthMockMappings.DEFAULT_REFRESH_TOKEN,
         -1, // expire immediately
-        AuthMock.DEFAULT_SCOPE,
-        AuthMock.DEFAULT_JTI
+        AuthMockMappings.DEFAULT_SCOPE,
+        AuthMockMappings.DEFAULT_JTI
       )
 
       val request = mockk<MutableHttpRequest<TadoAuthRequest>>()
@@ -75,10 +75,10 @@ internal class TadoAuthFilterTest : StringSpec() {
 
       verifySequence {
         authClient.token(TadoAuthRequest.TadoAuthLoginRequest(tadoConfiguration))
-        request.bearerAuth(AuthMock.DEFAULT_ACCESS_TOKEN)
+        request.bearerAuth(AuthMockMappings.DEFAULT_ACCESS_TOKEN)
         chain.proceed(request)
-        authClient.token(TadoAuthRequest.TadoAuthRefreshRequest(tadoConfiguration, AuthMock.DEFAULT_REFRESH_TOKEN))
-        request.bearerAuth(AuthMock.DEFAULT_ACCESS_TOKEN)
+        authClient.token(TadoAuthRequest.TadoAuthRefreshRequest(tadoConfiguration, AuthMockMappings.DEFAULT_REFRESH_TOKEN))
+        request.bearerAuth(AuthMockMappings.DEFAULT_ACCESS_TOKEN)
         chain.proceed(request)
         // no checks on publisher
       }
@@ -88,12 +88,12 @@ internal class TadoAuthFilterTest : StringSpec() {
       every {
         authClient.token(ofType<TadoAuthRequest.TadoAuthLoginRequest>())
       } returns TadoAuthResponse(
-        AuthMock.DEFAULT_ACCESS_TOKEN,
-        AuthMock.DEFAULT_TOKEN_TYPE,
-        AuthMock.DEFAULT_REFRESH_TOKEN,
+        AuthMockMappings.DEFAULT_ACCESS_TOKEN,
+        AuthMockMappings.DEFAULT_TOKEN_TYPE,
+        AuthMockMappings.DEFAULT_REFRESH_TOKEN,
         -1, // expire immediately
-        AuthMock.DEFAULT_SCOPE,
-        AuthMock.DEFAULT_JTI
+        AuthMockMappings.DEFAULT_SCOPE,
+        AuthMockMappings.DEFAULT_JTI
       )
 
       every {
@@ -112,11 +112,11 @@ internal class TadoAuthFilterTest : StringSpec() {
 
       verifySequence {
         authClient.token(TadoAuthRequest.TadoAuthLoginRequest(tadoConfiguration))
-        request.bearerAuth(AuthMock.DEFAULT_ACCESS_TOKEN)
+        request.bearerAuth(AuthMockMappings.DEFAULT_ACCESS_TOKEN)
         chain.proceed(request)
-        authClient.token(TadoAuthRequest.TadoAuthRefreshRequest(tadoConfiguration, AuthMock.DEFAULT_REFRESH_TOKEN))
+        authClient.token(TadoAuthRequest.TadoAuthRefreshRequest(tadoConfiguration, AuthMockMappings.DEFAULT_REFRESH_TOKEN))
         authClient.token(TadoAuthRequest.TadoAuthLoginRequest(tadoConfiguration))
-        request.bearerAuth(AuthMock.DEFAULT_ACCESS_TOKEN)
+        request.bearerAuth(AuthMockMappings.DEFAULT_ACCESS_TOKEN)
         chain.proceed(request)
         // no checks on publisher, mockException
       }

@@ -9,7 +9,7 @@ import io.micronaut.http.client.annotation.Client
 interface AuthClient {
 
   companion object {
-    const val SERVICE_ID = "tado-auth"
+    internal const val SERVICE_ID = "tado-auth"
     const val TOKEN_PATH = "/oauth/token"
   }
 

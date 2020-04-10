@@ -54,7 +54,7 @@ class TadoMeterFactory(
     return home
   }
 
-  fun createZoneMeters(home: HomeInfo, zones: List<Zone>) {
+  fun createZoneMeters(home: HomeInfo, zones: Collection<Zone>) {
     zones.forEach { zone ->
       val zoneTags = zoneTags(home, zone)
 

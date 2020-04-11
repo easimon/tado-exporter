@@ -12,20 +12,27 @@ class HomeModelRefresher(
 
   companion object {
     private val LOGGER = logger()
+
+    private fun initializeHomeModel(
+      tadoMeterFactory: TadoMeterFactory,
+      tadoApiClient: TadoApiClient
+    ): HomeModel {
+      LOGGER.info("Initializing homes from API.")
+      val result = HomeModel(
+        tadoApiClient.me().homes
+          .map { userHome -> tadoApiClient.homes(userHome.id) }
+          .map { homeInfo -> tadoMeterFactory.createHomeMeters(homeInfo) }
+          .map { homeInfo -> homeInfo.id to homeInfo }
+          .toMap()
+      )
+
+      LOGGER.info("{} homes initialized.", result.homes.size)
+      return result
+    }
   }
 
-  lateinit var homeModel: HomeModel
-
-  fun initializeHomeModel() {
-    LOGGER.info("Initializing homes from API.")
-    homeModel = HomeModel(
-      tadoApiClient.me().homes
-        .map { userHome -> tadoApiClient.homes(userHome.id) }
-        .map { homeInfo -> tadoMeterFactory.createHomeMeters(homeInfo) }
-        .map { homeInfo -> homeInfo.id to homeInfo }
-        .toMap()
-    )
-    LOGGER.info("{} homes initialized.", homeModel.homes.size)
+  private val homeModel: HomeModel by lazy(this) {
+    initializeHomeModel(tadoMeterFactory, tadoApiClient)
   }
 
   fun refreshHomeModel() {

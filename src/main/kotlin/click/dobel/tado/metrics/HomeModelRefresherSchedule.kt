@@ -9,11 +9,6 @@ import javax.inject.Singleton
 class HomeModelRefresherSchedule(
   private val refresher: HomeModelRefresher
 ) {
-
-  init {
-    refresher.initializeHomeModel()
-  }
-
   @Scheduled(fixedRate = "\${tado.zone-discovery-interval}")
   fun scheduleRefresh() {
     refresher.refreshHomeModel()

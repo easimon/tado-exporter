@@ -28,7 +28,7 @@ COPY mvnw pom.xml /build/
 COPY .mvn /build/.mvn/
 COPY src /build/src/
 COPY --from=builder /build/target /build/target
-RUN ./mvnw -B surefire:test
+RUN ./mvnw -B surefire:test failsafe:integration-test failsafe:verify
 
 # Build runtime image
 FROM $RUNTIME_IMAGE

@@ -39,6 +39,9 @@ micronaut:
         urls:
           - ${tado.api-server}
 
+jackson:
+  bean-introspection-module: true
+
 endpoints:
   metrics:
     enabled: false

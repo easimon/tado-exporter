@@ -27,7 +27,8 @@ COPY --from=builder /root/.m2/repository /root/.m2/repository
 COPY mvnw pom.xml /build/
 COPY .mvn /build/.mvn/
 COPY src /build/src/
-RUN ./mvnw -B clean test
+COPY --from=builder /build/target /build/target
+RUN ./mvnw -B surefire:test
 
 # Build runtime image
 FROM $RUNTIME_IMAGE

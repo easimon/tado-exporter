@@ -1,7 +1,5 @@
 package click.dobel.tado.metrics
 
-import click.dobel.tado.client.TadoApiClient
-import click.dobel.tado.logger
 import click.dobel.tado.api.CoolingZoneSetting
 import click.dobel.tado.api.HeatingZoneSetting
 import click.dobel.tado.api.HomeInfo
@@ -9,6 +7,8 @@ import click.dobel.tado.api.HotWaterZoneSetting
 import click.dobel.tado.api.Power
 import click.dobel.tado.api.TadoSystemType
 import click.dobel.tado.api.Zone
+import click.dobel.tado.client.TadoApiClient
+import click.dobel.tado.util.logger
 import io.micrometer.core.instrument.Gauge
 import io.micrometer.core.instrument.MeterRegistry
 import io.micrometer.core.instrument.Tag
@@ -200,11 +200,15 @@ class TadoMeterFactory(
   ) = registerGauge(name, description, tags, item, booleanToDouble(getter))
 
   private fun <T : Any> numberToDouble(f: (T) -> Number?): (T) -> Double = { n ->
-    f(n)?.toDouble() ?: 0.0
+    f(n)?.toDouble() ?: Double.NaN
   }
 
-  private fun <T : Any> booleanToDouble(f: (T) -> Boolean?): (T) -> Double = { b ->
-    if (f(b) == true) 1.0 else 0.0
+  private fun <T : Any> booleanToDouble(f: (T) -> Boolean?): (T) -> Double = numberToDouble { b ->
+    when (f(b)) {
+      true -> 1.0
+      false -> 0.0
+      null -> null
+    }
   }
 
   private fun homeTags(home: HomeInfo): Tags {

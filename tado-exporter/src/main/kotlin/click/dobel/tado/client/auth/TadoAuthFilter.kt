@@ -5,7 +5,7 @@ import click.dobel.tado.client.TadoConfiguration
 import click.dobel.tado.client.auth.request.TadoAuthLoginRequest
 import click.dobel.tado.client.auth.request.TadoAuthRefreshRequest
 import click.dobel.tado.client.auth.response.TadoAuthResponse
-import click.dobel.tado.logger
+import click.dobel.tado.util.logger
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.MutableHttpRequest
 import io.micronaut.http.annotation.Filter

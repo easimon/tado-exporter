@@ -14,9 +14,13 @@ COPY mvnw pom.xml /build/
 
 COPY tado-api/pom.xml /build/tado-api/pom.xml
 COPY tado-exporter/pom.xml /build/tado-exporter/pom.xml
+COPY tado-util/pom.xml /build/tado-util/pom.xml
 
 COPY tado-api/src /build/tado-api/src/
 RUN ./mvnw -B -pl tado-api -am install
+
+COPY tado-util/src /build/tado-util/src/
+RUN ./mvnw -B -pl tado-util -am install
 
 RUN ./mvnw -B clean dependency:resolve dependency:resolve-plugins dependency:go-offline
 
@@ -40,6 +44,10 @@ COPY --from=builder /build/tado-api/target /build/tado-api/target
 COPY tado-exporter/pom.xml /build/tado-exporter/pom.xml
 COPY tado-exporter/src /build/tado-exporter/src/
 COPY --from=builder /build/tado-exporter/target /build/tado-exporter/target
+
+COPY tado-util/pom.xml /build/tado-util/pom.xml
+COPY tado-util/src /build/tado-util/src/
+COPY --from=builder /build/tado-util/target /build/tado-util/target
 
 RUN ./mvnw -B surefire:test failsafe:integration-test failsafe:verify
 

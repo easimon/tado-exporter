@@ -1,7 +1,7 @@
 package click.dobel.tado.metrics
 
 import click.dobel.tado.client.TadoApiClient
-import click.dobel.tado.logger
+import click.dobel.tado.util.logger
 import javax.inject.Singleton
 
 @Singleton

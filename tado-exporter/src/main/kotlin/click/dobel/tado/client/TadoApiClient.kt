@@ -5,6 +5,7 @@ import click.dobel.tado.api.User
 import click.dobel.tado.api.WeatherReport
 import click.dobel.tado.api.Zone
 import click.dobel.tado.api.ZoneState
+import click.dobel.tado.util.aop.Logged
 import io.micronaut.cache.annotation.Cacheable
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.client.annotation.Client
@@ -39,10 +40,12 @@ interface TadoApiClient {
    * since one call contains the data for multiple gauges,
    * cache it for "micrometer refresh interval minus a few secs" */
   @Cacheable(cacheNames = [CACHE_NAME_ZONESTATE], atomic = true)
+  @Logged("Retrieving fresh zone state for HomeId {}, ZoneId {}.", ["homeId", "zoneId"])
   @Get("${HOMES_PATH}/{homeId}${ZONES_PATH}/{zoneId}${STATE_PATH}")
   fun zoneState(homeId: Int, zoneId: Int): ZoneState
 
   @Cacheable(cacheNames = [CACHE_NAME_WEATHER], atomic = true)
+  @Logged("Retrieving fresh weather report for HomeId {}.", ["homeId"])
   @Get("${HOMES_PATH}/{homeId}/${WEATHER_PATH}")
   fun weather(homeId: Int): WeatherReport
 }

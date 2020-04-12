@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>click.dobel.tado</groupId>
-  <artifactId>tado-exporter</artifactId>
 
   <parent>
     <groupId>click.dobel.tado</groupId>
     <artifactId>tado-exporter-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
+
+  <artifactId>tado-exporter</artifactId>
 
   <properties>
     <exec.mainClass>click.dobel.tado.exporter.Application</exec.mainClass>
@@ -58,6 +60,11 @@
       <artifactId>tado-api</artifactId>
     </dependency>
     <dependency>
+      <groupId>click.dobel.tado</groupId>
+      <artifactId>tado-util</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>io.swagger</groupId>
       <artifactId>swagger-annotations</artifactId>
     </dependency>
@@ -79,11 +86,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>io.micronaut.test</groupId>
-      <artifactId>micronaut-test-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>io.mockk</groupId>
       <artifactId>mockk</artifactId>
       <scope>test</scope>
@@ -100,7 +102,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>${maven-shade-plugin.version}</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -122,7 +123,6 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
-        <version>${exec-maven-plugin.version}</version>
         <configuration>
           <executable>java</executable>
           <arguments>
@@ -139,134 +139,13 @@
       <plugin>
         <artifactId>kotlin-maven-plugin</artifactId>
         <groupId>org.jetbrains.kotlin</groupId>
-        <version>${kotlin.version}</version>
-
-        <configuration>
-          <compilerPlugins>
-            <plugin>all-open</plugin>
-          </compilerPlugins>
-          <pluginOptions>
-            <option>all-open:annotation=io.micronaut.aop.Around</option>
-          </pluginOptions>
-        </configuration>
-
-        <executions>
-          <execution>
-            <id>kapt</id>
-            <goals>
-              <goal>kapt</goal>
-            </goals>
-            <configuration>
-              <sourceDirs>
-                <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
-              </sourceDirs>
-              <annotationProcessorPaths>
-                <annotationProcessorPath>
-                  <groupId>io.micronaut</groupId>
-                  <artifactId>micronaut-inject-java</artifactId>
-                  <version>${micronaut.version}</version>
-                </annotationProcessorPath>
-                <annotationProcessorPath>
-                  <groupId>io.micronaut</groupId>
-                  <artifactId>micronaut-validation</artifactId>
-                  <version>${micronaut.version}</version>
-                </annotationProcessorPath>
-              </annotationProcessorPaths>
-            </configuration>
-          </execution>
-          <execution>
-            <id>compile</id>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-            <configuration>
-              <sourceDirs>
-                <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
-              </sourceDirs>
-            </configuration>
-          </execution>
-          <execution>
-            <id>test-kapt</id>
-            <goals>
-              <goal>test-kapt</goal>
-            </goals>
-            <configuration>
-              <sourceDirs>
-                <sourceDir>${project.basedir}/src/test/kotlin</sourceDir>
-              </sourceDirs>
-              <annotationProcessorPaths>
-                <annotationProcessorPath>
-                  <groupId>io.micronaut</groupId>
-                  <artifactId>micronaut-inject-java</artifactId>
-                  <version>${micronaut.version}</version>
-                </annotationProcessorPath>
-                <annotationProcessorPath>
-                  <groupId>io.micronaut</groupId>
-                  <artifactId>micronaut-validation</artifactId>
-                  <version>${micronaut.version}</version>
-                </annotationProcessorPath>
-              </annotationProcessorPaths>
-            </configuration>
-          </execution>
-          <execution>
-            <id>test-compile</id>
-            <goals>
-              <goal>test-compile</goal>
-            </goals>
-            <configuration>
-              <sourceDirs>
-                <sourceDir>${project.basedir}/src/test/kotlin</sourceDir>
-                <sourceDir>${project.basedir}/target/generated-sources/kapt/test</sourceDir>
-              </sourceDirs>
-            </configuration>
-          </execution>
-        </executions>
-
-        <dependencies>
-          <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-maven-allopen</artifactId>
-            <version>${kotlin.version}</version>
-          </dependency>
-        </dependencies>
       </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>${maven-compiler-plugin.version}</version>
-
-        <configuration>
-          <proc>none</proc>
-          <source>${jdk.version}</source>
-          <target>${jdk.version}</target>
-        </configuration>
-
-        <executions>
-          <execution>
-            <id>default-compile</id>
-            <phase>none</phase>
-          </execution>
-          <execution>
-            <id>default-testCompile</id>
-            <phase>none</phase>
-          </execution>
-          <execution>
-            <id>java-compile</id>
-            <phase>compile</phase>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>java-test-compile</id>
-            <phase>test-compile</phase>
-            <goals>
-              <goal>testCompile</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
+
     </plugins>
   </build>
 </project>

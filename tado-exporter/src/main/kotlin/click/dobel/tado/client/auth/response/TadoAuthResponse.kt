@@ -23,11 +23,13 @@ data class TadoAuthResponse(
 ) {
 
   companion object {
-    const val EXPIRY_RESERVE = 50
+    const val EXPIRY_RESERVE = 10L
   }
 
   @JsonIgnore
-  val expiresAt: Instant = Instant.now().plusSeconds(expiresIn - EXPIRY_RESERVE)
+  val expiresAt: Instant = Instant.now()
+    .plusSeconds(expiresIn)
+    .minusSeconds(EXPIRY_RESERVE)
 
   fun isExpired() = Instant.now() > expiresAt
 }

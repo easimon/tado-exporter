@@ -1,9 +1,10 @@
 package click.dobel.tado
 
 import io.micronaut.core.annotation.Introspected
-import javax.annotation.Generated
 import javax.inject.Singleton
+import javax.xml.bind.annotation.XmlRootElement
 
 @Singleton
-@Introspected(packages = ["click.dobel.tado.model"], includedAnnotations = [Generated::class])
+@Introspected(packages = ["click.dobel.tado.api"], includedAnnotations = [XmlRootElement::class])
 class ApplicationConfiguration
+

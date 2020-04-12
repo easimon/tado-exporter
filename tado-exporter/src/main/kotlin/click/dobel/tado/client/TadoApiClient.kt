@@ -1,10 +1,10 @@
 package click.dobel.tado.client
 
-import click.dobel.tado.model.HomeInfo
-import click.dobel.tado.model.User
-import click.dobel.tado.model.WeatherReport
-import click.dobel.tado.model.Zone
-import click.dobel.tado.model.ZoneState
+import click.dobel.tado.api.HomeInfo
+import click.dobel.tado.api.User
+import click.dobel.tado.api.WeatherReport
+import click.dobel.tado.api.Zone
+import click.dobel.tado.api.ZoneState
 import io.micronaut.cache.annotation.Cacheable
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.client.annotation.Client

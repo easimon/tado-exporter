@@ -1,8 +1,8 @@
 package click.dobel.tado.metrics
 
 import click.dobel.tado.logger
-import click.dobel.tado.model.HomeInfo
-import click.dobel.tado.model.Zone
+import click.dobel.tado.api.HomeInfo
+import click.dobel.tado.api.Zone
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
 

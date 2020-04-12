@@ -2,13 +2,13 @@ package click.dobel.tado.metrics
 
 import click.dobel.tado.client.TadoApiClient
 import click.dobel.tado.logger
-import click.dobel.tado.model.CoolingZoneSetting
-import click.dobel.tado.model.HeatingZoneSetting
-import click.dobel.tado.model.HomeInfo
-import click.dobel.tado.model.HotWaterZoneSetting
-import click.dobel.tado.model.Power
-import click.dobel.tado.model.TadoSystemType
-import click.dobel.tado.model.Zone
+import click.dobel.tado.api.CoolingZoneSetting
+import click.dobel.tado.api.HeatingZoneSetting
+import click.dobel.tado.api.HomeInfo
+import click.dobel.tado.api.HotWaterZoneSetting
+import click.dobel.tado.api.Power
+import click.dobel.tado.api.TadoSystemType
+import click.dobel.tado.api.Zone
 import io.micrometer.core.instrument.Gauge
 import io.micrometer.core.instrument.MeterRegistry
 import io.micrometer.core.instrument.Tag

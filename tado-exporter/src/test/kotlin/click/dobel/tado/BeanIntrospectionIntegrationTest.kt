@@ -5,6 +5,7 @@ import click.dobel.tado.api.HeatingZoneSetting
 import click.dobel.tado.api.HomeInfo
 import click.dobel.tado.client.auth.request.TadoAuthLoginRequest
 import click.dobel.tado.client.auth.request.TadoAuthRefreshRequest
+import click.dobel.tado.client.auth.request.TadoAuthRequest
 import click.dobel.tado.client.auth.response.TadoAuthResponse
 import io.kotlintest.matchers.collections.shouldContainAll
 import io.kotlintest.specs.StringSpec
@@ -22,7 +23,7 @@ class BeanIntrospectionIntegrationTest : StringSpec({
       row(HomeInfo::class),
       row(HeatingZoneSetting::class),
       row(HeatingCapabilities::class),
-      row(TadoAuthLoginRequest::class),
+      row(TadoAuthRequest::class),
       row(TadoAuthLoginRequest::class),
       row(TadoAuthRefreshRequest::class),
       row(TadoAuthResponse::class)
@@ -35,5 +36,4 @@ class BeanIntrospectionIntegrationTest : StringSpec({
     val introspection = BeanIntrospection.getIntrospection(HomeInfo::class.java)
     introspection.propertyNames.toList() shouldContainAll listOf("id", "name", "temperatureUnit")
   }
-
 })

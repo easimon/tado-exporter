@@ -1,5 +1,20 @@
 package click.dobel.tado.client.auth.request
 
+import com.fasterxml.jackson.annotation.JsonSubTypes
+import com.fasterxml.jackson.annotation.JsonTypeInfo
+import io.micronaut.core.annotation.Introspected
+
+@Introspected
+@JsonTypeInfo(
+  use = JsonTypeInfo.Id.NAME,
+  include = JsonTypeInfo.As.PROPERTY,
+  property = TadoAuthRequest.P_GRANT_TYPE,
+  visible = true
+)
+@JsonSubTypes(
+  JsonSubTypes.Type(TadoAuthLoginRequest::class, name = TadoAuthLoginRequest.GRANT_TYPE),
+  JsonSubTypes.Type(TadoAuthRefreshRequest::class, name = TadoAuthRefreshRequest.GRANT_TYPE)
+)
 interface TadoAuthRequest {
   companion object {
     const val P_CLIENT_ID = "client_id"

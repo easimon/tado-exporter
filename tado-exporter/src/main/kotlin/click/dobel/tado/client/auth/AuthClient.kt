@@ -1,5 +1,7 @@
 package click.dobel.tado.client.auth
 
+import click.dobel.tado.client.auth.request.TadoAuthRequest
+import click.dobel.tado.client.auth.response.TadoAuthResponse
 import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.Body
 import io.micronaut.http.annotation.Post

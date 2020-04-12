@@ -2,6 +2,9 @@ package click.dobel.tado.client.auth
 
 import click.dobel.tado.client.TadoApiClient
 import click.dobel.tado.client.TadoConfiguration
+import click.dobel.tado.client.auth.request.TadoAuthLoginRequest
+import click.dobel.tado.client.auth.request.TadoAuthRefreshRequest
+import click.dobel.tado.client.auth.response.TadoAuthResponse
 import click.dobel.tado.logger
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.MutableHttpRequest
@@ -44,7 +47,7 @@ class TadoAuthFilter(
   private fun newAuth(): TadoAuthResponse {
     LOGGER.info("Obtaining new bearer token for {}.", tadoConfiguration.username)
     try {
-      return authClient.token(TadoAuthRequest.TadoAuthLoginRequest(tadoConfiguration))
+      return authClient.token(TadoAuthLoginRequest(tadoConfiguration))
     } catch (e: HttpClientResponseException) {
       LOGGER.error("Failed to authenticate, httpStatus ({})", e.status)
       throw e
@@ -54,7 +57,7 @@ class TadoAuthFilter(
   private fun refreshAuth(refreshToken: String): TadoAuthResponse {
     return try {
       LOGGER.info("Refreshing bearer token.")
-      authClient.token(TadoAuthRequest.TadoAuthRefreshRequest(tadoConfiguration, refreshToken))
+      authClient.token(TadoAuthRefreshRequest(tadoConfiguration, refreshToken))
     } catch (e: HttpClientResponseException) {
       LOGGER.warn("Refreshing bearer token failed.", e)
       newAuth()

@@ -1,4 +1,4 @@
-package click.dobel.tado.client.auth
+package click.dobel.tado.client.auth.response
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty

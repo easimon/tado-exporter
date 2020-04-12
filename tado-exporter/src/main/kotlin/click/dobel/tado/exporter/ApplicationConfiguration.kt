@@ -1,4 +1,4 @@
-package click.dobel.tado
+package click.dobel.tado.exporter
 
 import io.micronaut.core.annotation.Introspected
 import javax.inject.Singleton

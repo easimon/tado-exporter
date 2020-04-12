@@ -1,6 +1,9 @@
 package click.dobel.tado.client.auth
 
 import click.dobel.tado.client.TadoConfiguration
+import click.dobel.tado.client.auth.request.TadoAuthLoginRequest
+import click.dobel.tado.client.auth.request.TadoAuthRefreshRequest
+import click.dobel.tado.client.auth.request.TadoAuthRequest
 import click.dobel.tado.test.AuthMockMappings
 import click.dobel.tado.test.WireMockSupport
 import click.dobel.tado.test.withFormParam
@@ -23,7 +26,7 @@ internal class AuthClientIntegrationTest(
 ) : StringSpec({
 
   "authenticates correctly" {
-    val result = authClient.token(TadoAuthRequest.TadoAuthLoginRequest(configuration))
+    val result = authClient.token(TadoAuthLoginRequest(configuration))
 
     result.accessToken shouldBe AuthMockMappings.DEFAULT_ACCESS_TOKEN
     result.tokenType shouldBe AuthMockMappings.DEFAULT_TOKEN_TYPE
@@ -41,7 +44,7 @@ internal class AuthClientIntegrationTest(
         .withFormParam(TadoAuthRequest.P_SCOPE, configuration.scope)
         .withFormParam(TadoAuthRequest.P_USERNAME, configuration.username)
         .withFormParam(TadoAuthRequest.P_PASSWORD, configuration.password)
-        .withFormParam(TadoAuthRequest.P_GRANT_TYPE, TadoAuthRequest.P_GRANT_TYPE_PASSWORD)
+        .withFormParam(TadoAuthRequest.P_GRANT_TYPE, TadoAuthLoginRequest.GRANT_TYPE)
     )
 
     mock.authServer.allServeEvents.size shouldBe 1
@@ -54,7 +57,7 @@ internal class AuthClientIntegrationTest(
 
     shouldThrow<HttpClientResponseException> {
       authClient.token(
-        TadoAuthRequest.TadoAuthRefreshRequest(configuration, REFRESH_TOKEN)
+        TadoAuthRefreshRequest(configuration, REFRESH_TOKEN)
       )
     }
 
@@ -66,7 +69,7 @@ internal class AuthClientIntegrationTest(
         .withFormParam(TadoAuthRequest.P_CLIENT_SECRET, configuration.clientSecret)
         .withFormParam(TadoAuthRequest.P_SCOPE, configuration.scope)
         .withFormParam(TadoAuthRequest.P_REFRESH_TOKEN, REFRESH_TOKEN)
-        .withFormParam(TadoAuthRequest.P_GRANT_TYPE, TadoAuthRequest.P_GRANT_TYPE_REFRESH_TOKEN)
+        .withFormParam(TadoAuthRequest.P_GRANT_TYPE, TadoAuthRefreshRequest.GRANT_TYPE)
     )
 
     mock.authServer.allServeEvents.size shouldBe 1

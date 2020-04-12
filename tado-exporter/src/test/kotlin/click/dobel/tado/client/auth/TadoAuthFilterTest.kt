@@ -1,5 +1,9 @@
 package click.dobel.tado.client.auth
 
+import click.dobel.tado.client.auth.request.TadoAuthLoginRequest
+import click.dobel.tado.client.auth.request.TadoAuthRefreshRequest
+import click.dobel.tado.client.auth.request.TadoAuthRequest
+import click.dobel.tado.client.auth.response.TadoAuthResponse
 import click.dobel.tado.test.AuthMockMappings
 import click.dobel.tado.test.TestConfiguration
 import io.kotlintest.TestCase
@@ -44,7 +48,7 @@ internal class TadoAuthFilterTest : StringSpec() {
       filter.doFilter(request, chain) shouldBeSameInstanceAs publisher
 
       verifySequence {
-        authClient.token(TadoAuthRequest.TadoAuthLoginRequest(tadoConfiguration))
+        authClient.token(TadoAuthLoginRequest(tadoConfiguration))
         request.bearerAuth(AuthMockMappings.DEFAULT_ACCESS_TOKEN)
         chain.proceed(request)
         // no checks on publisher
@@ -74,10 +78,10 @@ internal class TadoAuthFilterTest : StringSpec() {
       filter.doFilter(request, chain) shouldBeSameInstanceAs publisher
 
       verifySequence {
-        authClient.token(TadoAuthRequest.TadoAuthLoginRequest(tadoConfiguration))
+        authClient.token(TadoAuthLoginRequest(tadoConfiguration))
         request.bearerAuth(AuthMockMappings.DEFAULT_ACCESS_TOKEN)
         chain.proceed(request)
-        authClient.token(TadoAuthRequest.TadoAuthRefreshRequest(tadoConfiguration, AuthMockMappings.DEFAULT_REFRESH_TOKEN))
+        authClient.token(TadoAuthRefreshRequest(tadoConfiguration, AuthMockMappings.DEFAULT_REFRESH_TOKEN))
         request.bearerAuth(AuthMockMappings.DEFAULT_ACCESS_TOKEN)
         chain.proceed(request)
         // no checks on publisher
@@ -86,7 +90,7 @@ internal class TadoAuthFilterTest : StringSpec() {
 
     "retries authentication with username / password when refresh token is rejected" {
       every {
-        authClient.token(ofType<TadoAuthRequest.TadoAuthLoginRequest>())
+        authClient.token(ofType<TadoAuthLoginRequest>())
       } returns TadoAuthResponse(
         AuthMockMappings.DEFAULT_ACCESS_TOKEN,
         AuthMockMappings.DEFAULT_TOKEN_TYPE,
@@ -97,7 +101,7 @@ internal class TadoAuthFilterTest : StringSpec() {
       )
 
       every {
-        authClient.token(ofType<TadoAuthRequest.TadoAuthRefreshRequest>())
+        authClient.token(ofType<TadoAuthRefreshRequest>())
       } throws HttpClientResponseException("TestException", mockk(relaxed = true))
 
       val request = mockk<MutableHttpRequest<TadoAuthRequest>>()
@@ -111,11 +115,11 @@ internal class TadoAuthFilterTest : StringSpec() {
       filter.doFilter(request, chain) shouldBeSameInstanceAs publisher
 
       verifySequence {
-        authClient.token(TadoAuthRequest.TadoAuthLoginRequest(tadoConfiguration))
+        authClient.token(TadoAuthLoginRequest(tadoConfiguration))
         request.bearerAuth(AuthMockMappings.DEFAULT_ACCESS_TOKEN)
         chain.proceed(request)
-        authClient.token(TadoAuthRequest.TadoAuthRefreshRequest(tadoConfiguration, AuthMockMappings.DEFAULT_REFRESH_TOKEN))
-        authClient.token(TadoAuthRequest.TadoAuthLoginRequest(tadoConfiguration))
+        authClient.token(TadoAuthRefreshRequest(tadoConfiguration, AuthMockMappings.DEFAULT_REFRESH_TOKEN))
+        authClient.token(TadoAuthLoginRequest(tadoConfiguration))
         request.bearerAuth(AuthMockMappings.DEFAULT_ACCESS_TOKEN)
         chain.proceed(request)
         // no checks on publisher, mockException
@@ -139,7 +143,7 @@ internal class TadoAuthFilterTest : StringSpec() {
       }
 
       verifySequence {
-        authClient.token(TadoAuthRequest.TadoAuthLoginRequest(tadoConfiguration))
+        authClient.token(TadoAuthLoginRequest(tadoConfiguration))
         request wasNot called
         chain wasNot called
         // no checks on publisher

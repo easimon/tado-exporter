@@ -12,7 +12,7 @@
   </parent>
 
   <properties>
-    <exec.mainClass>click.dobel.tado.Application</exec.mainClass>
+    <exec.mainClass>click.dobel.tado.exporter.Application</exec.mainClass>
   </properties>
 
   <repositories>

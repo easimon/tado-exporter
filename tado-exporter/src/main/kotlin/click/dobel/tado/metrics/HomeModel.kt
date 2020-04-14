@@ -1,6 +1,6 @@
 package click.dobel.tado.metrics
 
-import click.dobel.tado.api.HomeInfo
+import click.dobel.tado.api.UserHomes
 import click.dobel.tado.api.Zone
 import click.dobel.tado.util.logger
 import java.util.concurrent.ConcurrentHashMap
@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentMap
  * Memory model to store references to all homes and corresponding zones.
  */
 data class HomeModel(
-  val homes: Map<Int, HomeInfo>
+  val homes: Map<Int, UserHomes>
 ) {
 
   companion object {
@@ -23,10 +23,10 @@ data class HomeModel(
     mutableSetOf()
   }
 
-  fun updateHomeZones(homeInfo: HomeInfo, newZones: Collection<Zone>): Set<Zone> {
+  fun updateHomeZones(userHomes: UserHomes, newZones: Collection<Zone>): Set<Zone> {
     /* since the model is the source of "references to things being monitored by micrometer",
     * try to modify it in a minimal way */
-    val knownZones = homeZones(homeInfo.id)
+    val knownZones = homeZones(userHomes.id)
     val zonesToAdd = newZones.filter { !knownZones.contains(it) }.toSet()
     val zonesToDelete = knownZones.filter { !newZones.contains(it) }.toSet()
 
@@ -35,8 +35,8 @@ data class HomeModel(
 
     LOGGER.info(
       "Zones for home '{}' ({}) updated, {} zones added, {} zones deleted.",
-      homeInfo.name,
-      homeInfo.id,
+      userHomes.name,
+      userHomes.id,
       zonesToAdd.size,
       zonesToDelete.size
     )

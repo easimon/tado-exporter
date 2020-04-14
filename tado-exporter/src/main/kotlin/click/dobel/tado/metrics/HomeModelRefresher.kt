@@ -20,9 +20,8 @@ class HomeModelRefresher(
       LOGGER.info("Initializing homes from API.")
       val result = HomeModel(
         tadoApiClient.me().homes
-          .map { userHome -> tadoApiClient.homes(userHome.id) }
-          .map { homeInfo -> tadoMeterFactory.createHomeMeters(homeInfo) }
-          .map { homeInfo -> homeInfo.id to homeInfo }
+          .map { userHomes -> tadoMeterFactory.createHomeMeters(userHomes) }
+          .map { userHomes -> userHomes.id to userHomes }
           .toMap()
       )
 
@@ -38,17 +37,17 @@ class HomeModelRefresher(
   fun refreshHomeModel() {
     LOGGER.info("Refreshing zones for all known homes.")
 
-    homeModel.homes.values.forEach { homeInfo ->
+    homeModel.homes.values.forEach { userHomes ->
       LOGGER.info(
         "Refreshing zones for home '{}' ({}).",
-        homeInfo.name,
-        homeInfo.id
+        userHomes.name,
+        userHomes.id
       )
 
-      val allZones = tadoApiClient.zones(homeInfo.id)
-      val newZones = homeModel.updateHomeZones(homeInfo, allZones)
+      val allZones = tadoApiClient.zones(userHomes.id)
+      val newZones = homeModel.updateHomeZones(userHomes, allZones)
 
-      tadoMeterFactory.createZoneMeters(homeInfo, newZones)
+      tadoMeterFactory.createZoneMeters(userHomes, newZones)
     }
   }
 }

@@ -355,6 +355,9 @@ definitions:
               description: The ID of the home
               type: integer
               format: int32
+            name:
+              description: The name of the home
+              type: string
       locale:
         description: Locale string
         type: string

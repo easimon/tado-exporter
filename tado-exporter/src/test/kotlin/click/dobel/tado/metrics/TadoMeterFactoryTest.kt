@@ -15,10 +15,6 @@ import io.mockk.mockk
 class TadoMeterFactoryTest : StringSpec({
 
   "homeTags creates Tag for home Id" {
-    val meterRegistry = SimpleMeterRegistry()
-    val tadoApiClient = mockk<TadoApiClient>()
-
-    val factory = TadoMeterFactory(meterRegistry, tadoApiClient)
     val home = me.homes.first()
     homeTags(home).toList() shouldContainExactlyInAnyOrder Tags.of(
       TadoMeterFactory.TAG_HOME_ID, home.id.toString()
@@ -26,10 +22,6 @@ class TadoMeterFactoryTest : StringSpec({
   }
 
   "zoneTags creates Tags for home Id and zone Id" {
-    val meterRegistry = SimpleMeterRegistry()
-    val tadoApiClient = mockk<TadoApiClient>()
-
-    val factory = TadoMeterFactory(meterRegistry, tadoApiClient)
     val home = me.homes.first()
     val zone = livingRoom
     zoneTags(home, zone).toList() shouldContainExactlyInAnyOrder Tags.of(

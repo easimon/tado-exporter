@@ -1,22 +1,23 @@
 package click.dobel.tado.util.aop
 
 import click.dobel.tado.util.logger
+import click.dobel.tado.util.stringValue
+import click.dobel.tado.util.stringValues
 import io.micronaut.aop.InterceptPhase
 import io.micronaut.aop.MethodInterceptor
 import io.micronaut.aop.MethodInvocationContext
 import javax.inject.Singleton
-import kotlin.reflect.KClass
 
 @Singleton
 class CallLoggingInterceptor : MethodInterceptor<Any, Any> {
   companion object {
-    const val MEMBER_MESSAGE = "message"
-    const val MEMBER_PARAMS = "params"
+    private const val MEMBER_MESSAGE = "message"
+    private const val MEMBER_PARAMS = "params"
+
+    internal fun unmatched(param: String) = "<unmatched param '${param}'>"
   }
 
-  override fun getOrder(): Int {
-    return InterceptPhase.TRACE.position;
-  }
+  override fun getOrder() = InterceptPhase.TRACE.position;
 
   override fun intercept(context: MethodInvocationContext<Any, Any>): Any {
     val message = context.stringValue(Logged::class, MEMBER_MESSAGE)
@@ -28,27 +29,15 @@ class CallLoggingInterceptor : MethodInterceptor<Any, Any> {
     return context.proceed()
   }
 
-  private fun paramValues(context: MethodInvocationContext<Any, Any>, params: Array<String>): Array<Any?> {
+  internal fun paramValues(context: MethodInvocationContext<Any, Any>, params: Array<String>): Array<Any?> {
     val arguments = context.parameterValueMap
     return params.map { param ->
       if (arguments.containsKey(param)) {
         arguments[param]
       } else {
-        "<unmatched param '${param}'>"
+        unmatched(param)
       }
     }.toTypedArray()
   }
 }
-
-private fun MethodInvocationContext<*, *>.stringValue(
-  clazz: KClass<out Annotation>,
-  member: String
-): String =
-  stringValue(clazz.java, member).get()
-
-private fun MethodInvocationContext<*, *>.stringValues(
-  clazz: KClass<out Annotation>,
-  member: String
-): Array<String> =
-  stringValues(clazz.java, member)
 

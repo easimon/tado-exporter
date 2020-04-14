@@ -7,9 +7,13 @@ import java.net.URI
 
 @Controller
 class BaseRedirect {
+  companion object {
+    internal const val PATH_ROOT = "/"
+    internal const val PATH_PROMETHEUS = "/prometheus"
+  }
 
-  @Get("/")
+  @Get(PATH_ROOT)
   fun root(): HttpResponse<String> {
-    return HttpResponse.temporaryRedirect(URI("/prometheus"))
+    return HttpResponse.temporaryRedirect(URI(PATH_PROMETHEUS))
   }
 }

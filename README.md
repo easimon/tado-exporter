@@ -2,7 +2,6 @@
 
 [![Build status](https://github.com/easimon/tado-exporter/workflows/Docker%20container%20build/badge.svg)](https://github.com/easimon/tado-exporter/packages)
 [![JDK Compatibility](https://github.com/easimon/tado-exporter/workflows/JDK%20compatibility%20tests/badge.svg)](https://github.com/easimon/tado-exporter/actions?query=workflow%3A%22JDK%20compatibility%20tests%22)
-[![Known Vulnerabilities](https://snyk.io/test/github/easimon/tado-exporter/badge.svg?targetFile=pom.xml)](https://snyk.io/test/github/easimon/tado-exporter?targetFile=pom.xml)
 
 A simple Prometheus exporter for Tado° smart home installations, scraping temperatures, humidity etc. from the Tado° API.
 

@@ -74,10 +74,10 @@ scrape_configs:
 
 ### Grafana dashboard
 
-There's a simple [Grafana dashboard](./src/main/grafana/tado-dashboard.json) you can import.
+There's a simple [Grafana dashboard](./tado-exporter/src/main/grafana/tado-dashboard.json) you can import.
 Since I don't know of a way to do I18N in Grafana, it's in German.
 
-![Grafana Dashboard](./src/main/grafana/tado-dashboard-screenshot.png "Grafana dashboard")
+![Grafana Dashboard](./tado-exporter/src/main/grafana/tado-dashboard-screenshot.png "Grafana dashboard")
 
 ### How it works
 

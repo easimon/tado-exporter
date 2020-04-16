@@ -40,19 +40,19 @@ available at `http://host:8080/prometheus`.
 ### Configuration
 
 The minimal required configuration is a valid Tado° userame and password.
-For complete list of configurable items and their defaults, see
-[./src/main/resources/application.yml](./src/main/resources/application.yml)
+For complete list of configurable items and their defaults, see the
+[application.yml](./tado-exporter/src/main/resources/application.yml)
 
-| Environment variable | Description             | Required |
-|----------------------|-------------------------|----------|
-| TADO_USERNAME        | Tado° account username  | yes      |
-| TADO_PASSWORD        | Tado° account password  | yes      |
-| TADO_CLIENT_ID       | API OAuth client ID     | no       |
-| TADO_CLIENT_SECRET   | API OAuth client secret | no       |
-| TADO_SCOPE           | API OAuth Scope         | no       |
-| TADO_ZONE_DISCOVERY_INTERVAL | Interval to refresh home and zone (room) information for the given account | no |
-| TADO_API_CACHE_INTERVAL | Interval to cache API calls for zone and weather information. Should be something like the prometheus step interval, minus the duration it takes to scrape the API once (5-10 secs). | no |
-| TADO_PROMETHEUS_STEP_INTERVAL | Prometheus step resulution (how often does prometheus scrape the metrics endpoint) | no |
+| Environment variable | Description             | Default | Required |
+|----------------------|-------------------------|---------|----------|
+| TADO_USERNAME        | Tado° account username  | (none)  | yes |
+| TADO_PASSWORD        | Tado° account password  | (none)  | yes |
+| TADO_CLIENT_ID       | API OAuth client ID     | [application.yml](./tado-exporter/src/main/resources/application.yml) | no |
+| TADO_CLIENT_SECRET   | API OAuth client secret | [application.yml](./tado-exporter/src/main/resources/application.yml) | no |
+| TADO_SCOPE           | API OAuth Scope         | [application.yml](./tado-exporter/src/main/resources/application.yml) | no |
+| TADO_ZONE_DISCOVERY_INTERVAL | Interval to refresh home and zone (room) information for the given account | 5 min | no |
+| TADO_API_CACHE_INTERVAL | Interval to cache API calls for zone and weather information. Should be something like the prometheus step interval, minus the duration it takes to scrape the API once (5-10 secs). | 55 sec | no |
+| TADO_PROMETHEUS_STEP_INTERVAL | Prometheus step resulution (how often does prometheus scrape the metrics endpoint) | 60 sec | no |
 
 OAuth client id, secret and scope do not need configuration, since they have defaults found at other projects listed in [References](#references).
 
@@ -75,6 +75,26 @@ Since I don't know of a way to do I18N in Grafana, it's in German.
 
 ![Grafana Dashboard](./tado-exporter/src/main/grafana/tado-dashboard-screenshot.png "Grafana dashboard")
 
+### Available metrics
+
+Defined in [TadoMeterFactory.kt](tado-exporter/src/main/kotlin/click/dobel/tado/metrics/TadoMeterFactory.kt).
+There are also some other metrics (automatically provided by Micronaut framework), but these are the ones
+this application is about.
+
+| Name                            | Tags                                   | Cardinality | Description                                                  |
+|---------------------------------|----------------------------------------|-------------|--------------------------------------------------------------|
+| solar_intensity_percentage      | home_id                                | per home    | solar intensity at your home's location, in percent          |
+| temperature_outside_celsius     | home_id                                | per home    | outside temperature at your home's location, in deg. celsius |
+| temperature_outside_fahrenheit  | home_id                                | per home    | outside temperature at your home's location, in fahrenheit   |
+| temperature_measured_celsius    | home_id, zone_id, zone_name, zone_type | per zone    | measured temperature in this zone, in deg. celsius           |
+| temperature_measured_fahrenheit | home_id, zone_id, zone_name, zone_type | per zone    | measured temperature in this zone, in fahrenheit             |
+| humidity_measured_percentage    | home_id, zone_id, zone_name, zone_type | per zone    | measured humidity in this zone, in percent                   |
+| temperature_set_celsius         | home_id, zone_id, zone_name, zone_type | per zone    | target temperature in this zone, in deg. celsius             |
+| temperature_set_fahrenheit      | home_id, zone_id, zone_name, zone_type | per zone    | target temperature in this zone, in fahrenheit               |
+| heating_power_percentage        | home_id, zone_id, zone_name, zone_type | per zone    | heating power in this zone, in percent                       |
+| is_window_open                  | home_id, zone_id, zone_name, zone_type | per zone    | window open detection (presence of an "openWindow" object in the zone state, translated to 0, 1) |
+| is_zone_powered                 | home_id, zone_id, zone_name, zone_type | per zone    | power state (ON, OFF, translated to 0, 1)                    |
+
 ### How it works
 
 The exporter discovers all homes attached to a single Tado° account at startup, and refreshes the home and zone
@@ -91,6 +111,7 @@ by calling the prometheus metrics endpoint (at most every 55 seconds by default)
 ## Known Issues and TODOs
 
 - Test coverage is incomplete.
+- Does not work on OpenJ9 variants of OpenJDK (Runs into stack overflows in tests, Jackson serialization yields empty Strings)
 
 ## Disclaimer
 

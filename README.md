@@ -27,13 +27,9 @@ Since the python exporter failed to scrape the API quite often, and I wanted to 
 
 ## Building
 
-Clone this repository, copy
-[./src/test/resources/application-test.yml.template](./src/test/resources/application-test.yml.template) to
-[./src/test/resources/application-test.yml](./src/test/resources/application-test.yml) and set your Tado° username and
-password.
-
-Either install a JDK (tested with OpenJDK 8) and run `./mvnw package` to create an executable JAR only,
-or install Docker and use `docker build . -t tado-exporter:latest` to create a Docker image.
+Either install a JDK (tested with OpenJDK 8) and run `./mvnw package` to create an executable JAR only
+(to be found in tado-exporter/target then), or install Docker and use
+`docker build . -t tado-exporter:latest` to create a Docker image.
 
 ## Usage
 

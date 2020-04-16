@@ -1,10 +1,24 @@
 # Tado exporter
 
-[![Build status](https://github.com/easimon/tado-exporter/workflows/Docker%20container%20build/badge.svg)](https://github.com/easimon/tado-exporter/packages)
-[![JDK Compatibility](https://github.com/easimon/tado-exporter/workflows/JDK%20compatibility%20tests/badge.svg)](https://github.com/easimon/tado-exporter/actions?query=workflow%3A%22JDK%20compatibility%20tests%22)
-[![Known Vulnerabilities](https://snyk.io/test/github/easimon/tado-exporter/badge.svg?targetFile=pom.xml)](https://snyk.io/test/github/easimon/tado-exporter?targetFile=pom.xml)
 
-A simple Prometheus exporter for Tado° smart home installations, scraping temperatures, humidity etc. from the Tado° API.
+## Build status
+
+- [![Build status](https://github.com/easimon/tado-exporter/workflows/Docker%20container%20build/badge.svg)](https://github.com/easimon/tado-exporter/packages)
+- [![JDK Compatibility](https://github.com/easimon/tado-exporter/workflows/JDK%20compatibility%20tests/badge.svg)](https://github.com/easimon/tado-exporter/actions?query=workflow%3A%22JDK%20compatibility%20tests%22)
+
+## Vulnerability reports
+
+| Module         | Vulnerabilities |
+|----------------|-----------------|
+| Parent POM     | [![Known Vulnerabilities](https://snyk.io/test/github/easimon/tado-exporter/badge.svg?targetFile=pom.xml)](https://snyk.io/test/github/easimon/tado-exporter?targetFile=pom.xml) |
+| Tado° API      | [![Known Vulnerabilities](https://snyk.io/test/github/easimon/tado-exporter/badge.svg?targetFile=tado-api/pom.xml)](https://snyk.io/test/github/easimon/tado-exporter?targetFile=tado-api/pom.xml) |
+| Utilities      | [![Known Vulnerabilities](https://snyk.io/test/github/easimon/tado-exporter/badge.svg?targetFile=tado-util/pom.xml)](https://snyk.io/test/github/easimon/tado-exporter?targetFile=tado-util/pom.xml) |
+| Tado° Exporter | [![Known Vulnerabilities](https://snyk.io/test/github/easimon/tado-exporter/badge.svg?targetFile=tado-exporter/pom.xml)](https://snyk.io/test/github/easimon/tado-exporter?targetFile=tado-exporter/pom.xml) |
+
+## Introduction
+
+This is a simple Prometheus exporter for Tado° smart home installations, scraping temperatures, humidity etc. from
+the Tado° API and presenting them in a Prometheus compatible format.
 
 Idea taken from [this python variant](https://github.com/vide/tado-exporter).
 
@@ -80,8 +94,7 @@ by calling the prometheus metrics endpoint (at most every 55 seconds by default)
 
 ## Known Issues and TODOs
 
-- Test coverage is more or less non-existant. Tests contain a smoke test against the Tado° API only,
-  and require valid credentials to run.
+- Test coverage is incomplete.
 
 ## Disclaimer
 

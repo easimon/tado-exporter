@@ -9,6 +9,7 @@
     <groupId>click.dobel.tado</groupId>
     <artifactId>tado-exporter-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <relativePath>../</relativePath>
   </parent>
 
   <artifactId>tado-api</artifactId>

@@ -30,7 +30,7 @@ jobs:
 
       - name: Print docker image and tag name
         run: |
-          echo "Continuing to build ${DOCKER_NAME}:${DOCKER_TAG}, a.k.a. ${DOCKER_NAME}:${{ github.sha }}"
+          echo "Continuing to build ${DOCKER_NAME}:${DOCKER_TAG}"
 
       - name: Log in to Docker Registry
         run: |
@@ -38,40 +38,38 @@ jobs:
 
       - name: Build the Docker builder image
         run: |
-          docker pull ${DOCKER_NAME}:${DOCKER_TAG}-builder || echo "No previous builder image found"
+          docker pull ${DOCKER_NAME}-builder:${DOCKER_TAG} || echo "No previous builder image found"
           docker build \
-            --cache-from=${DOCKER_NAME}:${DOCKER_TAG}-builder \
+            --cache-from=${DOCKER_NAME}-builder:${DOCKER_TAG} \
             --target builder \
-            -t ${DOCKER_NAME}:${DOCKER_TAG}-builder \
+            -t ${DOCKER_NAME}-builder:${DOCKER_TAG} \
             .
-          docker push ${DOCKER_NAME}:${DOCKER_TAG}-builder
+          docker push ${DOCKER_NAME}-builder:${DOCKER_TAG}
 
       - name: Build the Docker test image
         run: |
-          docker pull ${DOCKER_NAME}:${DOCKER_TAG}-builder || echo "No previous builder image found"
-          docker pull ${DOCKER_NAME}:${DOCKER_TAG}-test || echo "No previous test image found"
+          docker pull ${DOCKER_NAME}-builder:${DOCKER_TAG} || echo "No previous builder image found"
+          docker pull ${DOCKER_NAME}-test:${DOCKER_TAG} || echo "No previous test image found"
           docker build \
-            --cache-from=${DOCKER_NAME}:${DOCKER_TAG}-builder \
-            --cache-from=${DOCKER_NAME}:${DOCKER_TAG}-test \
+            --cache-from=${DOCKER_NAME}-builder:${DOCKER_TAG} \
+            --cache-from=${DOCKER_NAME}-test:${DOCKER_TAG} \
             --target test \
-            -t ${DOCKER_NAME}:${DOCKER_TAG}-test \
+            -t ${DOCKER_NAME}-test:${DOCKER_TAG} \
             .
-          docker push ${DOCKER_NAME}:${DOCKER_TAG}-test
+          docker push ${DOCKER_NAME}-test:${DOCKER_TAG}
 
       - name: Build the Docker image
         run: |
+          docker pull ${DOCKER_NAME}-builder:${DOCKER_TAG} || echo "No previous builder image found"
+          docker pull ${DOCKER_NAME}-test:${DOCKER_TAG} || echo "No previous test image found"
           docker pull ${DOCKER_NAME}:latest || echo "No previous latest image found"
-          docker pull ${DOCKER_NAME}:${DOCKER_TAG}-builder || echo "No previous builder image found"
-          docker pull ${DOCKER_NAME}:${DOCKER_TAG}-test || echo "No previous test image found"
           docker build \
-            --cache-from=${DOCKER_NAME}:${DOCKER_TAG}-builder \
-            --cache-from=${DOCKER_NAME}:${DOCKER_TAG}-test \
+            --cache-from=${DOCKER_NAME}-builder:${DOCKER_TAG} \
+            --cache-from=${DOCKER_NAME}-test:${DOCKER_TAG} \
             --cache-from=${DOCKER_NAME}:latest \
-            -t ${DOCKER_NAME}:${{ github.sha }} \
             -t ${DOCKER_NAME}:${DOCKER_TAG} \
             .
 
-      - name: Push the Docker images
+      - name: Push the Docker image
         run: |
-          docker push ${DOCKER_NAME}:${{ github.sha }}
           docker push ${DOCKER_NAME}:${DOCKER_TAG}

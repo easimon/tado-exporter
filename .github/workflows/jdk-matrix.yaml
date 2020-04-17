@@ -22,9 +22,11 @@ jobs:
 
       - name: Build the Docker builder image
         run: |
-          docker pull ${DOCKER_NAME}-jdk-matrix-builder:latest || echo "No previous builder image found"
+          docker pull ${DOCKER_NAME}-builder:latest || echo "No previous builder image found"
+          docker pull ${DOCKER_NAME}-jdk-matrix-builder:latest || echo "No previous test matrix builder image found"
           docker build \
             --cache-from=${DOCKER_NAME}-jdk-matrix-builder:latest \
+            --cache-from=${DOCKER_NAME}-builder:latest \
             --target builder \
             -t ${DOCKER_NAME}-jdk-matrix-builder:latest \
             .
@@ -62,7 +64,7 @@ jobs:
 
       - name: Build the Docker test image
         run: |
-          docker pull ${DOCKER_NAME}-jdk-matrix-builder:latest || echo "No previous builder image found"
+          docker pull ${DOCKER_NAME}-jdk-matrix-builder:latest || echo "No test matrix builder image found"
           docker build \
             --cache-from=${DOCKER_NAME}-jdk-matrix-builder:latest \
             --build-arg TEST_IMAGE=${{ matrix.testimage }} \

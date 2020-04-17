@@ -115,7 +115,7 @@ class TadoMeterFactoryTest : StringSpec({
   }
 }
 
-private infix fun <T : Collection<out Meter>> T.shouldContainMetersExactlyInAnyOrder(matchers: Set<MeterIdMatcher>) =
+private infix fun <T : Collection<Meter>> T.shouldContainMetersExactlyInAnyOrder(matchers: Set<MeterIdMatcher>) =
   map { matching(it) } shouldContainExactlyInAnyOrder matchers
 
 private data class MeterIdMatcher(

@@ -38,8 +38,10 @@ jobs:
 
       - name: Build the Docker builder image
         run: |
-          docker pull ${DOCKER_NAME}-builder:${DOCKER_TAG} || echo "No previous builder image found"
+          docker pull ${DOCKER_NAME}-builder:latest || echo "No previous 'latest' builder image found"
+          docker pull ${DOCKER_NAME}-builder:${DOCKER_TAG} || echo "No previous '${DOCKER_TAG}' builder image found"
           docker build \
+            --cache-from=${DOCKER_NAME}-builder:latest \
             --cache-from=${DOCKER_NAME}-builder:${DOCKER_TAG} \
             --target builder \
             -t ${DOCKER_NAME}-builder:${DOCKER_TAG} \
@@ -48,10 +50,12 @@ jobs:
 
       - name: Build the Docker test image
         run: |
-          docker pull ${DOCKER_NAME}-builder:${DOCKER_TAG} || echo "No previous builder image found"
-          docker pull ${DOCKER_NAME}-test:${DOCKER_TAG} || echo "No previous test image found"
+          docker pull ${DOCKER_NAME}-builder:${DOCKER_TAG} || echo "No builder image found"
+          docker pull ${DOCKER_NAME}-test:latest || echo "No previous 'latest' test image found"
+          docker pull ${DOCKER_NAME}-test:${DOCKER_TAG} || echo "No previous '${DOCKER_TAG}' test image found"
           docker build \
             --cache-from=${DOCKER_NAME}-builder:${DOCKER_TAG} \
+            --cache-from=${DOCKER_NAME}-test:latest \
             --cache-from=${DOCKER_NAME}-test:${DOCKER_TAG} \
             --target test \
             -t ${DOCKER_NAME}-test:${DOCKER_TAG} \
@@ -60,13 +64,15 @@ jobs:
 
       - name: Build the Docker image
         run: |
-          docker pull ${DOCKER_NAME}-builder:${DOCKER_TAG} || echo "No previous builder image found"
-          docker pull ${DOCKER_NAME}-test:${DOCKER_TAG} || echo "No previous test image found"
-          docker pull ${DOCKER_NAME}:latest || echo "No previous latest image found"
+          docker pull ${DOCKER_NAME}-builder:${DOCKER_TAG} || echo "No builder image found"
+          docker pull ${DOCKER_NAME}-test:${DOCKER_TAG} || echo "No test image found"
+          docker pull ${DOCKER_NAME}:latest || echo "No previous 'latest' image found"
+          docker pull ${DOCKER_NAME}:${DOCKER_TAG} || echo "No previous '${DOCKER_TAG}' image found"
           docker build \
             --cache-from=${DOCKER_NAME}-builder:${DOCKER_TAG} \
             --cache-from=${DOCKER_NAME}-test:${DOCKER_TAG} \
             --cache-from=${DOCKER_NAME}:latest \
+            --cache-from=${DOCKER_NAME}:${DOCKER_TAG} \
             -t ${DOCKER_NAME}:${DOCKER_TAG} \
             .
 

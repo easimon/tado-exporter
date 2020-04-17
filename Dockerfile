@@ -12,7 +12,7 @@ COPY tado-api/pom.xml /build/tado-api/pom.xml
 COPY tado-util/pom.xml /build/tado-util/pom.xml
 COPY tado-exporter/pom.xml /build/tado-exporter/pom.xml
 
-RUN ./mvnw de.qaware.maven:go-offline-maven-plugin:resolve-dependencies
+RUN ./mvnw -B de.qaware.maven:go-offline-maven-plugin:resolve-dependencies
 
 COPY tado-api/src /build/tado-api/src
 RUN ./mvnw -B -pl tado-api -am install

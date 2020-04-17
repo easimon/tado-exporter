@@ -1,19 +1,8 @@
 # Tado exporter
 
-
-## Build status
-
-- [![Build status](https://github.com/easimon/tado-exporter/workflows/Docker%20container%20build/badge.svg)](https://github.com/easimon/tado-exporter/packages)
-- [![JDK Compatibility](https://github.com/easimon/tado-exporter/workflows/JDK%20compatibility%20tests/badge.svg)](https://github.com/easimon/tado-exporter/actions?query=workflow%3A%22JDK%20compatibility%20tests%22)
-
-## Vulnerability reports
-
-| Module         | Vulnerabilities |
-|----------------|-----------------|
-| Parent POM     | [![Known Vulnerabilities](https://snyk.io/test/github/easimon/tado-exporter/badge.svg?targetFile=pom.xml)](https://snyk.io/test/github/easimon/tado-exporter?targetFile=pom.xml) |
-| Tado° API      | [![Known Vulnerabilities](https://snyk.io/test/github/easimon/tado-exporter/badge.svg?targetFile=tado-api/pom.xml)](https://snyk.io/test/github/easimon/tado-exporter?targetFile=tado-api/pom.xml) |
-| Utilities      | [![Known Vulnerabilities](https://snyk.io/test/github/easimon/tado-exporter/badge.svg?targetFile=tado-util/pom.xml)](https://snyk.io/test/github/easimon/tado-exporter?targetFile=tado-util/pom.xml) |
-| Tado° Exporter | [![Known Vulnerabilities](https://snyk.io/test/github/easimon/tado-exporter/badge.svg?targetFile=tado-exporter/pom.xml)](https://snyk.io/test/github/easimon/tado-exporter?targetFile=tado-exporter/pom.xml) |
+| Build status | Vulnerabilities |
+|--------------|-----------------|
+| ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/easimon/tado-exporter/Docker%20container%20build?label=docker%20build) ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/easimon/tado-exporter/JDK%20compatibility%20tests?label=jdk%20compatibility%20tests) | ![Snyk Vulnerabilities for Tado Exporter](https://img.shields.io/snyk/vulnerabilities/github/easimon/tado-exporter/tado-exporter/pom.xml?label=tado-exporter) ![Snyk Vulnerabilities for Tado API](https://img.shields.io/snyk/vulnerabilities/github/easimon/tado-exporter/tado-api/pom.xml?label=tado-api) ![Snyk Vulnerabilities for Tado Utils](https://img.shields.io/snyk/vulnerabilities/github/easimon/tado-exporter/tado-util/pom.xml?label=tado-util) ![Snyk Vulnerabilities for Parent POM](https://img.shields.io/snyk/vulnerabilities/github/easimon/tado-exporter/pom.xml?label=parent-pom) |
 
 ## Introduction
 

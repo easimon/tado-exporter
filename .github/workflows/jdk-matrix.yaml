@@ -34,7 +34,7 @@ jobs:
     name: ${{ matrix.testimage }}
     runs-on: ubuntu-latest
     needs: build
-    timeout-minutes: 5
+    timeout-minutes: 10
     strategy:
       matrix:
         testimage:

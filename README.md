@@ -88,7 +88,8 @@ this application is about.
 
 The exporter discovers all homes attached to a single Tado° account at startup, and refreshes the home and zone
 layout every 5 minutes by default. Then, metrics are collected for all discovered zones whenever they are requested
-by calling the prometheus metrics endpoint (at most every 55 seconds by default).
+by calling the prometheus metrics endpoint (at most every 55 seconds by default). I.e. the metrics are only refreshed
+on demand -- when the exporter is not scraped, it will only make the home/zone discovery requests every now and then.
 
 ## References
 

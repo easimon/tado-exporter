@@ -39,4 +39,4 @@ FROM $RUNTIME_IMAGE
 COPY --from=builder /build/tado-exporter/target/tado-exporter-*.jar tado-exporter.jar
 EXPOSE 8080
 USER 65535:65535
-CMD java -Dcom.sun.management.jmxremote -noverify ${JAVA_OPTS} -jar tado-exporter.jar
+CMD java -noverify ${JAVA_OPTS} -jar tado-exporter.jar

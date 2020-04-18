@@ -16,6 +16,7 @@
 
     <logback-classic.version>1.2.3</logback-classic.version>
     <mockk.version>1.9.3</mockk.version>
+    <byte-buddy.version>1.10.9</byte-buddy.version>
     <wiremock.version>2.19.0</wiremock.version>
     <micronaut-test.version>1.1.5</micronaut-test.version>
     <snakeyaml.version>1.26</snakeyaml.version>
@@ -107,6 +108,11 @@
         <groupId>io.mockk</groupId>
         <artifactId>mockk</artifactId>
         <version>${mockk.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>net.bytebuddy</groupId>
+        <artifactId>byte-buddy</artifactId>
+        <version>${byte-buddy.version}</version>
       </dependency>
       <dependency>
         <groupId>com.github.tomakehurst</groupId>

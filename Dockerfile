@@ -1,6 +1,6 @@
 ARG BUILD_IMAGE=openjdk:8
-ARG TEST_IMAGE=adoptopenjdk/openjdk11:alpine
-ARG RUNTIME_IMAGE=adoptopenjdk/openjdk11:alpine-jre
+ARG TEST_IMAGE=adoptopenjdk/openjdk14:alpine
+ARG RUNTIME_IMAGE=adoptopenjdk/openjdk14:alpine-jre
 
 FROM $BUILD_IMAGE as builder
 
@@ -39,4 +39,4 @@ FROM $RUNTIME_IMAGE
 COPY --from=builder /build/tado-exporter/target/tado-exporter-*.jar tado-exporter.jar
 EXPOSE 8080
 USER 65535:65535
-CMD java -noverify ${JAVA_OPTS} -jar tado-exporter.jar
+CMD java ${JAVA_OPTS} -jar tado-exporter.jar

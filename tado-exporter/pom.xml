@@ -122,22 +122,6 @@
       </plugin>
 
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <configuration>
-          <executable>java</executable>
-          <arguments>
-            <argument>-classpath</argument>
-            <classpath/>
-            <argument>-noverify</argument>
-            <argument>-XX:TieredStopAtLevel=1</argument>
-            <argument>-Dcom.sun.management.jmxremote</argument>
-            <argument>${exec.mainClass}</argument>
-          </arguments>
-        </configuration>
-      </plugin>
-
-      <plugin>
         <artifactId>kotlin-maven-plugin</artifactId>
         <groupId>org.jetbrains.kotlin</groupId>
       </plugin>

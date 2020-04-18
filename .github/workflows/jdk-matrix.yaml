@@ -48,9 +48,13 @@ jobs:
           - adoptopenjdk:8-hotspot
           - adoptopenjdk:11-hotspot
           - adoptopenjdk:12-hotspot
+          - adoptopenjdk:13-hotspot
+          - adoptopenjdk:14-hotspot
           - adoptopenjdk:8-openj9
           - adoptopenjdk:11-openj9
           #          - adoptopenjdk:12-openj9
+          #          - adoptopenjdk:13-openj9
+          #          - adoptopenjdk:14-openj9
           - amazoncorretto:8
           - amazoncorretto:11
       fail-fast: false

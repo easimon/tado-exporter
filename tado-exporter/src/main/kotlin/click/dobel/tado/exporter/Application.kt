@@ -6,13 +6,13 @@ import kotlin.system.exitProcess
 
 object Application {
 
-  private const val SIGINT = "INT"
-  private const val SIGTERM = "TERM"
+  private val SHUTDOWN_SIGNALS = listOf("INT", "TERM")
 
   @JvmStatic
   fun main(args: Array<String>) {
-    Signal.handle(Signal(SIGINT)) { _ -> exitProcess(0) }
-    Signal.handle(Signal(SIGTERM)) { _ -> exitProcess(1) }
+    SHUTDOWN_SIGNALS.forEach { signal ->
+      Signal.handle(Signal(signal)) { _ -> exitProcess(0) }
+    }
     Micronaut.build()
       .packages("click.dobel.tado")
       .mainClass(Application.javaClass)

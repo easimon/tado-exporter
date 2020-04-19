@@ -305,10 +305,10 @@ paths:
         404:
           $ref: "#/responses/NotFound"
 
-    /homes/{home_id}/weather:
-      get:
-        operationId: showWeather
-        summary: Show current weather report for the home's location.
+  /homes/{home_id}/weather:
+    get:
+      operationId: showWeather
+      summary: Show current weather report for the home's location.
       tags:
         - home
       security:
@@ -327,7 +327,6 @@ paths:
           $ref: "#/responses/AccessDenied"
         404:
           $ref: "#/responses/NotFound"
-
 
 definitions:
   User:

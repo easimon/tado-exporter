@@ -24,8 +24,8 @@ class CallLoggingInterceptor : MethodInterceptor<Any, Any> {
     val paramNames = context.stringValues(Logged::class, MEMBER_PARAMS)
     val params = paramValues(context, paramNames)
 
-    logger(context.target::class)
-      .info(message, *params)
+    context.target.logger().info(message, *params)
+
     return context.proceed()
   }
 

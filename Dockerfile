@@ -37,6 +37,7 @@ RUN ./mvnw -B surefire:test failsafe:integration-test failsafe:verify
 FROM $RUNTIME_IMAGE
 
 COPY --from=builder /build/tado-exporter/target/tado-exporter-*.jar tado-exporter.jar
+ENV JAVA_OPTS -Xmx64m -Xms64m
 EXPOSE 8080
 USER 65535:65535
 CMD java ${JAVA_OPTS} -jar tado-exporter.jar

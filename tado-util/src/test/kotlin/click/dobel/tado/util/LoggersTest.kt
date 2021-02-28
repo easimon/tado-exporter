@@ -1,7 +1,7 @@
 package click.dobel.tado.util
 
-import io.kotlintest.matchers.types.shouldBeSameInstanceAs
-import io.kotlintest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.types.shouldBeSameInstanceAs
 
 internal class LoggersKtTest : StringSpec({
   "Returns same Logger for Class and Companion" {

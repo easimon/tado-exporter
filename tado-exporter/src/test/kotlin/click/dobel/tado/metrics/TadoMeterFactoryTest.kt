@@ -1,10 +1,10 @@
 package click.dobel.tado.metrics
 
 import click.dobel.tado.client.TadoApiClient
-import io.kotlintest.TestCase
-import io.kotlintest.TestResult
-import io.kotlintest.matchers.collections.shouldContainExactlyInAnyOrder
-import io.kotlintest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
+import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.micrometer.core.instrument.Meter
 import io.micrometer.core.instrument.Metrics
 import io.micrometer.core.instrument.Tag

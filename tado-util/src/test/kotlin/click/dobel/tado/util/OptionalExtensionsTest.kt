@@ -1,7 +1,7 @@
 package click.dobel.tado.util
 
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.shouldBe
 import java.util.Optional
 
 internal class OptionalExtensionsTest : StringSpec({

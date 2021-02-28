@@ -6,13 +6,13 @@ import click.dobel.tado.test.WireMockSupport
 import click.dobel.tado.test.apiPath
 import click.dobel.tado.test.withBearerAuth
 import com.github.tomakehurst.wiremock.client.WireMock
-import io.kotlintest.TestCase
-import io.kotlintest.TestResult
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
+import io.kotest.matchers.shouldBe
 import io.micronaut.http.HttpHeaders
 import io.micronaut.http.MediaType
-import io.micronaut.test.annotation.MicronautTest
+import io.micronaut.test.extensions.kotest.annotation.MicronautTest
 
 @MicronautTest
 internal class TadoApiClientIntegrationTest(

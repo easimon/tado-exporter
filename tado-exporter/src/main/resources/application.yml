@@ -1,6 +1,10 @@
 micronaut:
   application:
     name: tadoexporter
+
+  server:
+    thread-selection: auto
+
   metrics:
     enabled: true
 

@@ -6,10 +6,9 @@ import click.dobel.tado.client.auth.request.TadoAuthRequest
 import click.dobel.tado.client.auth.response.TadoAuthResponse
 import click.dobel.tado.test.AuthMockMappings
 import click.dobel.tado.test.TestConfiguration
-import io.kotlintest.TestCase
-import io.kotlintest.matchers.types.shouldBeSameInstanceAs
-import io.kotlintest.shouldThrow
-import io.kotlintest.specs.StringSpec
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.core.test.TestCase
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.MutableHttpRequest
 import io.micronaut.http.client.exceptions.HttpClientResponseException
@@ -18,34 +17,42 @@ import io.mockk.called
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verifySequence
-import org.reactivestreams.Publisher
+import io.reactivex.Flowable
+import io.reactivex.Single
+import javax.inject.Provider
 
 internal class TadoAuthFilterTest : StringSpec() {
-  val tadoConfiguration = TestConfiguration.INSTANCE
-  lateinit var authClient: AuthClient
-  lateinit var filter: TadoAuthFilter
+  private val tadoConfiguration = TestConfiguration.INSTANCE
+  private lateinit var authClient: AuthClient
+  private lateinit var authClientProvider: Provider<AuthClient>
+
+  private lateinit var filter: TadoAuthFilter
 
   init {
     "retrieves access token by username / password and injects it into the request" {
       every {
         authClient.token(any())
-      } returns TadoAuthResponse(
-        AuthMockMappings.DEFAULT_ACCESS_TOKEN,
-        AuthMockMappings.DEFAULT_TOKEN_TYPE,
-        AuthMockMappings.DEFAULT_REFRESH_TOKEN,
-        AuthMockMappings.DEFAULT_EXPIRES_IN,
-        AuthMockMappings.DEFAULT_SCOPE,
-        AuthMockMappings.DEFAULT_JTI
+      } returns Single.just(
+        TadoAuthResponse(
+          AuthMockMappings.DEFAULT_ACCESS_TOKEN,
+          AuthMockMappings.DEFAULT_TOKEN_TYPE,
+          AuthMockMappings.DEFAULT_REFRESH_TOKEN,
+          AuthMockMappings.DEFAULT_EXPIRES_IN,
+          AuthMockMappings.DEFAULT_SCOPE,
+          AuthMockMappings.DEFAULT_JTI
+        )
       )
 
       val request = mockk<MutableHttpRequest<TadoAuthRequest>>()
       val chain = mockk<ClientFilterChain>()
-      val publisher = mockk<Publisher<HttpResponse<*>>>()
+      val response = mockk<HttpResponse<*>>()
 
-      every { chain.proceed(any()) } returns publisher
+      every { chain.proceed(any()) } returns {
+        it.onNext(response)
+      }
       every { request.bearerAuth(any()) } returns request
 
-      filter.doFilter(request, chain) shouldBeSameInstanceAs publisher
+      Flowable.fromPublisher(filter.doFilter(request, chain)).blockingFirst()
 
       verifySequence {
         authClient.token(TadoAuthLoginRequest(tadoConfiguration))
@@ -58,103 +65,113 @@ internal class TadoAuthFilterTest : StringSpec() {
     "on second call, retrieves access token by refresh token and injects it into the request" {
       every {
         authClient.token(any())
-      } returns TadoAuthResponse(
-        AuthMockMappings.DEFAULT_ACCESS_TOKEN,
-        AuthMockMappings.DEFAULT_TOKEN_TYPE,
-        AuthMockMappings.DEFAULT_REFRESH_TOKEN,
-        -1, // expire immediately
-        AuthMockMappings.DEFAULT_SCOPE,
-        AuthMockMappings.DEFAULT_JTI
+      } returns Single.just(
+        TadoAuthResponse(
+          AuthMockMappings.DEFAULT_ACCESS_TOKEN,
+          AuthMockMappings.DEFAULT_TOKEN_TYPE,
+          AuthMockMappings.DEFAULT_REFRESH_TOKEN,
+          -1, // expire immediately
+          AuthMockMappings.DEFAULT_SCOPE,
+          AuthMockMappings.DEFAULT_JTI
+        )
       )
 
       val request = mockk<MutableHttpRequest<TadoAuthRequest>>()
       val chain = mockk<ClientFilterChain>()
-      val publisher = mockk<Publisher<HttpResponse<*>>>()
+      val response = mockk<HttpResponse<*>>()
 
-      every { chain.proceed(any()) } returns publisher
+      every { chain.proceed(any()) } returns {
+        it.onNext(response)
+      }
       every { request.bearerAuth(any()) } returns request
 
-      filter.doFilter(request, chain) shouldBeSameInstanceAs publisher
-      filter.doFilter(request, chain) shouldBeSameInstanceAs publisher
+      Flowable.fromPublisher(filter.doFilter(request, chain)).blockingFirst()
+      Flowable.fromPublisher(filter.doFilter(request, chain)).blockingFirst()
 
       verifySequence {
         authClient.token(TadoAuthLoginRequest(tadoConfiguration))
         request.bearerAuth(AuthMockMappings.DEFAULT_ACCESS_TOKEN)
         chain.proceed(request)
+
         authClient.token(TadoAuthRefreshRequest(tadoConfiguration, AuthMockMappings.DEFAULT_REFRESH_TOKEN))
         request.bearerAuth(AuthMockMappings.DEFAULT_ACCESS_TOKEN)
         chain.proceed(request)
-        // no checks on publisher
       }
     }
 
     "retries authentication with username / password when refresh token is rejected" {
       every {
         authClient.token(ofType<TadoAuthLoginRequest>())
-      } returns TadoAuthResponse(
-        AuthMockMappings.DEFAULT_ACCESS_TOKEN,
-        AuthMockMappings.DEFAULT_TOKEN_TYPE,
-        AuthMockMappings.DEFAULT_REFRESH_TOKEN,
-        -1, // expire immediately
-        AuthMockMappings.DEFAULT_SCOPE,
-        AuthMockMappings.DEFAULT_JTI
+      } returns Single.just(
+        TadoAuthResponse(
+          AuthMockMappings.DEFAULT_ACCESS_TOKEN,
+          AuthMockMappings.DEFAULT_TOKEN_TYPE,
+          AuthMockMappings.DEFAULT_REFRESH_TOKEN,
+          -1, // expire immediately
+          AuthMockMappings.DEFAULT_SCOPE,
+          AuthMockMappings.DEFAULT_JTI
+        )
       )
 
       every {
         authClient.token(ofType<TadoAuthRefreshRequest>())
-      } throws HttpClientResponseException("TestException", mockk(relaxed = true))
+      } returns Single.error(HttpClientResponseException("TestException", mockk(relaxed = true)))
 
       val request = mockk<MutableHttpRequest<TadoAuthRequest>>()
       val chain = mockk<ClientFilterChain>()
-      val publisher = mockk<Publisher<HttpResponse<*>>>()
+      val response = mockk<HttpResponse<*>>()
 
-      every { chain.proceed(any()) } returns publisher
+      every { chain.proceed(any()) } returns {
+        it.onNext(response)
+      }
       every { request.bearerAuth(any()) } returns request
 
-      filter.doFilter(request, chain) shouldBeSameInstanceAs publisher
-      filter.doFilter(request, chain) shouldBeSameInstanceAs publisher
+      Flowable.fromPublisher(filter.doFilter(request, chain)).blockingFirst()
+      Flowable.fromPublisher(filter.doFilter(request, chain)).blockingFirst()
 
       verifySequence {
         authClient.token(TadoAuthLoginRequest(tadoConfiguration))
         request.bearerAuth(AuthMockMappings.DEFAULT_ACCESS_TOKEN)
         chain.proceed(request)
+
         authClient.token(TadoAuthRefreshRequest(tadoConfiguration, AuthMockMappings.DEFAULT_REFRESH_TOKEN))
         authClient.token(TadoAuthLoginRequest(tadoConfiguration))
         request.bearerAuth(AuthMockMappings.DEFAULT_ACCESS_TOKEN)
         chain.proceed(request)
-        // no checks on publisher, mockException
       }
     }
 
-    "rethrows HttpClientResponseException" {
+    "passes on HttpClientResponseException" {
       every {
         authClient.token(any())
-      } throws HttpClientResponseException("TestException", mockk(relaxed = true))
+      } returns Single.error(HttpClientResponseException("TestException", mockk(relaxed = true)))
 
       val request = mockk<MutableHttpRequest<TadoAuthRequest>>()
       val chain = mockk<ClientFilterChain>()
-      val publisher = mockk<Publisher<HttpResponse<*>>>()
+      val response = mockk<HttpResponse<*>>()
 
-      every { chain.proceed(any()) } returns publisher
       every { request.bearerAuth(any()) } returns request
+      every { chain.proceed(any()) } returns {
+        it.onNext(response)
+      }
 
       shouldThrow<HttpClientResponseException> {
-        filter.doFilter(request, chain)
+        Flowable.fromPublisher(filter.doFilter(request, chain)).blockingFirst()
       }
 
       verifySequence {
         authClient.token(TadoAuthLoginRequest(tadoConfiguration))
         request wasNot called
         chain wasNot called
-        // no checks on publisher
       }
     }
   }
 
   override fun beforeTest(testCase: TestCase) {
     authClient = mockk()
+    authClientProvider = Provider { authClient }
     filter = TadoAuthFilter(
-      authClient,
+      authClientProvider,
       tadoConfiguration
     )
   }

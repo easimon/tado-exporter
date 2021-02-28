@@ -57,21 +57,24 @@ class TadoMeterFactory(
       SOLAR_INTENSITY_PERCENTAGE,
       "Current solar intensity at the home's location.",
       homeTags,
-      home) { h ->
+      home
+    ) { h ->
       tadoApiClient.weather(h.id).solarIntensity.percentage
     }
     registerGauge(
       TEMPERATURE_OUTSIDE_CELSIUS,
       "Current outside temperature at the home's location, in degrees celsius.",
       homeTags,
-      home) { h ->
+      home
+    ) { h ->
       tadoApiClient.weather(h.id).outsideTemperature.celsius
     }
     registerGauge(
       TEMPERATURE_OUTSIDE_FAHRENHEIT,
       "Current outside temperature at the home's location, in degrees fahrenheit.",
       homeTags,
-      home) { h ->
+      home
+    ) { h ->
       tadoApiClient.weather(h.id).outsideTemperature.fahrenheit
     }
     return home
@@ -103,28 +106,33 @@ class TadoMeterFactory(
       TEMPERATURE_MEASURED_CELSIUS,
       "The currently measured temperature in degrees celsius.",
       zoneTags,
-      zone) { z ->
+      zone
+    ) { z ->
       tadoApiClient.zoneState(home.id, z.id).sensorDataPoints.insideTemperature.celsius
     }
-    registerGauge("" +
-      TEMPERATURE_MEASURED_FAHRENHEIT,
+    registerGauge(
+      "" +
+        TEMPERATURE_MEASURED_FAHRENHEIT,
       "The currently measured temperature in degrees fahrenheit.",
       zoneTags,
-      zone) { z ->
+      zone
+    ) { z ->
       tadoApiClient.zoneState(home.id, z.id).sensorDataPoints.insideTemperature.fahrenheit
     }
     registerGauge(
       HUMIDITY_MEASURED_PERCENTAGE,
       "The currently measured humidity in percent.",
       zoneTags,
-      zone) { z ->
+      zone
+    ) { z ->
       tadoApiClient.zoneState(home.id, z.id).sensorDataPoints.humidity.percentage
     }
     registerBooleanGauge(
       IS_WINDOW_OPEN,
       "Window open detection, 1 if window is open, 0 otherwise.",
       zoneTags,
-      zone) { z ->
+      zone
+    ) { z ->
       tadoApiClient.zoneState(home.id, z.id).isOpenWindowDetected == true
     }
   }
@@ -136,28 +144,32 @@ class TadoMeterFactory(
       HEATING_POWER_PERCENTAGE,
       "Heating power percentage.",
       zoneTags,
-      zone) { z ->
+      zone
+    ) { z ->
       tadoApiClient.zoneState(home.id, z.id).activityDataPoints.heatingPower.percentage
     }
     registerGauge(
       TEMPERATURE_SET_CELSIUS,
       "The current target temperature in degrees celsius.",
       zoneTags,
-      zone) { z ->
+      zone
+    ) { z ->
       (tadoApiClient.zoneState(home.id, z.id).setting as HeatingZoneSetting).temperature?.celsius
     }
     registerGauge(
       TEMPERATURE_SET_FAHRENHEIT,
       "The current target temperature in degrees fahrenheit.",
       zoneTags,
-      zone) { z ->
+      zone
+    ) { z ->
       (tadoApiClient.zoneState(home.id, z.id).setting as HeatingZoneSetting).temperature?.fahrenheit
     }
     registerBooleanGauge(
       IS_ZONE_POWERED,
       "Zone power state. 1 if powered, 0 otherwise",
       zoneTags,
-      zone) { z ->
+      zone
+    ) { z ->
       (tadoApiClient.zoneState(home.id, z.id).setting as HeatingZoneSetting).power == Power.ON
     }
   }
@@ -170,21 +182,24 @@ class TadoMeterFactory(
       TEMPERATURE_SET_CELSIUS,
       "The current target temperature in degrees celsius.",
       zoneTags,
-      zone) { z ->
+      zone
+    ) { z ->
       (tadoApiClient.zoneState(home.id, z.id).setting as CoolingZoneSetting).temperature?.celsius
     }
     registerGauge(
       TEMPERATURE_SET_FAHRENHEIT,
       "The current target temperature in degrees fahrenheit.",
       zoneTags,
-      zone) { z ->
+      zone
+    ) { z ->
       (tadoApiClient.zoneState(home.id, z.id).setting as CoolingZoneSetting).temperature?.fahrenheit
     }
     registerBooleanGauge(
       IS_ZONE_POWERED,
       "Zone power state. 1 if powered, 0 otherwise",
       zoneTags,
-      zone) { z ->
+      zone
+    ) { z ->
       (tadoApiClient.zoneState(home.id, z.id).setting as CoolingZoneSetting).power == Power.ON
     }
   }
@@ -195,7 +210,8 @@ class TadoMeterFactory(
       IS_ZONE_POWERED,
       "Zone power state. 1 if powered, 0 otherwise",
       zoneTags,
-      zone) { z ->
+      zone
+    ) { z ->
       (tadoApiClient.zoneState(home.id, z.id).setting as HotWaterZoneSetting).power == Power.ON
     }
   }

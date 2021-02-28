@@ -9,7 +9,7 @@
     <groupId>click.dobel.tado</groupId>
     <artifactId>tado-exporter-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <relativePath>../</relativePath>
+    <relativePath>../pom.xml</relativePath>
   </parent>
 
   <artifactId>tado-exporter</artifactId>
@@ -48,8 +48,12 @@
       <artifactId>micronaut-http-client</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.micronaut.configuration</groupId>
+      <groupId>io.micronaut.micrometer</groupId>
       <artifactId>micronaut-micrometer-registry-prometheus</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.micronaut.cache</groupId>
+      <artifactId>micronaut-cache-caffeine</artifactId>
     </dependency>
     <dependency>
       <groupId>io.micronaut</groupId>
@@ -83,7 +87,12 @@
 
     <dependency>
       <groupId>io.micronaut.test</groupId>
-      <artifactId>micronaut-test-kotlintest</artifactId>
+      <artifactId>micronaut-test-kotest</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.kotest</groupId>
+      <artifactId>kotest-runner-junit5-jvm</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

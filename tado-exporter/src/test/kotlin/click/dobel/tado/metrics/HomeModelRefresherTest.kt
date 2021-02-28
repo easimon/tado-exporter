@@ -2,7 +2,7 @@ package click.dobel.tado.metrics
 
 import click.dobel.tado.api.UserHomes
 import click.dobel.tado.client.TadoApiClient
-import io.kotlintest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk

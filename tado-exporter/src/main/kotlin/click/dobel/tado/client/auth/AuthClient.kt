@@ -6,6 +6,7 @@ import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.Body
 import io.micronaut.http.annotation.Post
 import io.micronaut.http.client.annotation.Client
+import io.reactivex.Single
 
 @Client(AuthClient.SERVICE_ID)
 interface AuthClient {
@@ -16,5 +17,5 @@ interface AuthClient {
   }
 
   @Post(TOKEN_PATH, produces = [MediaType.APPLICATION_FORM_URLENCODED])
-  fun token(@Body auth: TadoAuthRequest): TadoAuthResponse
+  fun token(@Body auth: TadoAuthRequest): Single<TadoAuthResponse>
 }

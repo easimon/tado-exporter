@@ -8,15 +8,15 @@ import click.dobel.tado.test.AuthMockMappings
 import click.dobel.tado.test.WireMockSupport
 import click.dobel.tado.test.withFormParam
 import com.github.tomakehurst.wiremock.client.WireMock.*
-import io.kotlintest.TestCase
-import io.kotlintest.TestResult
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldThrow
-import io.kotlintest.specs.StringSpec
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
+import io.kotest.matchers.shouldBe
 import io.micronaut.http.HttpHeaders
 import io.micronaut.http.MediaType
 import io.micronaut.http.client.exceptions.HttpClientResponseException
-import io.micronaut.test.annotation.MicronautTest
+import io.micronaut.test.extensions.kotest.annotation.MicronautTest
 
 @MicronautTest
 internal class AuthClientIntegrationTest(
@@ -26,7 +26,7 @@ internal class AuthClientIntegrationTest(
 ) : StringSpec({
 
   "authenticates correctly" {
-    val result = authClient.token(TadoAuthLoginRequest(configuration))
+    val result = authClient.token(TadoAuthLoginRequest(configuration)).blockingGet()
 
     result.accessToken shouldBe AuthMockMappings.DEFAULT_ACCESS_TOKEN
     result.tokenType shouldBe AuthMockMappings.DEFAULT_TOKEN_TYPE
@@ -56,9 +56,9 @@ internal class AuthClientIntegrationTest(
     mock.authServer.stubFor(AuthMockMappings.failedRefreshAuthMapping())
 
     shouldThrow<HttpClientResponseException> {
-      authClient.token(
-        TadoAuthRefreshRequest(configuration, REFRESH_TOKEN)
-      )
+      authClient
+        .token(TadoAuthRefreshRequest(configuration, REFRESH_TOKEN))
+        .blockingGet()
     }
 
     mock.authServer.verify(

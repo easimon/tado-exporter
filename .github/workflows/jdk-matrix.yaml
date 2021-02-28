@@ -40,22 +40,17 @@ jobs:
     strategy:
       matrix:
         testimage:
-          - adoptopenjdk/openjdk8:alpine
-          #          - adoptopenjdk/openjdk9:alpine
-          #          - adoptopenjdk/openjdk10:alpine
           - adoptopenjdk/openjdk11:alpine
-          - adoptopenjdk/openjdk12:alpine
-          - adoptopenjdk:8-hotspot
           - adoptopenjdk:11-hotspot
           - adoptopenjdk:12-hotspot
           - adoptopenjdk:13-hotspot
           - adoptopenjdk:14-hotspot
-          - adoptopenjdk:8-openj9
+          - adoptopenjdk:15-hotspot
           - adoptopenjdk:11-openj9
           #          - adoptopenjdk:12-openj9
           #          - adoptopenjdk:13-openj9
           #          - adoptopenjdk:14-openj9
-          - amazoncorretto:8
+          #          - adoptopenjdk:15-openj9
           - amazoncorretto:11
       fail-fast: false
     steps:

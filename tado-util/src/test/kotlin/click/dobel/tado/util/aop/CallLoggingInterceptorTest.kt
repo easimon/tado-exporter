@@ -1,10 +1,10 @@
 package click.dobel.tado.util.aop
 
 import click.dobel.tado.util.aop.CallLoggingInterceptor.Companion.unmatched
-import io.kotlintest.matchers.numerics.shouldBeGreaterThan
-import io.kotlintest.matchers.numerics.shouldBeLessThan
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.ints.shouldBeGreaterThan
+import io.kotest.matchers.ints.shouldBeLessThan
+import io.kotest.matchers.shouldBe
 import io.micronaut.aop.InterceptPhase
 import io.micronaut.aop.MethodInvocationContext
 import io.mockk.every

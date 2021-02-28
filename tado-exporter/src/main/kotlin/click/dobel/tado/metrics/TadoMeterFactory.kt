@@ -133,7 +133,8 @@ class TadoMeterFactory(
       zoneTags,
       zone
     ) { z ->
-      tadoApiClient.zoneState(home.id, z.id).isOpenWindowDetected == true
+      val state = tadoApiClient.zoneState(home.id, z.id)
+      state.isOpenWindowDetected == true || state.openWindow != null
     }
   }
 

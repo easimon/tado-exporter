@@ -16,19 +16,49 @@ Since the python exporter failed to scrape the API quite often, and I wanted to 
 
 ## Building
 
-Either install a JDK (tested with OpenJDK 8) and run `./mvnw package` to create an executable JAR only
-(to be found in tado-exporter/target then), or install Docker and use
-`docker build . -t tado-exporter:latest` to create a Docker image.
+- Check out this repository with `git clone https://github.com/easimon/tado-exporter.git`.
+- Change to the checkout folder with `cd tado-exporter`.
 
-## Usage
+You can either build the JAR only, or a Docker image containing the application.
 
-Configure username and password as environment variables (`TADO_USERNAME` and `TADO_PASSWORD`, respectively), and start
-the exporter. The server then listens on port 8080 (plain HTTP), prometheus metrics are available
-at `http://host:8080/prometheus`.
+### Executable JAR
+
+- Install a JDK (tested with OpenJDK 11).
+- Run `./mvnw package` to create an executable JAR (to be found in `tado-exporter/target` then).
+
+### Docker Image
+
+- Install Docker.
+- Run `docker build . -t docker.pkg.github.com/easimon/tado-exporter/tado-exporter:latest` to create the Docker image.
+
+## Running
+
+Choose one of the options below to run the exporter. The server then listens on port 8080 (plain HTTP), prometheus
+metrics are available at `http://host:8080/prometheus`.
+
+### Executable JAR
+
+Build the application as described above, and then run the following command:
+
+```bash
+$ TADO_USERNAME=your_username TADO_PASSWORD=your_password java -jar tado-exporter/target/tado-exporter-1.0-SNAPSHOT.jar
+```
+
+### Docker Container
+
+Either build the application as described above, or download the Docker image. At the time of writing this, the GitHub
+container registry does not allow for anonymous downloads, so you need to log in with your GitHub credentials first.
+
+```bash
+$ docker login docker.pkg.github.com # Log in with your GitHub username and password
+
+$ export TADO_EXPORTER_IMAGE=docker.pkg.github.com/easimon/tado-exporter/tado-exporter:latest # or any tagged version
+$ docker run -e TADO_USERNAME=your_username -e TADO_PASSWORD=your_password $TADO_EXPORTER_IMAGE
+```
 
 ### Configuration
 
-The minimal required configuration is a valid Tado° userame and password. For complete list of configurable items and
+The minimal required configuration is a valid Tado° username and password. For complete list of configurable items and
 their defaults, see the
 [application.yml](./tado-exporter/src/main/resources/application.yml)
 

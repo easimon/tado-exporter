@@ -12,28 +12,29 @@
 
   <properties>
     <kotlin.version>1.4.31</kotlin.version>
-    <jdk.version>1.8</jdk.version>
+    <jdk.version>11</jdk.version>
 
-    <micronaut.version>2.3.3</micronaut.version>
-    <micronaut-test.version>2.3.2</micronaut-test.version>
+    <micronaut.version>2.4.0</micronaut.version>
+    <micronaut-test.version>2.4.0</micronaut-test.version>
 
-    <mockk.version>1.10.6</mockk.version>
+    <mockk.version>1.11.0</mockk.version>
     <wiremock.version>2.27.2</wiremock.version>
 
     <maven.compiler.target>${jdk.version}</maven.compiler.target>
     <maven.compiler.source>${jdk.version}</maven.compiler.source>
+    <maven.compiler.release>${jdk.version}</maven.compiler.release>
     <kotlin.compiler.jvmTarget>${jdk.version}</kotlin.compiler.jvmTarget>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-    <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
+    <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
     <maven-dependency-plugin.version>3.1.1</maven-dependency-plugin.version>
     <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
     <maven-failsafe-plugin.version>2.22.2</maven-failsafe-plugin.version>
     <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
     <maven-shade-plugin.version>3.1.0</maven-shade-plugin.version>
     <exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
-    <go-offline-maven-plugin.version>1.2.5</go-offline-maven-plugin.version>
+    <go-offline-maven-plugin.version>1.2.8</go-offline-maven-plugin.version>
 
     <swagger-codegen-maven-plugin.version>2.4.13</swagger-codegen-maven-plugin.version>
     <swagger-annotations.version>1.6.0</swagger-annotations.version>
@@ -270,6 +271,7 @@
             <proc>none</proc>
             <source>${jdk.version}</source>
             <target>${jdk.version}</target>
+            <release>${jdk.version}</release>
           </configuration>
 
           <executions>
@@ -304,6 +306,12 @@
           <version>${go-offline-maven-plugin.version}</version>
           <configuration>
             <dynamicDependencies>
+              <DynamicDependency>
+                <groupId>org.apache.maven.surefire</groupId>
+                <artifactId>surefire-junit-platform</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+                <repositoryType>PLUGIN</repositoryType>
+              </DynamicDependency>
               <DynamicDependency>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-annotation-processing-maven</artifactId>

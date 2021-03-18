@@ -46,12 +46,9 @@ $ TADO_USERNAME=your_username TADO_PASSWORD=your_password java -jar tado-exporte
 
 ### Docker Container
 
-Either build the application as described above, or download the Docker image. At the time of writing this, the GitHub
-container registry does not allow for anonymous downloads, so you need to log in with your GitHub credentials first.
+Either build the application as described above, or download the Docker image.
 
 ```bash
-$ docker login docker.pkg.github.com # Log in with your GitHub username and password
-
 $ export TADO_EXPORTER_IMAGE=ghcr.io/easimon/tado-exporter:latest # or any tagged version
 $ docker run -e TADO_USERNAME=your_username -e TADO_PASSWORD=your_password $TADO_EXPORTER_IMAGE
 ```

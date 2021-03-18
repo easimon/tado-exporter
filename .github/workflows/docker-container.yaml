@@ -2,8 +2,8 @@ name: Docker container build
 on: push
 
 env:
-  DOCKER_REGISTRY: docker.pkg.github.com
-  DOCKER_NAME: docker.pkg.github.com/${{ github.repository }}/tado-exporter
+  DOCKER_REGISTRY: ghcr.io
+  DOCKER_NAME: ghcr.io/${{ github.repository_owner }}/tado-exporter
 
 jobs:
   build:

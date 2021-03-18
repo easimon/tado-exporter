@@ -5,8 +5,8 @@ on:
       - master
 
 env:
-  DOCKER_REGISTRY: docker.pkg.github.com
-  DOCKER_NAME: docker.pkg.github.com/${{ github.repository }}/tado-exporter
+  DOCKER_REGISTRY: ghcr.io
+  DOCKER_NAME: ghcr.io/${{ github.repository }}
 
 jobs:
   build:
@@ -26,7 +26,6 @@ jobs:
           docker pull ${DOCKER_NAME}-jdk-matrix-builder:latest || echo "No previous test matrix builder image found"
           docker build \
             --cache-from=${DOCKER_NAME}-jdk-matrix-builder:latest \
-            --cache-from=${DOCKER_NAME}-builder:latest \
             --target builder \
             -t ${DOCKER_NAME}-jdk-matrix-builder:latest \
             .

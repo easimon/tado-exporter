@@ -40,4 +40,4 @@ COPY --from=builder /build/tado-exporter/target/tado-exporter-*.jar tado-exporte
 ENV JAVA_OPTS -Xmx64m -Xms64m
 EXPOSE 8080
 USER 65535:65535
-CMD java ${JAVA_OPTS} -jar tado-exporter.jar
+CMD exec java ${JAVA_OPTS} -jar tado-exporter.jar

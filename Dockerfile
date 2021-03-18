@@ -15,13 +15,13 @@ COPY tado-exporter/pom.xml /build/tado-exporter/pom.xml
 RUN ./mvnw -B de.qaware.maven:go-offline-maven-plugin:resolve-dependencies
 
 COPY tado-api/src /build/tado-api/src
-RUN ./mvnw -B -pl tado-api -am install
+RUN ./mvnw -DskipTests -B -pl tado-api -am install
 
 COPY tado-util/src /build/tado-util/src
-RUN ./mvnw -B -pl tado-util -am install
+RUN ./mvnw -DskipTests -B -pl tado-util -am install
 
 COPY tado-exporter/src /build/tado-exporter/src
-RUN ./mvnw -B package
+RUN ./mvnw -DskipTests -B package
 
 # Integration tests
 FROM $TEST_IMAGE as test
@@ -31,7 +31,7 @@ WORKDIR /build
 COPY --from=builder /root/.m2/repository /root/.m2/repository
 COPY --from=builder /build /build
 
-RUN ./mvnw -B surefire:test failsafe:integration-test failsafe:verify
+RUN ./mvnw -B verify
 
 # Build runtime image
 FROM $RUNTIME_IMAGE

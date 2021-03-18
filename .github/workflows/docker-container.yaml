@@ -2,13 +2,15 @@ name: Docker container build
 on: push
 
 env:
-  DOCKER_REGISTRY: docker.pkg.github.com
-  DOCKER_NAME: docker.pkg.github.com/${{ github.repository }}/tado-exporter
+  DOCKER_REGISTRY: ghcr.io
+  DOCKER_NAME: ghcr.io/${{ github.repository }}
+  # Failing builds (QEMU failure?): linux/ppc64le,linux/s390x
+  PLATFORMS: linux/amd64,linux/arm/v7,linux/arm64/v8
 
 jobs:
   build:
     name: Build and publish Docker container
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - name: Check out repository
         uses: actions/checkout@master
@@ -39,46 +41,45 @@ jobs:
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ${DOCKER_REGISTRY} -u ${{ github.actor }} --password-stdin
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+        with:
+          platforms: all
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+        with:
+          install: true
+
       - name: Build the Docker builder image
         run: |
-          docker pull ${DOCKER_NAME}-builder:latest || echo "No previous 'latest' builder image found"
-          docker pull ${DOCKER_NAME}-builder:${DOCKER_TAG} || echo "No previous '${DOCKER_TAG}' builder image found"
-          docker build \
-            --cache-from=${DOCKER_NAME}-builder:latest \
-            --cache-from=${DOCKER_NAME}-builder:${DOCKER_TAG} \
+          docker buildx build \
+            --cache-from "type=registry,ref=${DOCKER_NAME}-builder:latest" \
+            --cache-from "type=registry,ref=${DOCKER_NAME}-builder:${DOCKER_TAG}" \
+            --cache-to   "type=registry,ref=${DOCKER_NAME}-builder:${DOCKER_TAG}" \
             --target builder \
-            -t ${DOCKER_NAME}-builder:${DOCKER_TAG} \
+            --platform ${PLATFORMS} \
             .
-          docker push ${DOCKER_NAME}-builder:${DOCKER_TAG}
 
-      - name: Build the Docker test image
+      - name: Build the Docker test image (default platform only)
         run: |
-          docker pull ${DOCKER_NAME}-builder:${DOCKER_TAG} || echo "No builder image found"
-          docker pull ${DOCKER_NAME}-test:latest || echo "No previous 'latest' test image found"
-          docker pull ${DOCKER_NAME}-test:${DOCKER_TAG} || echo "No previous '${DOCKER_TAG}' test image found"
-          docker build \
-            --cache-from=${DOCKER_NAME}-builder:${DOCKER_TAG} \
-            --cache-from=${DOCKER_NAME}-test:latest \
-            --cache-from=${DOCKER_NAME}-test:${DOCKER_TAG} \
+          docker buildx build \
+            --cache-from "type=registry,ref=${DOCKER_NAME}-builder:latest" \
+            --cache-from "type=registry,ref=${DOCKER_NAME}-builder:${DOCKER_TAG}" \
+            --cache-from "type=registry,ref=${DOCKER_NAME}-test:latest" \
+            --cache-from "type=registry,ref=${DOCKER_NAME}-test:${DOCKER_TAG}" \
+            --cache-to   "type=registry,ref=${DOCKER_NAME}-test:${DOCKER_TAG}" \
             --target test \
-            -t ${DOCKER_NAME}-test:${DOCKER_TAG} \
             .
-          docker push ${DOCKER_NAME}-test:${DOCKER_TAG}
 
       - name: Build the Docker image
         run: |
-          docker pull ${DOCKER_NAME}-builder:${DOCKER_TAG} || echo "No builder image found"
-          docker pull ${DOCKER_NAME}-test:${DOCKER_TAG} || echo "No test image found"
-          docker pull ${DOCKER_NAME}:latest || echo "No previous 'latest' image found"
-          docker pull ${DOCKER_NAME}:${DOCKER_TAG} || echo "No previous '${DOCKER_TAG}' image found"
-          docker build \
-            --cache-from=${DOCKER_NAME}-builder:${DOCKER_TAG} \
-            --cache-from=${DOCKER_NAME}-test:${DOCKER_TAG} \
-            --cache-from=${DOCKER_NAME}:latest \
-            --cache-from=${DOCKER_NAME}:${DOCKER_TAG} \
-            -t ${DOCKER_NAME}:${DOCKER_TAG} \
+          docker buildx build \
+            --cache-from "type=registry,ref=${DOCKER_NAME}-builder:latest" \
+            --cache-from "type=registry,ref=${DOCKER_NAME}-builder:${DOCKER_TAG}" \
+            --cache-from "type=registry,ref=${DOCKER_NAME}:latest" \
+            --cache-from "type=registry,ref=${DOCKER_NAME}:${DOCKER_TAG}" \
+            --tag ${DOCKER_NAME}:${DOCKER_TAG} \
+            --platform ${PLATFORMS} \
+            --push \
             .
-
-      - name: Push the Docker image
-        run: |
-          docker push ${DOCKER_NAME}:${DOCKER_TAG}

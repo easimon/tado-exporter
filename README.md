@@ -29,7 +29,7 @@ You can either build the JAR only, or a Docker image containing the application.
 ### Docker Image
 
 - Install Docker.
-- Run `docker build . -t docker.pkg.github.com/easimon/tado-exporter/tado-exporter:latest` to create the Docker image.
+- Run `docker build . -t ghcr.io/easimon/tado-exporter:latest` to create the Docker image.
 
 ## Running
 
@@ -52,7 +52,7 @@ container registry does not allow for anonymous downloads, so you need to log in
 ```bash
 $ docker login docker.pkg.github.com # Log in with your GitHub username and password
 
-$ export TADO_EXPORTER_IMAGE=docker.pkg.github.com/easimon/tado-exporter/tado-exporter:latest # or any tagged version
+$ export TADO_EXPORTER_IMAGE=ghcr.io/easimon/tado-exporter:latest # or any tagged version
 $ docker run -e TADO_USERNAME=your_username -e TADO_PASSWORD=your_password $TADO_EXPORTER_IMAGE
 ```
 

@@ -16,6 +16,7 @@
 
     <micronaut.version>2.4.0</micronaut.version>
     <micronaut-test.version>2.4.0</micronaut-test.version>
+    <logstash-encoder.version>6.6</logstash-encoder.version>
 
     <mockk.version>1.11.0</mockk.version>
     <wiremock.version>2.27.2</wiremock.version>
@@ -80,6 +81,12 @@
         <version>${micronaut.version}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>net.logstash.logback</groupId>
+        <artifactId>logstash-logback-encoder</artifactId>
+        <version>${logstash-encoder.version}</version>
       </dependency>
 
       <dependency>

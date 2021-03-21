@@ -15,7 +15,7 @@
   <artifactId>tado-exporter</artifactId>
 
   <properties>
-    <exec.mainClass>click.dobel.tado.exporter.Application</exec.mainClass>
+    <exec.mainClass>click.dobel.tado.exporter.ApplicationKt</exec.mainClass>
   </properties>
 
   <repositories>

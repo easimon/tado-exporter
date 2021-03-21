@@ -2,9 +2,6 @@ micronaut:
   application:
     name: tadoexporter
 
-  server:
-    thread-selection: auto
-
   metrics:
     enabled: true
 
@@ -31,8 +28,10 @@ micronaut:
   caches:
     tado-zonestate:
       expire-after-write: ${tado.api-cache-interval}
+      record-stats: true
     tado-weather:
       expire-after-write: ${tado.api-cache-interval}
+      record-stats: true
 
   http:
     services:

@@ -9,7 +9,10 @@ import click.dobel.tado.util.aop.Logged
 import io.micronaut.cache.annotation.Cacheable
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.client.annotation.Client
+import io.micronaut.scheduling.TaskExecutors
+import io.micronaut.scheduling.annotation.ExecuteOn
 
+@ExecuteOn(TaskExecutors.IO)
 @Client(TadoApiClient.SERVICE_ID, path = TadoApiClient.BASE_URL)
 interface TadoApiClient {
 

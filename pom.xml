@@ -33,8 +33,7 @@
     <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
     <maven-failsafe-plugin.version>2.22.2</maven-failsafe-plugin.version>
     <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
-    <maven-shade-plugin.version>3.1.0</maven-shade-plugin.version>
-    <exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
+    <maven-micronaut-plugin.version>1.1.7</maven-micronaut-plugin.version>
     <go-offline-maven-plugin.version>1.2.8</go-offline-maven-plugin.version>
 
     <swagger-codegen-maven-plugin.version>2.4.13</swagger-codegen-maven-plugin.version>
@@ -125,15 +124,9 @@
     <pluginManagement>
       <plugins>
         <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-shade-plugin</artifactId>
-          <version>${maven-shade-plugin.version}</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>exec-maven-plugin</artifactId>
-          <version>${exec-maven-plugin.version}</version>
+          <groupId>io.micronaut.build</groupId>
+          <artifactId>micronaut-maven-plugin</artifactId>
+          <version>${maven-micronaut-plugin.version}</version>
         </plugin>
 
         <plugin>
@@ -180,6 +173,7 @@
           <version>${kotlin.version}</version>
 
           <configuration>
+            <jvmTarget>${jdk.version}</jvmTarget>
             <compilerPlugins>
               <plugin>all-open</plugin>
             </compilerPlugins>
@@ -198,7 +192,7 @@
                 <sourceDirs>
                   <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
                 </sourceDirs>
-                <annotationProcessorPaths>
+                <annotationProcessorPaths combine.children="append">
                   <annotationProcessorPath>
                     <groupId>io.micronaut</groupId>
                     <artifactId>micronaut-inject-java</artifactId>

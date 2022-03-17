@@ -7,7 +7,7 @@ import click.dobel.tado.api.Power
 import click.dobel.tado.api.TadoSystemType
 import click.dobel.tado.api.UserHomes
 import click.dobel.tado.api.Zone
-import click.dobel.tado.client.TadoApiClient
+import click.dobel.tado.client.TadoSyncApiClient
 import click.dobel.tado.metrics.TadoMeterFactory.Companion.TAG_HOME_ID
 import click.dobel.tado.metrics.TadoMeterFactory.Companion.TAG_ZONE_ID
 import click.dobel.tado.metrics.TadoMeterFactory.Companion.TAG_ZONE_NAME
@@ -22,7 +22,7 @@ import jakarta.inject.Singleton
 @Singleton
 class TadoMeterFactory(
   private val meterRegistry: MeterRegistry,
-  private val tadoApiClient: TadoApiClient
+  private val tadoApiClient: TadoSyncApiClient
 ) {
   companion object {
     private val LOGGER = logger()

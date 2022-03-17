@@ -33,6 +33,9 @@ micronaut:
       expire-after-write: ${tado.api-cache-interval}
       record-stats: true
 
+  server:
+    thread-selection: IO
+
   http:
     services:
       tado-auth:

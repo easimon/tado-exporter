@@ -10,7 +10,6 @@ import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
 import reactor.core.publisher.Mono
 
-@ExecuteOn(TaskExecutors.IO)
 @Client(AuthClient.SERVICE_ID)
 interface AuthClient {
 

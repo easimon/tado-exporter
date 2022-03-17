@@ -6,9 +6,9 @@ import click.dobel.tado.api.WeatherReport
 import click.dobel.tado.api.Zone
 import click.dobel.tado.api.ZoneState
 import click.dobel.tado.util.aop.Logged
-import io.micronaut.cache.annotation.Cacheable
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.client.annotation.Client
+import reactor.core.publisher.Mono
 
 @Client(TadoApiClient.SERVICE_ID, path = TadoApiClient.BASE_URL)
 interface TadoApiClient {
@@ -22,30 +22,22 @@ interface TadoApiClient {
     const val ZONES_PATH = "/zones"
     const val STATE_PATH = "/state"
     const val WEATHER_PATH = "/weather"
-
-    private const val CACHE_NAME_ZONESTATE = "tado-zonestate"
-    private const val CACHE_NAME_WEATHER = "tado-weather"
   }
 
   @Get(ME_PATH)
-  fun me(): User
+  fun me(): Mono<User>
 
   @Get("${HOMES_PATH}/{homeId}")
-  fun homes(homeId: Int): HomeInfo
+  fun homes(homeId: Int): Mono<HomeInfo>
 
   @Get("${HOMES_PATH}/{homeId}${ZONES_PATH}")
-  fun zones(homeId: Int): List<Zone>
+  fun zones(homeId: Int): Mono<List<Zone>>
 
-  /* calls to these methods are triggered by micrometer when refreshing all metered values.
-   * since one call contains the data for multiple gauges,
-   * cache it for "micrometer refresh interval minus a few secs" */
-  @Cacheable(cacheNames = [CACHE_NAME_ZONESTATE], atomic = true)
   @Logged("Retrieving fresh zone state for HomeId {}, ZoneId {}.", ["homeId", "zoneId"])
   @Get("${HOMES_PATH}/{homeId}${ZONES_PATH}/{zoneId}${STATE_PATH}")
-  fun zoneState(homeId: Int, zoneId: Int): ZoneState
+  fun zoneState(homeId: Int, zoneId: Int): Mono<ZoneState>
 
-  @Cacheable(cacheNames = [CACHE_NAME_WEATHER], atomic = true)
   @Logged("Retrieving fresh weather report for HomeId {}.", ["homeId"])
   @Get("${HOMES_PATH}/{homeId}/${WEATHER_PATH}")
-  fun weather(homeId: Int): WeatherReport
+  fun weather(homeId: Int): Mono<WeatherReport>
 }

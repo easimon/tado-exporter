@@ -15,8 +15,8 @@ import io.micronaut.http.MediaType
 import io.micronaut.test.extensions.kotest.annotation.MicronautTest
 
 @MicronautTest
-internal class TadoApiClientIntegrationTest(
-  private val tadoClient: TadoApiClient,
+internal class TadoSyncApiClientIntegrationTest(
+  private val tadoClient: TadoSyncApiClient,
   private val mock: WireMockSupport
 ) : StringSpec({
 

@@ -15,7 +15,7 @@
   <artifactId>tado-exporter</artifactId>
 
   <properties>
-    <exec.mainClass>click.dobel.tado.exporter.Application</exec.mainClass>
+    <exec.mainClass>click.dobel.tado.exporter.ApplicationKt</exec.mainClass>
   </properties>
 
   <repositories>
@@ -44,8 +44,8 @@
       <artifactId>micronaut-http-server-netty</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.micronaut</groupId>
-      <artifactId>micronaut-http-client</artifactId>
+      <groupId>io.micronaut.reactor</groupId>
+      <artifactId>micronaut-reactor-http-client</artifactId>
     </dependency>
     <dependency>
       <groupId>io.micronaut.micrometer</groupId>
@@ -58,6 +58,10 @@
     <dependency>
       <groupId>io.micronaut</groupId>
       <artifactId>micronaut-management</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.projectreactor.kotlin</groupId>
+      <artifactId>reactor-kotlin-extensions</artifactId>
     </dependency>
 
     <dependency>
@@ -82,6 +86,11 @@
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.logstash.logback</groupId>
+      <artifactId>logstash-logback-encoder</artifactId>
       <scope>runtime</scope>
     </dependency>
 
@@ -110,24 +119,8 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <transformers>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                  <mainClass>${exec.mainClass}</mainClass>
-                </transformer>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
-              </transformers>
-            </configuration>
-          </execution>
-        </executions>
+        <groupId>io.micronaut.build</groupId>
+        <artifactId>micronaut-maven-plugin</artifactId>
       </plugin>
 
       <plugin>
@@ -139,7 +132,6 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
       </plugin>
-
     </plugins>
   </build>
 </project>

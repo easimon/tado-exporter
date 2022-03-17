@@ -5,19 +5,25 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
+  <parent>
+    <groupId>io.micronaut</groupId>
+    <artifactId>micronaut-parent</artifactId>
+    <version>3.3.4</version>
+  </parent>
+
   <groupId>click.dobel.tado</groupId>
   <artifactId>tado-exporter-parent</artifactId>
   <version>1.0-SNAPSHOT</version><!-- unused, published as Docker container only -->
   <packaging>pom</packaging>
 
   <properties>
-    <kotlin.version>1.4.31</kotlin.version>
+    <kotlin.version>1.6.10</kotlin.version>
     <jdk.version>11</jdk.version>
 
-    <micronaut.version>2.4.0</micronaut.version>
-    <micronaut-test.version>2.4.0</micronaut-test.version>
+    <logstash-encoder.version>6.6</logstash-encoder.version>
+    <projectreactor.kotlin.version>1.1.6</projectreactor.kotlin.version>
 
-    <mockk.version>1.11.0</mockk.version>
+    <mockk.version>1.12.3</mockk.version>
     <wiremock.version>2.27.2</wiremock.version>
 
     <maven.compiler.target>${jdk.version}</maven.compiler.target>
@@ -32,8 +38,6 @@
     <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
     <maven-failsafe-plugin.version>2.22.2</maven-failsafe-plugin.version>
     <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
-    <maven-shade-plugin.version>3.1.0</maven-shade-plugin.version>
-    <exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
     <go-offline-maven-plugin.version>1.2.8</go-offline-maven-plugin.version>
 
     <swagger-codegen-maven-plugin.version>2.4.13</swagger-codegen-maven-plugin.version>
@@ -75,11 +79,9 @@
       </dependency>
 
       <dependency>
-        <groupId>io.micronaut</groupId>
-        <artifactId>micronaut-bom</artifactId>
-        <version>${micronaut.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
+        <groupId>net.logstash.logback</groupId>
+        <artifactId>logstash-logback-encoder</artifactId>
+        <version>${logstash-encoder.version}</version>
       </dependency>
 
       <dependency>
@@ -99,6 +101,13 @@
         <artifactId>wiremock</artifactId>
         <version>${wiremock.version}</version>
       </dependency>
+
+      <dependency>
+        <groupId>io.projectreactor.kotlin</groupId>
+        <artifactId>reactor-kotlin-extensions</artifactId>
+        <version>${projectreactor.kotlin.version}</version>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
 
@@ -118,15 +127,8 @@
     <pluginManagement>
       <plugins>
         <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-shade-plugin</artifactId>
-          <version>${maven-shade-plugin.version}</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>exec-maven-plugin</artifactId>
-          <version>${exec-maven-plugin.version}</version>
+          <groupId>io.micronaut.build</groupId>
+          <artifactId>micronaut-maven-plugin</artifactId>
         </plugin>
 
         <plugin>
@@ -173,6 +175,7 @@
           <version>${kotlin.version}</version>
 
           <configuration>
+            <jvmTarget>${jdk.version}</jvmTarget>
             <compilerPlugins>
               <plugin>all-open</plugin>
             </compilerPlugins>
@@ -191,7 +194,22 @@
                 <sourceDirs>
                   <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
                 </sourceDirs>
-                <annotationProcessorPaths>
+                <annotationProcessorPaths combine.self="override">
+                  <annotationProcessorPath>
+                    <groupId>io.micronaut</groupId>
+                    <artifactId>micronaut-graal</artifactId>
+                    <version>${micronaut.version}</version>
+                  </annotationProcessorPath>
+                  <annotationProcessorPath>
+                    <groupId>io.micronaut</groupId>
+                    <artifactId>micronaut-graal</artifactId>
+                    <version>${micronaut.version}</version>
+                  </annotationProcessorPath>
+                  <annotationProcessorPath>
+                    <groupId>io.micronaut</groupId>
+                    <artifactId>micronaut-http-validation</artifactId>
+                    <version>${micronaut.version}</version>
+                  </annotationProcessorPath>
                   <annotationProcessorPath>
                     <groupId>io.micronaut</groupId>
                     <artifactId>micronaut-inject-java</artifactId>
@@ -203,6 +221,10 @@
                     <version>${micronaut.version}</version>
                   </annotationProcessorPath>
                 </annotationProcessorPaths>
+                <annotationProcessorArgs>
+                  <annotationProcessorArg>micronaut.processing.group=click.dobel.tado</annotationProcessorArg>
+                  <annotationProcessorArg>micronaut.processing.module=tadoExporter</annotationProcessorArg>
+                </annotationProcessorArgs>
               </configuration>
             </execution>
             <execution>

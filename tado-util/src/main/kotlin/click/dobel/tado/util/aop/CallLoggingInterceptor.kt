@@ -6,7 +6,7 @@ import click.dobel.tado.util.stringValues
 import io.micronaut.aop.InterceptPhase
 import io.micronaut.aop.MethodInterceptor
 import io.micronaut.aop.MethodInvocationContext
-import javax.inject.Singleton
+import jakarta.inject.Singleton
 
 @Singleton
 class CallLoggingInterceptor : MethodInterceptor<Any, Any> {
@@ -19,7 +19,7 @@ class CallLoggingInterceptor : MethodInterceptor<Any, Any> {
 
   override fun getOrder() = InterceptPhase.TRACE.position;
 
-  override fun intercept(context: MethodInvocationContext<Any, Any>): Any {
+  override fun intercept(context: MethodInvocationContext<Any, Any>): Any? {
     val message = context.stringValue(Logged::class, MEMBER_MESSAGE)
     val paramNames = context.stringValues(Logged::class, MEMBER_PARAMS)
     val params = paramValues(context, paramNames)

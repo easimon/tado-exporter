@@ -2,6 +2,7 @@ package click.dobel.tado.metrics
 
 import click.dobel.tado.api.UserHomes
 import click.dobel.tado.client.TadoApiClient
+import click.dobel.tado.client.TadoSyncApiClient
 import io.kotest.core.spec.style.StringSpec
 import io.mockk.every
 import io.mockk.just
@@ -14,7 +15,7 @@ internal class HomeModelRefresherTest : StringSpec({
 
   "refreshHomeModel adds all zone meters from empty state" {
     val factory = mockk<TadoMeterFactory>()
-    val client = mockk<TadoApiClient>()
+    val client = mockk<TadoSyncApiClient>()
     val modelRefresher = HomeModelRefresher(factory, client)
 
     every { client.me() } returns me
@@ -41,7 +42,7 @@ internal class HomeModelRefresherTest : StringSpec({
 
   "refreshHomeModel adds only zone meters to previously unknown zones" {
     val factory = mockk<TadoMeterFactory>()
-    val client = mockk<TadoApiClient>()
+    val client = mockk<TadoSyncApiClient>()
     val modelRefresher = HomeModelRefresher(factory, client)
 
     every { client.me() } returns me

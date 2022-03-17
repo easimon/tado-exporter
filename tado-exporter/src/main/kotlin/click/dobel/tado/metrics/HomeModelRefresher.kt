@@ -2,7 +2,7 @@ package click.dobel.tado.metrics
 
 import click.dobel.tado.client.TadoApiClient
 import click.dobel.tado.util.logger
-import javax.inject.Singleton
+import jakarta.inject.Singleton
 
 @Singleton
 class HomeModelRefresher(

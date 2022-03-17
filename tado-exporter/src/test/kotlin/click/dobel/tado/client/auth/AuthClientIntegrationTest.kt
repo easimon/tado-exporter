@@ -17,6 +17,8 @@ import io.micronaut.http.HttpHeaders
 import io.micronaut.http.MediaType
 import io.micronaut.http.client.exceptions.HttpClientResponseException
 import io.micronaut.test.extensions.kotest.annotation.MicronautTest
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @MicronautTest
 internal class AuthClientIntegrationTest(
@@ -26,7 +28,9 @@ internal class AuthClientIntegrationTest(
 ) : StringSpec({
 
   "authenticates correctly" {
-    val result = authClient.token(TadoAuthLoginRequest(configuration)).blockingGet()
+    val result = withContext(Dispatchers.IO) {
+      authClient.token(TadoAuthLoginRequest(configuration)).block()!!
+    }
 
     result.accessToken shouldBe AuthMockMappings.DEFAULT_ACCESS_TOKEN
     result.tokenType shouldBe AuthMockMappings.DEFAULT_TOKEN_TYPE
@@ -58,7 +62,7 @@ internal class AuthClientIntegrationTest(
     shouldThrow<HttpClientResponseException> {
       authClient
         .token(TadoAuthRefreshRequest(configuration, REFRESH_TOKEN))
-        .blockingGet()
+        .block()
     }
 
     mock.authServer.verify(

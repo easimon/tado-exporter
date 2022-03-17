@@ -2,7 +2,7 @@ package click.dobel.tado.metrics
 
 import io.micronaut.context.annotation.Requires
 import io.micronaut.scheduling.annotation.Scheduled
-import javax.inject.Singleton
+import jakarta.inject.Singleton
 
 @Singleton
 @Requires(notEnv = ["test"])

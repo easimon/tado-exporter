@@ -1,8 +1,10 @@
-ARG BUILD_IMAGE=adoptopenjdk:11-hotspot
-ARG TEST_IMAGE=adoptopenjdk:15-hotspot
-ARG RUNTIME_IMAGE=adoptopenjdk:15-jre-hotspot
+ARG BUILD_IMAGE=eclipse-temurin:11
+ARG TEST_IMAGE=eclipse-temurin:17
+ARG RUNTIME_IMAGE=eclipse-temurin:17-jre
+ARG MAVEN_OPTS="-Xmx2000m"
 
 FROM $BUILD_IMAGE as builder
+ARG MAVEN_OPTS
 
 WORKDIR /build
 
@@ -25,6 +27,7 @@ RUN ./mvnw -DskipTests -B package
 
 # Integration tests
 FROM $TEST_IMAGE as test
+ARG MAVEN_OPTS
 
 WORKDIR /build
 
@@ -37,7 +40,7 @@ RUN ./mvnw -B verify
 FROM $RUNTIME_IMAGE
 
 COPY --from=builder /build/tado-exporter/target/tado-exporter-*.jar tado-exporter.jar
-ENV JAVA_OPTS -Xmx64m -Xms64m
+ENV JAVA_OPTS="-Xmx64m -Xms64m"
 EXPOSE 8080
 USER 65535:65535
 CMD exec java ${JAVA_OPTS} -jar tado-exporter.jar

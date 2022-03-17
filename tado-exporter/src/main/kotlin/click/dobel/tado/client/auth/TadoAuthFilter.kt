@@ -12,10 +12,11 @@ import io.micronaut.http.annotation.Filter
 import io.micronaut.http.client.exceptions.HttpClientResponseException
 import io.micronaut.http.filter.ClientFilterChain
 import io.micronaut.http.filter.HttpClientFilter
-import io.reactivex.Single
+import jakarta.inject.Provider
 import org.reactivestreams.Publisher
+import reactor.core.publisher.Mono
 import java.util.concurrent.atomic.AtomicReference
-import javax.inject.Provider
+import reactor.kotlin.core.publisher.toMono
 
 @Filter(TadoApiClient.BASE_URL + "/**", serviceId = ["tado-api"])
 class TadoAuthFilter(
@@ -30,7 +31,9 @@ class TadoAuthFilter(
   private val lastAuthResponse = AtomicReference<TadoAuthResponse?>()
 
   override fun doFilter(request: MutableHttpRequest<*>, chain: ClientFilterChain): Publisher<out HttpResponse<*>> {
-    return getAccessToken().flatMapPublisher { token -> chain.proceed(request.bearerAuth(token)) }
+    return getAccessToken().flatMap {
+        token -> chain.proceed(request.bearerAuth(token)).toMono()
+    }
   }
 
   private fun updateLastAuthResponse(response: TadoAuthResponse): String {
@@ -38,7 +41,7 @@ class TadoAuthFilter(
     return response.accessToken
   }
 
-  private fun getAccessToken(): Single<String> {
+  private fun getAccessToken(): Mono<String> {
     val auth = lastAuthResponse.get()
 
     // TODO: how to synchronize parallel requests properly in Rx
@@ -49,11 +52,11 @@ class TadoAuthFilter(
       auth.isExpired() -> refreshAuth(auth.refreshToken)
         .map { updateLastAuthResponse(it) }
 
-      else -> Single.just(auth.accessToken)
+      else -> Mono.just(auth.accessToken)
     }
   }
 
-  private fun newAuth(): Single<TadoAuthResponse> {
+  private fun newAuth(): Mono<TadoAuthResponse> {
     LOGGER.info("Obtaining new bearer token for {}.", tadoConfiguration.username)
     return authClient.get()
       .token(TadoAuthLoginRequest(tadoConfiguration))
@@ -65,11 +68,11 @@ class TadoAuthFilter(
       }
   }
 
-  private fun refreshAuth(refreshToken: String): Single<TadoAuthResponse> {
+  private fun refreshAuth(refreshToken: String): Mono<TadoAuthResponse> {
     LOGGER.info("Refreshing bearer token.")
     return authClient.get()
       .token(TadoAuthRefreshRequest(tadoConfiguration, refreshToken))
-      .onErrorResumeNext { e ->
+      .onErrorResume { e ->
         LOGGER.warn("Refreshing bearer token failed.", e)
         newAuth()
       }

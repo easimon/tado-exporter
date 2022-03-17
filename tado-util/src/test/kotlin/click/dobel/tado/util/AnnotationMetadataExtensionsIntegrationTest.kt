@@ -4,7 +4,7 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.micronaut.context.ApplicationContext
 import io.micronaut.test.extensions.kotest.annotation.MicronautTest
-import javax.inject.Singleton
+import jakarta.inject.Singleton
 
 @MicronautTest
 internal class AnnotationMetadataExtensionsTest(

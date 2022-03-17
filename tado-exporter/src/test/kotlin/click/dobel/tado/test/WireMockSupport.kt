@@ -17,10 +17,10 @@ import com.github.tomakehurst.wiremock.http.Response.Builder.like
 import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder
 import io.micronaut.http.HttpHeaders
 import io.micronaut.http.MediaType
+import jakarta.inject.Singleton
 import java.net.URI
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
-import javax.inject.Singleton
 
 @Singleton
 internal class WireMockSupport(

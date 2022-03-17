@@ -8,7 +8,7 @@ import io.micronaut.http.annotation.Post
 import io.micronaut.http.client.annotation.Client
 import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
-import io.reactivex.Single
+import reactor.core.publisher.Mono
 
 @ExecuteOn(TaskExecutors.IO)
 @Client(AuthClient.SERVICE_ID)
@@ -20,5 +20,5 @@ interface AuthClient {
   }
 
   @Post(TOKEN_PATH, produces = [MediaType.APPLICATION_FORM_URLENCODED])
-  fun token(@Body auth: TadoAuthRequest): Single<TadoAuthResponse>
+  fun token(@Body auth: TadoAuthRequest): Mono<TadoAuthResponse>
 }

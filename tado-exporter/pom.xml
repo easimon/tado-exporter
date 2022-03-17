@@ -44,8 +44,8 @@
       <artifactId>micronaut-http-server-netty</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.micronaut</groupId>
-      <artifactId>micronaut-http-client</artifactId>
+      <groupId>io.micronaut.reactor</groupId>
+      <artifactId>micronaut-reactor-http-client</artifactId>
     </dependency>
     <dependency>
       <groupId>io.micronaut.micrometer</groupId>
@@ -58,6 +58,10 @@
     <dependency>
       <groupId>io.micronaut</groupId>
       <artifactId>micronaut-management</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.projectreactor.kotlin</groupId>
+      <artifactId>reactor-kotlin-extensions</artifactId>
     </dependency>
 
     <dependency>

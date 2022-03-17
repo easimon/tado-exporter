@@ -17,7 +17,7 @@ import io.micrometer.core.instrument.Gauge
 import io.micrometer.core.instrument.MeterRegistry
 import io.micrometer.core.instrument.Tag
 import io.micrometer.core.instrument.Tags
-import javax.inject.Singleton
+import jakarta.inject.Singleton
 
 @Singleton
 class TadoMeterFactory(

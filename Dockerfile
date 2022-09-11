@@ -1,9 +1,9 @@
-ARG BUILD_IMAGE=eclipse-temurin:11
+ARG BUILD_IMAGE=eclipse-temurin:17
 ARG TEST_IMAGE=eclipse-temurin:17
 ARG RUNTIME_IMAGE=eclipse-temurin:17-jre
 ARG MAVEN_OPTS="-Xmx2000m"
 
-FROM $BUILD_IMAGE as builder
+FROM --platform=$BUILDPLATFORM $BUILD_IMAGE as builder
 ARG MAVEN_OPTS
 
 WORKDIR /build
@@ -26,7 +26,7 @@ COPY tado-exporter/src /build/tado-exporter/src
 RUN ./mvnw -DskipTests -B package
 
 # Integration tests
-FROM $TEST_IMAGE as test
+FROM --platform=$BUILDPLATFORM $TEST_IMAGE as test
 ARG MAVEN_OPTS
 
 WORKDIR /build

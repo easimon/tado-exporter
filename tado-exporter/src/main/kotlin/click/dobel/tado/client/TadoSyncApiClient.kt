@@ -1,11 +1,7 @@
 package click.dobel.tado.client
 
-import click.dobel.tado.util.logger
 import io.micronaut.cache.annotation.Cacheable
-import io.micronaut.scheduling.TaskExecutors
-import io.micronaut.scheduling.annotation.ExecuteOn
 import jakarta.inject.Singleton
-import reactor.kotlin.core.publisher.toMono
 
 @Singleton
 open class TadoSyncApiClient(

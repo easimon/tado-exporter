@@ -1,13 +1,14 @@
 package click.dobel.tado.metrics
 
 import click.dobel.tado.client.TadoApiClient
+import click.dobel.tado.client.TadoSyncApiClient
 import click.dobel.tado.util.logger
-import javax.inject.Singleton
+import jakarta.inject.Singleton
 
 @Singleton
 class HomeModelRefresher(
   private val tadoMeterFactory: TadoMeterFactory,
-  private val tadoApiClient: TadoApiClient
+  private val tadoApiClient: TadoSyncApiClient
 ) {
 
   companion object {
@@ -15,7 +16,7 @@ class HomeModelRefresher(
 
     private fun initializeHomeModel(
       tadoMeterFactory: TadoMeterFactory,
-      tadoApiClient: TadoApiClient
+      tadoApiClient: TadoSyncApiClient
     ): HomeModel {
       LOGGER.info("Initializing homes from API.")
       val result = HomeModel(

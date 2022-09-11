@@ -1,10 +1,10 @@
 package click.dobel.tado.metrics
 
-import click.dobel.tado.client.TadoApiClient
-import io.kotlintest.TestCase
-import io.kotlintest.TestResult
-import io.kotlintest.matchers.collections.shouldContainExactlyInAnyOrder
-import io.kotlintest.specs.StringSpec
+import click.dobel.tado.client.TadoSyncApiClient
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
+import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.micrometer.core.instrument.Meter
 import io.micrometer.core.instrument.Metrics
 import io.micrometer.core.instrument.Tag
@@ -34,7 +34,7 @@ class TadoMeterFactoryTest : StringSpec({
 
   "createHomeMeters adds all required meters" {
     val meterRegistry = SimpleMeterRegistry()
-    val tadoApiClient = mockk<TadoApiClient>()
+    val tadoApiClient = mockk<TadoSyncApiClient>()
 
     val factory = TadoMeterFactory(meterRegistry, tadoApiClient)
     val home = me.homes.first()
@@ -50,7 +50,7 @@ class TadoMeterFactoryTest : StringSpec({
 
   "createZoneMeters adds all required meters for a Heating Zone" {
     val meterRegistry = SimpleMeterRegistry()
-    val tadoApiClient = mockk<TadoApiClient>()
+    val tadoApiClient = mockk<TadoSyncApiClient>()
 
     val factory = TadoMeterFactory(meterRegistry, tadoApiClient)
     val home = me.homes.first()
@@ -72,7 +72,7 @@ class TadoMeterFactoryTest : StringSpec({
 
   "createZoneMeters adds all required meters for an Air Conditioning Zone" {
     val meterRegistry = SimpleMeterRegistry()
-    val tadoApiClient = mockk<TadoApiClient>()
+    val tadoApiClient = mockk<TadoSyncApiClient>()
 
     val factory = TadoMeterFactory(meterRegistry, tadoApiClient)
     val home = me.homes.first()
@@ -93,7 +93,7 @@ class TadoMeterFactoryTest : StringSpec({
 
   "createZoneMeters adds all required meters for a Hot Water Zone" {
     val meterRegistry = SimpleMeterRegistry()
-    val tadoApiClient = mockk<TadoApiClient>()
+    val tadoApiClient = mockk<TadoSyncApiClient>()
 
     val factory = TadoMeterFactory(meterRegistry, tadoApiClient)
     val home = me.homes.first()

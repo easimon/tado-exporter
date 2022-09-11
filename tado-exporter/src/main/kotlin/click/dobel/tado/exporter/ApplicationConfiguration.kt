@@ -1,7 +1,7 @@
 package click.dobel.tado.exporter
 
 import io.micronaut.core.annotation.Introspected
-import javax.inject.Singleton
+import jakarta.inject.Singleton
 import javax.xml.bind.annotation.XmlRootElement
 
 @Singleton

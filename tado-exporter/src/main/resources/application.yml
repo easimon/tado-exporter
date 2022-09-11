@@ -1,6 +1,7 @@
 micronaut:
   application:
     name: tadoexporter
+
   metrics:
     enabled: true
 
@@ -14,21 +15,26 @@ micronaut:
       web:
         enabled: false
       files:
-        enabled: false
+        enabled: true
       logback:
         enabled: false
       processor:
-        enabled: false
+        enabled: true
       uptime:
         enabled: false
       jvm:
-        enabled: false
+        enabled: true
 
   caches:
     tado-zonestate:
       expire-after-write: ${tado.api-cache-interval}
+      record-stats: true
     tado-weather:
       expire-after-write: ${tado.api-cache-interval}
+      record-stats: true
+
+  server:
+    thread-selection: IO
 
   http:
     services:

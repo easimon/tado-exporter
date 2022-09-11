@@ -9,7 +9,7 @@
     <groupId>click.dobel.tado</groupId>
     <artifactId>tado-exporter-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <relativePath>../</relativePath>
+    <relativePath>../pom.xml</relativePath>
   </parent>
 
   <artifactId>tado-api</artifactId>
@@ -53,7 +53,10 @@
                 <sourceFolder>src/main/java</sourceFolder>
                 <library>feign</library>
                 <useBeanValidation>true</useBeanValidation>
-                <withXml>true</withXml><!-- workaround to make bean introspection work -->
+                <!-- do not depend on javax.annotation.Generated -->
+                <hideGenerationTimestamp>true</hideGenerationTimestamp>
+                <!-- workaround to make bean introspection work -->
+                <withXml>true</withXml>
               </configOptions>
               <modelPackage>click.dobel.tado.api</modelPackage>
               <invokerPackage>click.dobel.tado</invokerPackage>

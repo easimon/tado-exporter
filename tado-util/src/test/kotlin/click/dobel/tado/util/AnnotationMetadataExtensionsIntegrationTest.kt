@@ -1,10 +1,10 @@
 package click.dobel.tado.util
 
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.shouldBe
 import io.micronaut.context.ApplicationContext
-import io.micronaut.test.annotation.MicronautTest
-import javax.inject.Singleton
+import io.micronaut.test.extensions.kotest.annotation.MicronautTest
+import jakarta.inject.Singleton
 
 @MicronautTest
 internal class AnnotationMetadataExtensionsTest(

@@ -51,30 +51,35 @@ jobs:
           install: true
 
       - name: Build the Docker builder image
+        env:
+          CACHE: ${{ (github.actor != 'dependabot[bot]') && format('type=registry,ref={0}-builder:{1}', env.DOCKER_NAME, env.DOCKER_TAG) || 'type=inline' }}
         run: |
           docker buildx build \
             --cache-from "type=registry,ref=${DOCKER_NAME}-builder:latest" \
             --cache-from "type=registry,ref=${DOCKER_NAME}-builder:${DOCKER_TAG}" \
-            --cache-to   "type=registry,ref=${DOCKER_NAME}-builder:${DOCKER_TAG}" \
+            --cache-to   "${CACHE}" \
             --target builder \
             --platform ${PLATFORMS} \
             .
 
       - name: Build the Docker test image (default platform only)
+        env:
+          # do not try to push dependabot builds
+          CACHE: ${{ (github.actor != 'dependabot[bot]') && format('type=registry,ref={0}-test:{1}', env.DOCKER_NAME, env.DOCKER_TAG) || 'type=inline' }}
         run: |
           docker buildx build \
             --cache-from "type=registry,ref=${DOCKER_NAME}-builder:latest" \
             --cache-from "type=registry,ref=${DOCKER_NAME}-builder:${DOCKER_TAG}" \
             --cache-from "type=registry,ref=${DOCKER_NAME}-test:latest" \
             --cache-from "type=registry,ref=${DOCKER_NAME}-test:${DOCKER_TAG}" \
-            --cache-to   "type=registry,ref=${DOCKER_NAME}-test:${DOCKER_TAG}" \
+            --cache-to   "${CACHE}" \
             --target test \
             .
 
       - name: Build the Docker image
         env:
           # do not try to push dependabot builds
-          PUSH: ${{ github.actor != 'dependabot[bot]' && '--push' || '' }}
+          PUSH: ${{ (github.actor != 'dependabot[bot]') && '--push' || '' }}
         run: |
           docker buildx build \
             --cache-from "type=registry,ref=${DOCKER_NAME}-builder:latest" \

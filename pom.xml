@@ -37,7 +37,7 @@
     <maven-dependency-plugin.version>3.3.0</maven-dependency-plugin.version>
     <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
     <maven-failsafe-plugin.version>2.22.2</maven-failsafe-plugin.version>
-    <maven-jar-plugin.version>3.2.2</maven-jar-plugin.version>
+    <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
     <go-offline-maven-plugin.version>1.2.8</go-offline-maven-plugin.version>
 
     <swagger-codegen-maven-plugin.version>2.4.13</swagger-codegen-maven-plugin.version>

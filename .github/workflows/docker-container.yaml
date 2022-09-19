@@ -72,6 +72,9 @@ jobs:
             .
 
       - name: Build the Docker image
+        env:
+          # do not try to push dependabot builds
+          PUSH: ${{ github.actor != 'dependabot[bot]' && '--push' || '' }}
         run: |
           docker buildx build \
             --cache-from "type=registry,ref=${DOCKER_NAME}-builder:latest" \
@@ -80,5 +83,5 @@ jobs:
             --cache-from "type=registry,ref=${DOCKER_NAME}:${DOCKER_TAG}" \
             --tag ${DOCKER_NAME}:${DOCKER_TAG} \
             --platform ${PLATFORMS} \
-            --push \
+            ${PUSH} \
             .

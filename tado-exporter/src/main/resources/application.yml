@@ -1,66 +1,28 @@
-micronaut:
-  application:
-    name: tadoexporter
-
-  metrics:
-    enabled: true
-
-    export:
-      prometheus:
-        enabled: true
-        step: ${tado.prometheus-step-interval}
-        descriptions: true
-
-    binders:
-      web:
-        enabled: false
-      files:
-        enabled: true
-      logback:
-        enabled: false
-      processor:
-        enabled: true
-      uptime:
-        enabled: false
-      jvm:
-        enabled: true
-
-  caches:
-    tado-zonestate:
-      expire-after-write: ${tado.api-cache-interval}
-      record-stats: true
-    tado-weather:
-      expire-after-write: ${tado.api-cache-interval}
-      record-stats: true
-
-  server:
-    thread-selection: IO
-
-  http:
-    services:
-      tado-auth:
-        urls:
-          - ${tado.auth-server}
-      tado-api:
-        urls:
-          - ${tado.api-server}
-
-jackson:
-  bean-introspection-module: true
-
-endpoints:
-  metrics:
-    enabled: false
-  prometheus:
-    enabled: true
-    sensitive: false
-
 tado:
+  username: ""
+  password: ""
   client-id: "public-api-preview"
   client-secret: "4HJGRffVR8xb3XdEUQpjgZ1VplJi6Xgw"
   scope: "home.user"
-  zone-discovery-interval: 5m
-  api-cache-interval: 55s
-  prometheus-step-interval: PT1M
+  zone-discovery-interval: PT5M
   auth-server: https://auth.tado.com
   api-server: https://my.tado.com
+
+management:
+  endpoints:
+    web:
+      base-path: /
+      path-mapping:
+        prometheus: prometheus
+      exposure:
+        include:
+          - prometheus
+
+  metrics:
+    use-global-registry: false
+    export:
+      prometheus:
+        step: PT1M
+spring:
+  main:
+    banner-mode: off

@@ -2,13 +2,12 @@ package click.dobel.tado.util.aop
 
 import click.dobel.tado.util.aop.CallLoggingInterceptor.Companion.unmatched
 import io.kotest.core.spec.style.StringSpec
-import io.kotest.matchers.ints.shouldBeGreaterThan
-import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.shouldBe
-import io.micronaut.aop.InterceptPhase
-import io.micronaut.aop.MethodInvocationContext
 import io.mockk.every
 import io.mockk.mockk
+import org.aspectj.lang.reflect.CodeSignature
+import org.springframework.aop.aspectj.MethodInvocationProceedingJoinPoint
+import org.springframework.core.Ordered
 
 internal class CallLoggingInterceptorTest : StringSpec({
   val param1 = "param1"
@@ -17,23 +16,17 @@ internal class CallLoggingInterceptorTest : StringSpec({
   val paramValue2 = "paramValue2"
 
   val interceptor = CallLoggingInterceptor()
-  val contextMock = mockk<MethodInvocationContext<Any, Any>>()
+  val contextMock = mockk<MethodInvocationProceedingJoinPoint>()
+  val signatureMock = mockk<CodeSignature>()
 
-  "order should be after CACHE" {
-    interceptor.order shouldBeGreaterThan InterceptPhase.CACHE.position
-  }
-
-  "order should be before RETRY" {
-    interceptor.order shouldBeLessThan InterceptPhase.RETRY.position
+  "order should be lowest" {
+    interceptor.order shouldBe Ordered.LOWEST_PRECEDENCE
   }
 
   "maps existing parameters to their values" {
-    every {
-      contextMock.parameterValueMap
-    } returns mapOf(
-      param1 to paramValue1,
-      param2 to paramValue2
-    )
+    every { signatureMock.parameterNames } returns arrayOf(param1, param2)
+    every { contextMock.signature } returns signatureMock
+    every { contextMock.args } returns arrayOf(paramValue1, paramValue2)
 
     interceptor.paramValues(
       contextMock,
@@ -43,11 +36,9 @@ internal class CallLoggingInterceptorTest : StringSpec({
   }
 
   "maps non-existing parameters to unmatched template" {
-    every {
-      contextMock.parameterValueMap
-    } returns mapOf(
-      param1 to paramValue1
-    )
+    every { signatureMock.parameterNames } returns arrayOf(param1)
+    every { contextMock.signature } returns signatureMock
+    every { contextMock.args } returns arrayOf(paramValue1)
 
     interceptor.paramValues(
       contextMock,
@@ -57,12 +48,9 @@ internal class CallLoggingInterceptorTest : StringSpec({
   }
 
   "maps existing null parameters to null" {
-    every {
-      contextMock.parameterValueMap
-    } returns mapOf(
-      param1 to paramValue1,
-      param2 to null
-    )
+    every { signatureMock.parameterNames } returns arrayOf(param1, param2)
+    every { contextMock.signature } returns signatureMock
+    every { contextMock.args } returns arrayOf(paramValue1, null)
 
     interceptor.paramValues(
       contextMock,

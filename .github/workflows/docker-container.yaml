@@ -1,92 +1,94 @@
 name: Docker container build
-on: push
+
+on:
+  workflow_call:
+    inputs:
+      ref:
+        description: 'Git-Ref Name to build'
+        required: true
+        type: string
 
 env:
   DOCKER_REGISTRY: ghcr.io
   DOCKER_NAME: ghcr.io/${{ github.repository }}
-  PLATFORMS: linux/amd64,linux/arm/v7,linux/arm64/v8,linux/ppc64le,linux/s390x
+  PLATFORMS: linux/amd64,linux/arm64/v8,linux/arm/v7,linux/ppc64le,linux/s390x
 
 jobs:
   build:
     name: Build and publish Docker container
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
-      - name: Check out repository
-        uses: actions/checkout@master
+      - name: "Check out repository"
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.ref }}
 
-      - name: Use branch name as Docker tag
-        if: startsWith(github.ref, 'refs/heads')
+      - name: "Use branch or tag name as Docker tag"
+        if: inputs.ref != 'main'
         run: |
-          echo "Using branch name as docker tag"
-          echo "DOCKER_TAG=$(echo ${GITHUB_REF} | sed -e "s/refs\/heads\///g" | sed -e "s/\//./g")" >> $GITHUB_ENV
+          echo "Using normalized branch name as docker tag"
+          echo "DOCKER_TAG=$(echo ${{ inputs.ref }} \
+            | tr '[:upper:]' '[:lower:]' \
+            | tr -cs '[a-z0-9.]' '-' \
+            | sed 's/^-*//' | sed 's/-*$//')" \
+            >> "${GITHUB_ENV}"
 
-      - name: Use 'latest' as Docker tag
-        if: github.ref == 'refs/heads/master'
+      - name: "Main Branch: Use 'latest' as Docker tag"
+        if: inputs.ref == 'main'
         run: |
           echo "Using latest as docker tag"
-          echo "DOCKER_TAG=latest" >> $GITHUB_ENV
+          echo "DOCKER_TAG=latest" >> "${GITHUB_ENV}"
 
-      - name: Use tag name as Docker tag
-        if: startsWith(github.ref, 'refs/tags')
-        run: |
-          echo "Using git tag as docker tag"
-          echo "DOCKER_TAG=$(echo ${GITHUB_REF} | sed -e "s/refs\/tags\///g")" >> $GITHUB_ENV
-
-      - name: Print docker image and tag name
+      - name: "Print docker image and tag name"
         run: |
           echo "Continuing to build ${DOCKER_NAME}:${DOCKER_TAG}"
 
-      - name: Log in to Docker Registry
+      - name: "Log in to Docker Registry"
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ${DOCKER_REGISTRY} -u ${{ github.actor }} --password-stdin
 
-      - name: Set up QEMU
+      - name: "Set up QEMU"
         uses: docker/setup-qemu-action@v2
         with:
           platforms: all
 
-      - name: Set up Docker Buildx
+      - name: "Set up Docker Buildx"
         uses: docker/setup-buildx-action@v2
         with:
           install: true
 
-      - name: Build the Docker builder image
-        env:
-          CACHE: ${{ (github.actor != 'dependabot[bot]') && format('type=registry,ref={0}-builder:{1}', env.DOCKER_NAME, env.DOCKER_TAG) || 'type=inline' }}
+      - name: "Build the Docker builder image"
         run: |
           docker buildx build \
             --cache-from "type=registry,ref=${DOCKER_NAME}-builder:latest" \
             --cache-from "type=registry,ref=${DOCKER_NAME}-builder:${DOCKER_TAG}" \
-            --cache-to   "${CACHE}" \
+            --cache-to   "type=registry,ref=${DOCKER_NAME}-builder:${DOCKER_TAG}" \
             --target builder \
-            --platform ${PLATFORMS} \
+            --platform "${PLATFORMS}" \
             .
 
-      - name: Build the Docker test image (default platform only)
-        env:
-          # do not try to push dependabot builds
-          CACHE: ${{ (github.actor != 'dependabot[bot]') && format('type=registry,ref={0}-test:{1}', env.DOCKER_NAME, env.DOCKER_TAG) || 'type=inline' }}
+      - name: "Build the Docker test image (default platform only)"
         run: |
           docker buildx build \
             --cache-from "type=registry,ref=${DOCKER_NAME}-builder:latest" \
             --cache-from "type=registry,ref=${DOCKER_NAME}-builder:${DOCKER_TAG}" \
             --cache-from "type=registry,ref=${DOCKER_NAME}-test:latest" \
             --cache-from "type=registry,ref=${DOCKER_NAME}-test:${DOCKER_TAG}" \
-            --cache-to   "${CACHE}" \
+            --cache-to   "type=registry,ref=${DOCKER_NAME}-test:${DOCKER_TAG}" \
             --target test \
             .
 
-      - name: Build the Docker image
+      - name: "Build the Docker image"
         env:
           # do not try to push dependabot builds
-          PUSH: ${{ (github.actor != 'dependabot[bot]') && '--push' || '' }}
+          PUSH: ${{ github.actor != 'dependabot[bot]' && '--push' || '' }}
         run: |
           docker buildx build \
             --cache-from "type=registry,ref=${DOCKER_NAME}-builder:latest" \
             --cache-from "type=registry,ref=${DOCKER_NAME}-builder:${DOCKER_TAG}" \
             --cache-from "type=registry,ref=${DOCKER_NAME}:latest" \
             --cache-from "type=registry,ref=${DOCKER_NAME}:${DOCKER_TAG}" \
-            --tag ${DOCKER_NAME}:${DOCKER_TAG} \
-            --platform ${PLATFORMS} \
+            --tag "${DOCKER_NAME}:${DOCKER_TAG}" \
+            --platform "${PLATFORMS}" \
             ${PUSH} \
             .

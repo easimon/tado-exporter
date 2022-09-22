@@ -1,0 +1,35 @@
+name: Release
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release-please:
+    name: "Release Please"
+    runs-on: ubuntu-22.04
+    outputs:
+      release-created: ${{ steps.release.outputs.release_created }}
+      ref: ${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }}
+    steps:
+      - uses: GoogleCloudPlatform/release-please-action@v3.5
+        id: release
+        with:
+          package-name: tado-exporter
+          include-v-in-tag: false
+          release-type: simple
+          extra-files: |
+            README.md
+            pom.xml
+            tado-api/pom.xml
+            tado-util/pom.xml
+            tado-exporter/pom.xml
+
+  trigger-build:
+    name: "Trigger build"
+    needs:
+      - release-please
+    if: ${{ needs.release-please.outputs.release-created }}
+    uses: ./.github/workflows/docker-container.yaml
+    with:
+      ref: ${{ needs.release-please.outputs.ref }}

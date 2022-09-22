@@ -8,22 +8,11 @@
   <parent>
     <groupId>click.dobel.tado</groupId>
     <artifactId>tado-exporter-parent</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0</version><!-- x-release-please-version -->
     <relativePath>../pom.xml</relativePath>
   </parent>
 
   <artifactId>tado-exporter</artifactId>
-
-  <properties>
-    <exec.mainClass>click.dobel.tado.exporter.ApplicationKt</exec.mainClass>
-  </properties>
-
-  <repositories>
-    <repository>
-      <id>jcenter.bintray.com</id>
-      <url>https://jcenter.bintray.com</url>
-    </repository>
-  </repositories>
 
   <dependencies>
     <dependency>
@@ -36,41 +25,36 @@
     </dependency>
 
     <dependency>
-      <groupId>io.micronaut</groupId>
-      <artifactId>micronaut-runtime</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.micronaut</groupId>
-      <artifactId>micronaut-http-server-netty</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.micronaut.reactor</groupId>
-      <artifactId>micronaut-reactor-http-client</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.micronaut.micrometer</groupId>
-      <artifactId>micronaut-micrometer-registry-prometheus</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.micronaut.cache</groupId>
-      <artifactId>micronaut-cache-caffeine</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.micronaut</groupId>
-      <artifactId>micronaut-management</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.projectreactor.kotlin</groupId>
-      <artifactId>reactor-kotlin-extensions</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>click.dobel.tado</groupId>
       <artifactId>tado-api</artifactId>
     </dependency>
     <dependency>
       <groupId>click.dobel.tado</groupId>
       <artifactId>tado-util</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-cache</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-registry-prometheus</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.github.ben-manes.caffeine</groupId>
+      <artifactId>caffeine</artifactId>
     </dependency>
 
     <dependency>
@@ -83,30 +67,15 @@
       <artifactId>jackson-module-kotlin</artifactId>
       <scope>runtime</scope>
     </dependency>
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>net.logstash.logback</groupId>
-      <artifactId>logstash-logback-encoder</artifactId>
-      <scope>runtime</scope>
-    </dependency>
 
     <dependency>
-      <groupId>io.micronaut.test</groupId>
-      <artifactId>micronaut-test-kotest</artifactId>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>io.kotest</groupId>
-      <artifactId>kotest-runner-junit5-jvm</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.mockk</groupId>
-      <artifactId>mockk-jvm</artifactId>
+      <groupId>io.kotest.extensions</groupId>
+      <artifactId>kotest-extensions-spring</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -119,18 +88,8 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>io.micronaut.build</groupId>
-        <artifactId>micronaut-maven-plugin</artifactId>
-      </plugin>
-
-      <plugin>
-        <artifactId>kotlin-maven-plugin</artifactId>
-        <groupId>org.jetbrains.kotlin</groupId>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </build>

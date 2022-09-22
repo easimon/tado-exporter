@@ -1,5 +1,0 @@
-profile: service
-defaultPackage: click.dobel.tado
----
-testFramework: kotlintest
-sourceLanguage: kotlin

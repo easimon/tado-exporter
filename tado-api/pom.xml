@@ -8,7 +8,7 @@
   <parent>
     <groupId>click.dobel.tado</groupId>
     <artifactId>tado-exporter-parent</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0</version><!-- x-release-please-version -->
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -19,6 +19,10 @@
       <groupId>io.swagger</groupId>
       <artifactId>swagger-annotations</artifactId>
       <version>${swagger-annotations.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
@@ -68,17 +72,6 @@
             </configuration>
           </execution>
         </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>${maven-compiler-plugin.version}</version>
-
-        <configuration>
-          <source>${jdk.version}</source>
-          <target>${jdk.version}</target>
-        </configuration>
       </plugin>
     </plugins>
   </build>

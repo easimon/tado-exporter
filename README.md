@@ -11,6 +11,7 @@ Idea taken from [this python variant](https://github.com/vide/tado-exporter).
 
 Since the python exporter failed to scrape the API quite often, and I wanted to experiment with
 [Micronaut](https://micronaut.io/) anyway, I decided to rebuild this in Kotlin/Micronaut.
+Meanwhile I switched to Spring Boot.
 
 ## Building
 
@@ -21,7 +22,7 @@ You can either build the JAR only, or a Docker image containing the application.
 
 ### Executable JAR
 
-- Install a JDK (tested with OpenJDK 11).
+- Install a JDK (tested with OpenJDK 17).
 - Run `./mvnw package` to create an executable JAR (to be found in `tado-exporter/target` then).
 
 ### Docker Image
@@ -39,7 +40,7 @@ metrics are available at `http://host:8080/prometheus`.
 Build the application as described above, and then run the following command:
 
 ```bash
-$ TADO_USERNAME=your_username TADO_PASSWORD=your_password java -jar tado-exporter/target/tado-exporter-1.0-SNAPSHOT.jar
+$ TADO_USERNAME=your_username TADO_PASSWORD=your_password java -jar tado-exporter/target/tado-exporter-1.0.0.jar # x-release-please-version
 ```
 
 ### Docker Container
@@ -47,7 +48,7 @@ $ TADO_USERNAME=your_username TADO_PASSWORD=your_password java -jar tado-exporte
 Either build the application as described above, or download the Docker image.
 
 ```bash
-$ export TADO_EXPORTER_IMAGE=ghcr.io/easimon/tado-exporter:latest # or any tagged version
+$ export TADO_EXPORTER_IMAGE=ghcr.io/easimon/tado-exporter:1.0.0 # x-release-please-version
 $ docker run -e TADO_USERNAME=your_username -e TADO_PASSWORD=your_password $TADO_EXPORTER_IMAGE
 ```
 
@@ -57,16 +58,14 @@ The minimal required configuration is a valid Tado° username and password. For 
 their defaults, see the
 [application.yml](./tado-exporter/src/main/resources/application.yml)
 
-| Environment variable | Description             | Default | Required |
-|----------------------|-------------------------|---------|----------|
-| TADO_USERNAME        | Tado° account username  | (none)  | yes |
-| TADO_PASSWORD        | Tado° account password  | (none)  | yes |
-| TADO_CLIENT_ID       | API OAuth client ID     | [application.yml](./tado-exporter/src/main/resources/application.yml) | no |
-| TADO_CLIENT_SECRET   | API OAuth client secret | [application.yml](./tado-exporter/src/main/resources/application.yml) | no |
-| TADO_SCOPE           | API OAuth Scope         | [application.yml](./tado-exporter/src/main/resources/application.yml) | no |
-| TADO_ZONE_DISCOVERY_INTERVAL | Interval to refresh home and zone (room) information for the given account | 5 min | no |
-| TADO_API_CACHE_INTERVAL | Interval to cache API calls for zone and weather information. Should be something like the prometheus step interval, minus the duration it takes to scrape the API once (5-10 secs). | 55 sec | no |
-| TADO_PROMETHEUS_STEP_INTERVAL | Prometheus step resulution (how often does prometheus scrape the metrics endpoint) | 60 sec | no |
+| Environment variable         | Description                                                                | Default                                                               | Required |
+|------------------------------|----------------------------------------------------------------------------|-----------------------------------------------------------------------|----------|
+| TADO_USERNAME                | Tado° account username                                                     | (none)                                                                | yes      |
+| TADO_PASSWORD                | Tado° account password                                                     | (none)                                                                | yes      |
+| TADO_CLIENT_ID               | API OAuth client ID                                                        | [application.yml](./tado-exporter/src/main/resources/application.yml) | no       |
+| TADO_CLIENT_SECRET           | API OAuth client secret                                                    | [application.yml](./tado-exporter/src/main/resources/application.yml) | no       |
+| TADO_SCOPE                   | API OAuth Scope                                                            | [application.yml](./tado-exporter/src/main/resources/application.yml) | no       |
+| TADO_ZONE_DISCOVERY_INTERVAL | Interval to refresh home and zone (room) information for the given account | PT5m (5 min)                                                          | no       |
 
 OAuth client id, secret and scope do not need configuration, since they have defaults found at other projects listed
 in [References](#references).

@@ -1,0 +1,11 @@
+name: Push
+
+on:
+  push:
+
+jobs:
+  trigger-build:
+    name: "Trigger build"
+    uses: ./.github/workflows/docker-container.yaml
+    with:
+      ref: ${{ github.ref_name }}

@@ -1,36 +1,34 @@
 package click.dobel.tado.util.aop
 
 import click.dobel.tado.util.logger
-import click.dobel.tado.util.stringValue
-import click.dobel.tado.util.stringValues
-import io.micronaut.aop.InterceptPhase
-import io.micronaut.aop.MethodInterceptor
-import io.micronaut.aop.MethodInvocationContext
-import jakarta.inject.Singleton
+import org.aspectj.lang.ProceedingJoinPoint
+import org.aspectj.lang.annotation.Around
+import org.aspectj.lang.annotation.Aspect
+import org.springframework.aop.aspectj.MethodInvocationProceedingJoinPoint
+import org.springframework.core.Ordered
 
-@Singleton
-class CallLoggingInterceptor : MethodInterceptor<Any, Any> {
+@Aspect
+class CallLoggingInterceptor : Ordered {
   companion object {
-    private const val MEMBER_MESSAGE = "message"
-    private const val MEMBER_PARAMS = "params"
-
     internal fun unmatched(param: String) = "<unmatched param '${param}'>"
   }
 
-  override fun getOrder() = InterceptPhase.TRACE.position;
-
-  override fun intercept(context: MethodInvocationContext<Any, Any>): Any? {
-    val message = context.stringValue(Logged::class, MEMBER_MESSAGE)
-    val paramNames = context.stringValues(Logged::class, MEMBER_PARAMS)
-    val params = paramValues(context, paramNames)
-
-    context.target.logger().info(message, *params)
-
+  @Around("@annotation(logged)")
+  fun log(context: ProceedingJoinPoint, logged: Logged): Any? {
+    if (context !is MethodInvocationProceedingJoinPoint) {
+      context.target?.logger()?.warn("Incorrect usage of @Logged, target must be a method.")
+    } else {
+      val message = logged.message
+      val paramNames = logged.params
+      val params = paramValues(context, paramNames)
+      context.target?.logger()?.info(message, *params)
+    }
     return context.proceed()
   }
 
-  internal fun paramValues(context: MethodInvocationContext<Any, Any>, params: Array<String>): Array<Any?> {
-    val arguments = context.parameterValueMap
+  internal fun paramValues(context: MethodInvocationProceedingJoinPoint, params: Array<String>): Array<Any?> {
+    val arguments = context.parameterValueMap()
+
     return params.map { param ->
       if (arguments.containsKey(param)) {
         arguments[param]
@@ -39,5 +37,7 @@ class CallLoggingInterceptor : MethodInterceptor<Any, Any> {
       }
     }.toTypedArray()
   }
+
+  override fun getOrder() = Ordered.LOWEST_PRECEDENCE
 }
 

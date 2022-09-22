@@ -6,14 +6,15 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>io.micronaut</groupId>
-    <artifactId>micronaut-parent</artifactId>
-    <version>3.3.4</version>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.7.3</version>
+    <relativePath/> <!-- lookup parent from repository -->
   </parent>
 
   <groupId>click.dobel.tado</groupId>
   <artifactId>tado-exporter-parent</artifactId>
-  <version>1.0-SNAPSHOT</version><!-- unused, published as Docker container only -->
+  <version>1.0.0</version><!-- x-release-please-version -->
   <packaging>pom</packaging>
 
   <properties>
@@ -23,6 +24,8 @@
     <logstash-encoder.version>7.2</logstash-encoder.version>
     <projectreactor.kotlin.version>1.1.7</projectreactor.kotlin.version>
 
+    <kotest.version>5.4.2</kotest.version>
+    <kotest-spring.version>1.1.2</kotest-spring.version>
     <mockk.version>1.12.8</mockk.version>
     <wiremock.version>2.27.2</wiremock.version>
 
@@ -50,24 +53,17 @@
     <module>tado-exporter</module>
   </modules>
 
-  <repositories>
-    <repository>
-      <id>jcenter.bintray.com</id>
-      <url>https://jcenter.bintray.com</url>
-    </repository>
-  </repositories>
-
   <dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>click.dobel.tado</groupId>
         <artifactId>tado-api</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0.0</version><!-- x-release-please-version -->
       </dependency>
       <dependency>
         <groupId>click.dobel.tado</groupId>
         <artifactId>tado-util</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0.0</version><!-- x-release-please-version -->
       </dependency>
 
       <dependency>
@@ -91,6 +87,22 @@
       </dependency>
 
       <dependency>
+        <groupId>io.kotest</groupId>
+        <artifactId>kotest-runner-junit5-jvm</artifactId>
+        <version>${kotest.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.kotest</groupId>
+        <artifactId>kotest-assertions-core-jvm</artifactId>
+        <version>${kotest.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.kotest.extensions</groupId>
+        <artifactId>kotest-extensions-spring</artifactId>
+        <version>${kotest-spring.version}</version>
+      </dependency>
+
+      <dependency>
         <groupId>io.mockk</groupId>
         <artifactId>mockk</artifactId>
         <version>${mockk.version}</version>
@@ -106,17 +118,31 @@
         <artifactId>wiremock</artifactId>
         <version>${wiremock.version}</version>
       </dependency>
-
-      <dependency>
-        <groupId>io.projectreactor.kotlin</groupId>
-        <artifactId>reactor-kotlin-extensions</artifactId>
-        <version>${projectreactor.kotlin.version}</version>
-      </dependency>
-
     </dependencies>
   </dependencyManagement>
 
+  <dependencies>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.kotest</groupId>
+      <artifactId>kotest-runner-junit5-jvm</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.mockk</groupId>
+      <artifactId>mockk-jvm</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
   <build>
+    <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
+    <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
+
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -127,15 +153,15 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
       </plugin>
+
+      <plugin>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <artifactId>kotlin-maven-plugin</artifactId>
+      </plugin>
     </plugins>
 
     <pluginManagement>
       <plugins>
-        <plugin>
-          <groupId>io.micronaut.build</groupId>
-          <artifactId>micronaut-maven-plugin</artifactId>
-        </plugin>
-
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-dependency-plugin</artifactId>
@@ -152,131 +178,43 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>${maven-surefire-plugin.version}</version>
-          <configuration>
-            <includes>
-              <include>**/*Spec.*</include>
-              <include>**/*Test.*</include>
-            </includes>
-          </configuration>
         </plugin>
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
           <version>${maven-failsafe-plugin.version}</version>
-          <executions>
-            <execution>
-              <goals>
-                <goal>integration-test</goal>
-                <goal>verify</goal>
-              </goals>
-            </execution>
-          </executions>
+        </plugin>
+
+        <plugin>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-maven-plugin</artifactId>
         </plugin>
 
         <plugin>
           <groupId>org.jetbrains.kotlin</groupId>
           <artifactId>kotlin-maven-plugin</artifactId>
-          <version>${kotlin.version}</version>
-
           <configuration>
-            <jvmTarget>${jdk.version}</jvmTarget>
+            <args>
+              <arg>-Xjsr305=strict</arg>
+            </args>
             <compilerPlugins>
-              <plugin>all-open</plugin>
+              <plugin>spring</plugin>
             </compilerPlugins>
-            <pluginOptions>
-              <option>all-open:annotation=io.micronaut.aop.Around</option>
-            </pluginOptions>
           </configuration>
-
           <executions>
-            <execution>
-              <id>kapt</id>
-              <goals>
-                <goal>kapt</goal>
-              </goals>
-              <configuration>
-                <sourceDirs>
-                  <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
-                </sourceDirs>
-                <annotationProcessorPaths combine.self="override">
-                  <annotationProcessorPath>
-                    <groupId>io.micronaut</groupId>
-                    <artifactId>micronaut-graal</artifactId>
-                    <version>${micronaut.version}</version>
-                  </annotationProcessorPath>
-                  <annotationProcessorPath>
-                    <groupId>io.micronaut</groupId>
-                    <artifactId>micronaut-graal</artifactId>
-                    <version>${micronaut.version}</version>
-                  </annotationProcessorPath>
-                  <annotationProcessorPath>
-                    <groupId>io.micronaut</groupId>
-                    <artifactId>micronaut-http-validation</artifactId>
-                    <version>${micronaut.version}</version>
-                  </annotationProcessorPath>
-                  <annotationProcessorPath>
-                    <groupId>io.micronaut</groupId>
-                    <artifactId>micronaut-inject-java</artifactId>
-                    <version>${micronaut.version}</version>
-                  </annotationProcessorPath>
-                  <annotationProcessorPath>
-                    <groupId>io.micronaut</groupId>
-                    <artifactId>micronaut-validation</artifactId>
-                    <version>${micronaut.version}</version>
-                  </annotationProcessorPath>
-                </annotationProcessorPaths>
-                <annotationProcessorArgs>
-                  <annotationProcessorArg>micronaut.processing.group=click.dobel.tado</annotationProcessorArg>
-                  <annotationProcessorArg>micronaut.processing.module=tadoExporter</annotationProcessorArg>
-                </annotationProcessorArgs>
-              </configuration>
-            </execution>
             <execution>
               <id>compile</id>
               <goals>
                 <goal>compile</goal>
               </goals>
-              <configuration>
-                <sourceDirs>
-                  <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
-                </sourceDirs>
-              </configuration>
             </execution>
-            <execution>
-              <id>test-kapt</id>
-              <goals>
-                <goal>test-kapt</goal>
-              </goals>
-              <configuration>
-                <sourceDirs>
-                  <sourceDir>${project.basedir}/src/test/kotlin</sourceDir>
-                </sourceDirs>
-                <annotationProcessorPaths>
-                  <annotationProcessorPath>
-                    <groupId>io.micronaut</groupId>
-                    <artifactId>micronaut-inject-java</artifactId>
-                    <version>${micronaut.version}</version>
-                  </annotationProcessorPath>
-                  <annotationProcessorPath>
-                    <groupId>io.micronaut</groupId>
-                    <artifactId>micronaut-validation</artifactId>
-                    <version>${micronaut.version}</version>
-                  </annotationProcessorPath>
-                </annotationProcessorPaths>
-              </configuration>
-            </execution>
+
             <execution>
               <id>test-compile</id>
               <goals>
                 <goal>test-compile</goal>
               </goals>
-              <configuration>
-                <sourceDirs>
-                  <sourceDir>${project.basedir}/src/test/kotlin</sourceDir>
-                  <sourceDir>${project.basedir}/target/generated-sources/kapt/test</sourceDir>
-                </sourceDirs>
-              </configuration>
             </execution>
           </executions>
 
@@ -287,44 +225,6 @@
               <version>${kotlin.version}</version>
             </dependency>
           </dependencies>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>${maven-compiler-plugin.version}</version>
-
-          <configuration>
-            <proc>none</proc>
-            <source>${jdk.version}</source>
-            <target>${jdk.version}</target>
-            <release>${jdk.version}</release>
-          </configuration>
-
-          <executions>
-            <execution>
-              <id>default-compile</id>
-              <phase>none</phase>
-            </execution>
-            <execution>
-              <id>default-testCompile</id>
-              <phase>none</phase>
-            </execution>
-            <execution>
-              <id>java-compile</id>
-              <phase>compile</phase>
-              <goals>
-                <goal>compile</goal>
-              </goals>
-            </execution>
-            <execution>
-              <id>java-test-compile</id>
-              <phase>test-compile</phase>
-              <goals>
-                <goal>testCompile</goal>
-              </goals>
-            </execution>
-          </executions>
         </plugin>
 
         <plugin>
@@ -343,18 +243,6 @@
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-annotation-processing-maven</artifactId>
                 <version>${kotlin.version}</version>
-                <repositoryType>MAIN</repositoryType>
-              </DynamicDependency>
-              <DynamicDependency>
-                <groupId>io.micronaut</groupId>
-                <artifactId>micronaut-inject-java</artifactId>
-                <version>${micronaut.version}</version>
-                <repositoryType>MAIN</repositoryType>
-              </DynamicDependency>
-              <DynamicDependency>
-                <groupId>io.micronaut</groupId>
-                <artifactId>micronaut-validation</artifactId>
-                <version>${micronaut.version}</version>
                 <repositoryType>MAIN</repositoryType>
               </DynamicDependency>
             </dynamicDependencies>

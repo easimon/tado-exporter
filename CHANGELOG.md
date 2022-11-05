@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.1.0](https://github.com/easimon/tado-exporter/compare/5.0.0...5.1.0) (2022-11-05)
+
+
+### Features
+
+* add boolean status for presence ([a77fc97](https://github.com/easimon/tado-exporter/commit/a77fc97e89d7ba92582805c00491b0509c9959ba))
+
 ## [5.0.0](https://github.com/easimon/tado-exporter/compare/4.0.0...5.0.0) (2022-09-22)
 
 

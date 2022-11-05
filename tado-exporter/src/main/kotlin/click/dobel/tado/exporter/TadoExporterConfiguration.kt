@@ -1,6 +1,7 @@
 package click.dobel.tado.exporter
 
 import click.dobel.tado.api.HomeInfo
+import click.dobel.tado.api.HomeState
 import click.dobel.tado.api.User
 import click.dobel.tado.api.WeatherReport
 import click.dobel.tado.api.Zone
@@ -32,6 +33,7 @@ class TadoExporterConfiguration {
     private val API_CLASSES = listOf(
       User::class,
       HomeInfo::class,
+      HomeState::class,
       Zone::class,
       ZoneState::class,
       WeatherReport::class
@@ -70,6 +72,4 @@ class TadoExporterConfiguration {
 
   @Bean
   fun aopLogger() = CallLoggingInterceptor()
-
-
 }

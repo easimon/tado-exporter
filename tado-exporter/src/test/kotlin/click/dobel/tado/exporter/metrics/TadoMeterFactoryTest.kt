@@ -42,6 +42,7 @@ class TadoMeterFactoryTest : StringSpec({
     factory.createHomeMeters(home)
 
     meterRegistry.meters shouldContainMetersExactlyInAnyOrder setOf(
+      matching(TadoMeterFactory.IS_RESIDENT_PRESENT, Meter.Type.GAUGE, homeTags(home)),
       matching(TadoMeterFactory.SOLAR_INTENSITY_PERCENTAGE, Meter.Type.GAUGE, homeTags(home)),
       matching(TadoMeterFactory.TEMPERATURE_OUTSIDE_CELSIUS, Meter.Type.GAUGE, homeTags(home)),
       matching(TadoMeterFactory.TEMPERATURE_OUTSIDE_FAHRENHEIT, Meter.Type.GAUGE, homeTags(home))

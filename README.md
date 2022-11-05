@@ -95,19 +95,20 @@ Defined in [TadoMeterFactory.kt](tado-exporter/src/main/kotlin/click/dobel/tado/
 also some other metrics (automatically provided by Micronaut framework), but these are the ones this application is
 about.
 
-| Name                            | Tags                                   | Cardinality | Description                                                  |
-|---------------------------------|----------------------------------------|-------------|--------------------------------------------------------------|
-| solar_intensity_percentage      | home_id                                | per home    | solar intensity at your home's location, in percent          |
-| temperature_outside_celsius     | home_id                                | per home    | outside temperature at your home's location, in deg. celsius |
-| temperature_outside_fahrenheit  | home_id                                | per home    | outside temperature at your home's location, in fahrenheit   |
-| temperature_measured_celsius    | home_id, zone_id, zone_name, zone_type | per zone    | measured temperature in this zone, in deg. celsius           |
-| temperature_measured_fahrenheit | home_id, zone_id, zone_name, zone_type | per zone    | measured temperature in this zone, in fahrenheit             |
-| humidity_measured_percentage    | home_id, zone_id, zone_name, zone_type | per zone    | measured humidity in this zone, in percent                   |
-| temperature_set_celsius         | home_id, zone_id, zone_name, zone_type | per zone    | target temperature in this zone, in deg. celsius             |
-| temperature_set_fahrenheit      | home_id, zone_id, zone_name, zone_type | per zone    | target temperature in this zone, in fahrenheit              |
-| heating_power_percentage        | home_id, zone_id, zone_name, zone_type | per zone    | heating power in this zone, in percent                       |
+| Name                            | Tags                                   | Cardinality | Description                                                                                      |
+|---------------------------------|----------------------------------------|-------------|--------------------------------------------------------------------------------------------------|
+| is_resident_present             | home_id                                | per home    | whether there is a resident present in the home                                                  |
+| solar_intensity_percentage      | home_id                                | per home    | solar intensity at your home's location, in percent                                              |
+| temperature_outside_celsius     | home_id                                | per home    | outside temperature at your home's location, in deg. celsius                                     |
+| temperature_outside_fahrenheit  | home_id                                | per home    | outside temperature at your home's location, in fahrenheit                                       |
+| temperature_measured_celsius    | home_id, zone_id, zone_name, zone_type | per zone    | measured temperature in this zone, in deg. celsius                                               |
+| temperature_measured_fahrenheit | home_id, zone_id, zone_name, zone_type | per zone    | measured temperature in this zone, in fahrenheit                                                 |
+| humidity_measured_percentage    | home_id, zone_id, zone_name, zone_type | per zone    | measured humidity in this zone, in percent                                                       |
+| temperature_set_celsius         | home_id, zone_id, zone_name, zone_type | per zone    | target temperature in this zone, in deg. celsius                                                 |
+| temperature_set_fahrenheit      | home_id, zone_id, zone_name, zone_type | per zone    | target temperature in this zone, in fahrenheit                                                   |
+| heating_power_percentage        | home_id, zone_id, zone_name, zone_type | per zone    | heating power in this zone, in percent                                                           |
 | is_window_open                  | home_id, zone_id, zone_name, zone_type | per zone    | window open detection (presence of an "openWindow" object in the zone state, translated to 0, 1) |
-| is_zone_powered                 | home_id, zone_id, zone_name, zone_type | per zone    | power state (ON, OFF, translated to 0, 1)                    |
+| is_zone_powered                 | home_id, zone_id, zone_name, zone_type | per zone    | power state (ON, OFF, translated to 0, 1)                                                        |
 
 ### How it works
 

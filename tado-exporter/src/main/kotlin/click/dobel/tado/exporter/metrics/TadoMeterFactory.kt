@@ -2,6 +2,7 @@ package click.dobel.tado.exporter.metrics
 
 import click.dobel.tado.api.CoolingZoneSetting
 import click.dobel.tado.api.HeatingZoneSetting
+import click.dobel.tado.api.HomeState
 import click.dobel.tado.api.HotWaterZoneSetting
 import click.dobel.tado.api.Power
 import click.dobel.tado.api.TadoSystemType
@@ -31,6 +32,7 @@ class TadoMeterFactory(
     internal const val SOLAR_INTENSITY_PERCENTAGE = "solar_intensity_percentage"
     internal const val TEMPERATURE_OUTSIDE_CELSIUS = "temperature_outside_celsius"
     internal const val TEMPERATURE_OUTSIDE_FAHRENHEIT = "temperature_outside_fahrenheit"
+    internal const val IS_RESIDENT_PRESENT = "is_resident_present"
 
     internal const val TEMPERATURE_MEASURED_CELSIUS = "temperature_measured_celsius"
     internal const val TEMPERATURE_MEASURED_FAHRENHEIT = "temperature_measured_fahrenheit"
@@ -77,6 +79,16 @@ class TadoMeterFactory(
     ) { h ->
       tadoApiClient.weather(h.id).outsideTemperature.fahrenheit
     }
+
+    registerBooleanGauge(
+      IS_RESIDENT_PRESENT,
+      "Whether there is a resident present in the home.",
+      homeTags,
+      home
+    ) { h ->
+      tadoApiClient.homeState(h.id).presence == HomeState.PresenceEnum.HOME
+    }
+    
     return home
   }
 

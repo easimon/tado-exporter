@@ -43,7 +43,7 @@
     <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
     <go-offline-maven-plugin.version>1.2.8</go-offline-maven-plugin.version>
 
-    <swagger-codegen-maven-plugin.version>2.4.28</swagger-codegen-maven-plugin.version>
+    <swagger-codegen-maven-plugin.version>2.4.29</swagger-codegen-maven-plugin.version>
     <swagger-annotations.version>1.6.9</swagger-annotations.version>
   </properties>
 

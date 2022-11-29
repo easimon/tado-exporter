@@ -18,7 +18,7 @@
   <packaging>pom</packaging>
 
   <properties>
-    <kotlin.version>1.7.20</kotlin.version>
+    <kotlin.version>1.7.22</kotlin.version>
     <jdk.version>17</jdk.version>
 
     <logstash-encoder.version>7.2</logstash-encoder.version>

@@ -26,7 +26,7 @@ securityDefinitions:
     tokenUrl: https://auth.tado.com/oauth/token
     scopes:
       identity:read: read the identity
-      home.details:read:  read home details
+      home.details:read: read home details
       home.operation:read: read home operation
       home.operation.overlay:read: read home overlay
       home.operation.overlay:write: write home overlay
@@ -67,6 +67,30 @@ paths:
           description: Home details
           schema:
             $ref: "#/definitions/HomeInfo"
+        401:
+          $ref: "#/responses/Unauthorized"
+        403:
+          $ref: "#/responses/AccessDenied"
+        404:
+          $ref: "#/responses/NotFound"
+
+  /homes/{home_id}/state:
+    get:
+      operationId: showHomeState
+      summary: Presence state of the specified home.
+      tags:
+        - home
+      security:
+        - oauth:
+            - home.details:read
+      description: This will return the presence state of the specified home.
+      parameters:
+        - $ref: "#/parameters/homeID"
+      responses:
+        200:
+          description: Home state
+          schema:
+            $ref: "#/definitions/HomeState"
         401:
           $ref: "#/responses/Unauthorized"
         403:
@@ -394,6 +418,20 @@ definitions:
       - dateTimeZone
       - temperatureUnit
       - awayRadiusInMeters
+
+  HomeState:
+    type: object
+    properties:
+      presence:
+        description: Presence of residents in this home.
+        type: string
+        enum:
+          - HOME
+          - AWAY
+      presenceLocked:
+        description: Whether presence is locked (whatever that means?).
+        type: boolean
+
 
   TadoSystemType:
     description: The system type of the zone.

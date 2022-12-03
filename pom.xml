@@ -14,11 +14,11 @@
 
   <groupId>click.dobel.tado</groupId>
   <artifactId>tado-exporter-parent</artifactId>
-  <version>5.0.0</version><!-- x-release-please-version -->
+  <version>5.1.0</version><!-- x-release-please-version -->
   <packaging>pom</packaging>
 
   <properties>
-    <kotlin.version>1.7.20</kotlin.version>
+    <kotlin.version>1.7.22</kotlin.version>
     <jdk.version>17</jdk.version>
 
     <logstash-encoder.version>7.2</logstash-encoder.version>
@@ -26,7 +26,7 @@
 
     <kotest.version>5.5.4</kotest.version>
     <kotest-spring.version>1.1.2</kotest-spring.version>
-    <mockk.version>1.13.2</mockk.version>
+    <mockk.version>1.13.3</mockk.version>
     <wiremock.version>2.27.2</wiremock.version>
 
     <maven.compiler.target>${jdk.version}</maven.compiler.target>
@@ -43,8 +43,8 @@
     <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
     <go-offline-maven-plugin.version>1.2.8</go-offline-maven-plugin.version>
 
-    <swagger-codegen-maven-plugin.version>2.4.28</swagger-codegen-maven-plugin.version>
-    <swagger-annotations.version>1.6.8</swagger-annotations.version>
+    <swagger-codegen-maven-plugin.version>2.4.29</swagger-codegen-maven-plugin.version>
+    <swagger-annotations.version>1.6.9</swagger-annotations.version>
   </properties>
 
   <modules>
@@ -58,12 +58,12 @@
       <dependency>
         <groupId>click.dobel.tado</groupId>
         <artifactId>tado-api</artifactId>
-        <version>5.0.0</version><!-- x-release-please-version -->
+        <version>5.1.0</version><!-- x-release-please-version -->
       </dependency>
       <dependency>
         <groupId>click.dobel.tado</groupId>
         <artifactId>tado-util</artifactId>
-        <version>5.0.0</version><!-- x-release-please-version -->
+        <version>5.1.0</version><!-- x-release-please-version -->
       </dependency>
 
       <dependency>
@@ -89,6 +89,16 @@
       <dependency>
         <groupId>io.kotest</groupId>
         <artifactId>kotest-runner-junit5-jvm</artifactId>
+        <version>${kotest.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.kotest</groupId>
+        <artifactId>kotest-common-jvm</artifactId>
+        <version>${kotest.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.kotest</groupId>
+        <artifactId>kotest-framework-api-jvm</artifactId>
         <version>${kotest.version}</version>
       </dependency>
       <dependency>

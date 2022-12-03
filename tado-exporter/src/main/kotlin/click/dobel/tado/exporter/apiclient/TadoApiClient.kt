@@ -1,6 +1,7 @@
 package click.dobel.tado.exporter.apiclient
 
 import click.dobel.tado.api.HomeInfo
+import click.dobel.tado.api.HomeState
 import click.dobel.tado.api.User
 import click.dobel.tado.api.WeatherReport
 import click.dobel.tado.api.ZoneState
@@ -35,6 +36,10 @@ class TadoApiClient(
   @Cacheable("HomeInfo", sync = true)
   fun homes(homeId: Int): HomeInfo =
     get("$HOMES_PATH/${homeId}")
+
+  @Cacheable("HomeState", sync = true)
+  fun homeState(homeId: Int): HomeState =
+    get("$HOMES_PATH/${homeId}/state")
 
   @Cacheable("Zone", sync = true)
   fun zones(homeId: Int): Zones =

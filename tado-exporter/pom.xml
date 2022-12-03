@@ -8,7 +8,7 @@
   <parent>
     <groupId>click.dobel.tado</groupId>
     <artifactId>tado-exporter-parent</artifactId>
-    <version>5.0.0</version><!-- x-release-please-version -->
+    <version>5.1.0</version><!-- x-release-please-version -->
     <relativePath>../pom.xml</relativePath>
   </parent>
 

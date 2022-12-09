@@ -12,7 +12,7 @@ jobs:
       release-created: ${{ steps.release.outputs.release_created }}
       ref: ${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }}
     steps:
-      - uses: GoogleCloudPlatform/release-please-action@v3.6
+      - uses: GoogleCloudPlatform/release-please-action@v3.7
         id: release
         with:
           package-name: tado-exporter

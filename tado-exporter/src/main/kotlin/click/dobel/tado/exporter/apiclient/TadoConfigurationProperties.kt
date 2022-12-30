@@ -1,10 +1,8 @@
 package click.dobel.tado.exporter.apiclient
 
 import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.boot.context.properties.ConstructorBinding
 import java.time.Duration
 
-@ConstructorBinding
 @ConfigurationProperties("tado")
 class TadoConfigurationProperties(
   val username: String,

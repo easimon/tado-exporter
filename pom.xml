@@ -27,7 +27,7 @@
     <kotest.version>5.5.4</kotest.version>
     <kotest-spring.version>1.1.2</kotest-spring.version>
     <mockk.version>1.13.3</mockk.version>
-    <wiremock.version>2.27.2</wiremock.version>
+    <wiremock.version>2.35.0</wiremock.version>
 
     <maven.compiler.target>${jdk.version}</maven.compiler.target>
     <maven.compiler.source>${jdk.version}</maven.compiler.source>
@@ -125,7 +125,7 @@
 
       <dependency>
         <groupId>com.github.tomakehurst</groupId>
-        <artifactId>wiremock</artifactId>
+        <artifactId>wiremock-jre8-standalone</artifactId>
         <version>${wiremock.version}</version>
       </dependency>
     </dependencies>

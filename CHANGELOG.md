@@ -1,5 +1,16 @@
 # Changelog
 
+## [6.0.0](https://github.com/easimon/tado-exporter/compare/5.1.0...6.0.0) (2022-12-30)
+
+
+### ⚠ BREAKING CHANGES
+
+* upgrade to spring boot 3
+
+### Features
+
+* upgrade to spring boot 3 ([9612b52](https://github.com/easimon/tado-exporter/commit/9612b52d2186a3176681f4b9d2370f35003ae71b))
+
 ## [5.1.0](https://github.com/easimon/tado-exporter/compare/5.0.0...5.1.0) (2022-11-05)
 
 

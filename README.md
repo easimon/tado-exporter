@@ -40,7 +40,7 @@ metrics are available at `http://host:8080/prometheus`.
 Build the application as described above, and then run the following command:
 
 ```bash
-$ TADO_USERNAME=your_username TADO_PASSWORD=your_password java -jar tado-exporter/target/tado-exporter-6.0.0.jar # x-release-please-version
+$ TADO_USERNAME=your_username TADO_PASSWORD=your_password java -jar tado-exporter/target/tado-exporter-6.1.0.jar # x-release-please-version
 ```
 
 ### Docker Container
@@ -48,7 +48,7 @@ $ TADO_USERNAME=your_username TADO_PASSWORD=your_password java -jar tado-exporte
 Either build the application as described above, or download the Docker image.
 
 ```bash
-$ export TADO_EXPORTER_IMAGE=ghcr.io/easimon/tado-exporter:6.0.0 # x-release-please-version
+$ export TADO_EXPORTER_IMAGE=ghcr.io/easimon/tado-exporter:6.1.0 # x-release-please-version
 $ docker run -e TADO_USERNAME=your_username -e TADO_PASSWORD=your_password $TADO_EXPORTER_IMAGE
 ```
 

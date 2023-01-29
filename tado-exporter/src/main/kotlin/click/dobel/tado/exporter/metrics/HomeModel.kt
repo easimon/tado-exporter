@@ -30,17 +30,31 @@ data class HomeModel(
     val zonesToAdd = newZones.filter { !knownZones.contains(it) }.toSet()
     val zonesToDelete = knownZones.filter { !newZones.contains(it) }.toSet()
 
+    logZones("Old zones", knownZones)
+    logZones("New zones", newZones)
+    logZones("To Add   ", zonesToAdd)
+    logZones("To Delete", zonesToDelete)
+
     knownZones.removeAll(zonesToDelete)
     knownZones.addAll(zonesToAdd)
 
     LOGGER.info(
-      "Zones for home '{}' ({}) updated, {} zones added, {} zones deleted.",
+      "Zones for home '{}' ({}) updated, {} zones total, {} zones added, {} zones deleted.",
       userHomes.name,
       userHomes.id,
+      knownZones.size,
       zonesToAdd.size,
       zonesToDelete.size
     )
 
     return zonesToAdd
+  }
+
+  private fun logZones(prefix: String, zones: Collection<Zone>) {
+    LOGGER.debug(
+      "${prefix}: {} ({})",
+      zones.size,
+      zones.joinToString(separator = ", ") { "${it.id}: ${it.name}" }
+    )
   }
 }

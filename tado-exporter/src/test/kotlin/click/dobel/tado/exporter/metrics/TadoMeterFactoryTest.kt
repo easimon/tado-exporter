@@ -23,7 +23,7 @@ class TadoMeterFactoryTest : StringSpec({
 
   "zoneTags creates Tags for home Id and zone Id" {
     val home = me.homes.first()
-    val zone = livingRoom
+    val zone = ZoneEntry(livingRoom)
     zoneTags(home, zone).toList() shouldContainExactlyInAnyOrder Tags.of(
       TadoMeterFactory.TAG_HOME_ID, home.id.toString(),
       TadoMeterFactory.TAG_ZONE_ID, zone.id.toString(),
@@ -55,7 +55,7 @@ class TadoMeterFactoryTest : StringSpec({
 
     val factory = TadoMeterFactory(meterRegistry, tadoApiClient)
     val home = me.homes.first()
-    val zone = livingRoom
+    val zone = ZoneEntry(livingRoom)
 
     factory.createZoneMeters(home, listOf(zone))
 
@@ -77,7 +77,7 @@ class TadoMeterFactoryTest : StringSpec({
 
     val factory = TadoMeterFactory(meterRegistry, tadoApiClient)
     val home = me.homes.first()
-    val zone = bedRoom
+    val zone = ZoneEntry(bedRoom)
 
     factory.createZoneMeters(home, listOf(zone))
 
@@ -98,7 +98,7 @@ class TadoMeterFactoryTest : StringSpec({
 
     val factory = TadoMeterFactory(meterRegistry, tadoApiClient)
     val home = me.homes.first()
-    val zone = hotWaterZone
+    val zone = ZoneEntry(hotWaterZone)
 
     factory.createZoneMeters(home, listOf(zone))
 

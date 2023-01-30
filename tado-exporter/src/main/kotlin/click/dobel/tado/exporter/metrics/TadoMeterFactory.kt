@@ -7,7 +7,6 @@ import click.dobel.tado.api.HotWaterZoneSetting
 import click.dobel.tado.api.Power
 import click.dobel.tado.api.TadoSystemType
 import click.dobel.tado.api.UserHomes
-import click.dobel.tado.api.Zone
 import click.dobel.tado.exporter.apiclient.TadoApiClient
 import click.dobel.tado.exporter.metrics.TadoMeterFactory.Companion.TAG_HOME_ID
 import click.dobel.tado.exporter.metrics.TadoMeterFactory.Companion.TAG_ZONE_ID
@@ -38,6 +37,7 @@ class TadoMeterFactory(
     internal const val TEMPERATURE_MEASURED_FAHRENHEIT = "temperature_measured_fahrenheit"
     internal const val HUMIDITY_MEASURED_PERCENTAGE = "humidity_measured_percentage"
     internal const val IS_WINDOW_OPEN = "is_window_open"
+    internal const val IS_BATTERY_LOW = "is_battery_low" // TODO
 
     internal const val HEATING_POWER_PERCENTAGE = "heating_power_percentage"
     internal const val TEMPERATURE_SET_CELSIUS = "temperature_set_celsius"
@@ -88,11 +88,11 @@ class TadoMeterFactory(
     ) { h ->
       tadoApiClient.homeState(h.id).presence == HomeState.PresenceEnum.HOME
     }
-    
+
     return home
   }
 
-  fun createZoneMeters(home: UserHomes, zones: Collection<Zone>) {
+  fun createZoneMeters(home: UserHomes, zones: Collection<ZoneEntry>) {
     zones.forEach { zone ->
       val zoneTags = zoneTags(home, zone)
 
@@ -100,12 +100,15 @@ class TadoMeterFactory(
         TadoSystemType.HEATING -> {
           createHeatingZoneMeters(home, zone, zoneTags)
         }
+
         TadoSystemType.AIR_CONDITIONING -> {
           createCoolingZoneMeters(home, zone, zoneTags)
         }
+
         TadoSystemType.HOT_WATER -> {
           createHotWaterZoneMeters(home, zone, zoneTags)
         }
+
         else -> {
           LOGGER.warn("Unknown zone type {} for zone '{}' ({}).", zone.type, zone.name, zone.id)
         }
@@ -113,7 +116,7 @@ class TadoMeterFactory(
     }
   }
 
-  private fun createGenericZoneMeters(home: UserHomes, zone: Zone, zoneTags: Tags) {
+  private fun createGenericZoneMeters(home: UserHomes, zone: ZoneEntry, zoneTags: Tags) {
     registerGauge(
       TEMPERATURE_MEASURED_CELSIUS,
       "The currently measured temperature in degrees celsius.",
@@ -150,7 +153,7 @@ class TadoMeterFactory(
     }
   }
 
-  private fun createHeatingZoneMeters(home: UserHomes, zone: Zone, zoneTags: Tags) {
+  private fun createHeatingZoneMeters(home: UserHomes, zone: ZoneEntry, zoneTags: Tags) {
     LOGGER.info("Adding gauges for heating zone '{}' ({}).", zone.name, zone.id)
     createGenericZoneMeters(home, zone, zoneTags)
     registerGauge(
@@ -187,7 +190,7 @@ class TadoMeterFactory(
     }
   }
 
-  private fun createCoolingZoneMeters(home: UserHomes, zone: Zone, zoneTags: Tags) {
+  private fun createCoolingZoneMeters(home: UserHomes, zone: ZoneEntry, zoneTags: Tags) {
     // TODO: check if these values are available in AC zones.
     LOGGER.info("Adding gauges for AC zone '{}' ({}).", zone.name, zone.id)
     createGenericZoneMeters(home, zone, zoneTags)
@@ -217,7 +220,7 @@ class TadoMeterFactory(
     }
   }
 
-  private fun createHotWaterZoneMeters(home: UserHomes, zone: Zone, zoneTags: Tags) {
+  private fun createHotWaterZoneMeters(home: UserHomes, zone: ZoneEntry, zoneTags: Tags) {
     LOGGER.info("Adding gauges for hot water zone '{}' ({}).", zone.name, zone.id)
     registerBooleanGauge(
       IS_ZONE_POWERED,
@@ -269,7 +272,7 @@ internal fun homeTags(home: UserHomes) =
     Tag.of(TAG_HOME_ID, home.id.toString())
   )
 
-internal fun zoneTags(home: UserHomes, zone: Zone) =
+internal fun zoneTags(home: UserHomes, zone: ZoneEntry) =
   homeTags(home).and(
     Tags.of(
       Tag.of(TAG_ZONE_ID, zone.id.toString()),

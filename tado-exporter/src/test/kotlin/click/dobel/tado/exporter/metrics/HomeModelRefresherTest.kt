@@ -2,6 +2,7 @@ package click.dobel.tado.exporter.metrics
 
 import click.dobel.tado.api.UserHomes
 import click.dobel.tado.exporter.apiclient.TadoApiClient
+import click.dobel.tado.exporter.apiclient.model.toEntrySet
 import io.kotest.core.spec.style.StringSpec
 import io.mockk.every
 import io.mockk.just
@@ -35,7 +36,7 @@ internal class HomeModelRefresherTest : StringSpec({
       client.me()
       factory.createHomeMeters(me.homes.first())
       client.zones(homeId)
-      factory.createZoneMeters(me.homes.first(), initialZones.toSet())
+      factory.createZoneMeters(me.homes.first(), initialZones.toEntrySet())
     }
   }
 
@@ -63,9 +64,9 @@ internal class HomeModelRefresherTest : StringSpec({
       client.me()
       factory.createHomeMeters(me.homes.first())
       client.zones(homeId)
-      factory.createZoneMeters(me.homes.first(), initialZones.toSet())
+      factory.createZoneMeters(me.homes.first(), initialZones.toEntrySet())
       client.zones(homeId)
-      factory.createZoneMeters(me.homes.first(), setOf(bedRoom))
+      factory.createZoneMeters(me.homes.first(), setOf(ZoneEntry(bedRoom)))
     }
   }
 })

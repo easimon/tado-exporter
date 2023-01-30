@@ -2,6 +2,7 @@ package click.dobel.tado.exporter.metrics
 
 import click.dobel.tado.api.UserHomes
 import click.dobel.tado.api.Zone
+import click.dobel.tado.exporter.apiclient.model.toEntrySet
 import click.dobel.tado.util.logger
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
@@ -17,40 +18,41 @@ data class HomeModel(
     private val LOGGER = logger()
   }
 
-  private val homeZones: ConcurrentMap<Int, MutableSet<Zone>> = ConcurrentHashMap()
+  private val homeZones: ConcurrentMap<Int, MutableSet<ZoneEntry>> = ConcurrentHashMap()
 
-  private fun homeZones(homeId: Int): MutableSet<Zone> = homeZones.getOrPut(homeId) {
+  private fun homeZones(homeId: Int): MutableSet<ZoneEntry> = homeZones.getOrPut(homeId) {
     mutableSetOf()
   }
 
-  fun updateHomeZones(userHomes: UserHomes, newZones: Collection<Zone>): Set<Zone> {
+  fun updateHomeZones(userHomes: UserHomes, newZones: Collection<Zone>): Set<ZoneEntry> {
     /* since the model is the source of "references to things being monitored by micrometer",
     * try to modify it in a minimal way */
-    val knownZones = homeZones(userHomes.id)
-    val zonesToAdd = newZones.filter { !knownZones.contains(it) }.toSet()
-    val zonesToDelete = knownZones.filter { !newZones.contains(it) }.toSet()
+    val knownZoneEntries = homeZones(userHomes.id)
+    val newZoneEntries = newZones.toEntrySet()
+    val zoneEntriesToAdd = newZoneEntries.filter { !knownZoneEntries.contains(it) }.toSet()
+    val zoneEntriesToDelete = knownZoneEntries.filter { !newZoneEntries.contains(it) }.toSet()
 
-    logZones("Old zones", knownZones)
-    logZones("New zones", newZones)
-    logZones("To Add   ", zonesToAdd)
-    logZones("To Delete", zonesToDelete)
+    logZones("Old zones", knownZoneEntries)
+    logZones("New zones", newZoneEntries)
+    logZones("To Add   ", zoneEntriesToAdd)
+    logZones("To Delete", zoneEntriesToDelete)
 
-    knownZones.removeAll(zonesToDelete)
-    knownZones.addAll(zonesToAdd)
+    knownZoneEntries.removeAll(zoneEntriesToDelete)
+    knownZoneEntries.addAll(zoneEntriesToAdd)
 
     LOGGER.info(
       "Zones for home '{}' ({}) updated, {} zones total, {} zones added, {} zones deleted.",
       userHomes.name,
       userHomes.id,
-      knownZones.size,
-      zonesToAdd.size,
-      zonesToDelete.size
+      knownZoneEntries.size,
+      zoneEntriesToAdd.size,
+      zoneEntriesToDelete.size
     )
 
-    return zonesToAdd
+    return zoneEntriesToAdd
   }
 
-  private fun logZones(prefix: String, zones: Collection<Zone>) {
+  private fun logZones(prefix: String, zones: Collection<ZoneEntry>) {
     LOGGER.debug(
       "${prefix}: {} ({})",
       zones.size,

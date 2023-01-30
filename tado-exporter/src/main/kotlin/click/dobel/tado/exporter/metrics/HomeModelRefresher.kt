@@ -44,9 +44,9 @@ class HomeModelRefresher(
       )
 
       val allZones = tadoApiClient.zones(userHomes.id)
-      val newZones = homeModel.updateHomeZones(userHomes, allZones)
+      val newZoneEntries = homeModel.updateHomeZones(userHomes, allZones)
 
-      tadoMeterFactory.createZoneMeters(userHomes, newZones)
+      tadoMeterFactory.createZoneMeters(userHomes, newZoneEntries)
     }
   }
 }

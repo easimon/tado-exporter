@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.1.1](https://github.com/easimon/tado-exporter/compare/6.1.0...6.1.1) (2023-01-30)
+
+
+### Bug Fixes
+
+* stabilize zone model entries (e.g. on battery state changes) ([bd51bea](https://github.com/easimon/tado-exporter/commit/bd51bea5d5d45f62a186d1e21220354a0fd18a8e))
+
 ## [6.1.0](https://github.com/easimon/tado-exporter/compare/6.0.0...6.1.0) (2023-01-29)
 
 

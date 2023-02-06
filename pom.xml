@@ -24,7 +24,7 @@
     <logstash-encoder.version>7.2</logstash-encoder.version>
     <projectreactor.kotlin.version>1.1.7</projectreactor.kotlin.version>
 
-    <kotest.version>5.5.4</kotest.version>
+    <kotest.version>5.5.5</kotest.version>
     <kotest-spring.version>1.1.2</kotest-spring.version>
     <mockk.version>1.13.4</mockk.version>
     <wiremock.version>2.35.0</wiremock.version>

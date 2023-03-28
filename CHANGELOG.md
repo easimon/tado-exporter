@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.1.2](https://github.com/easimon/tado-exporter/compare/6.1.1...6.1.2) (2023-03-28)
+
+
+### Miscellaneous Chores
+
+* release 6.1.2 ([8e45dd5](https://github.com/easimon/tado-exporter/commit/8e45dd5da9c6f0820d21bd44dc018ea40efa5ea3))
+
 ## [6.1.1](https://github.com/easimon/tado-exporter/compare/6.1.0...6.1.1) (2023-01-30)
 
 

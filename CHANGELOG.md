@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.2.0](https://github.com/easimon/tado-exporter/compare/6.1.2...6.2.0) (2023-04-13)
+
+
+### Features
+
+* suppress metrics for unreachable devices instead reporting NaN ([638e413](https://github.com/easimon/tado-exporter/commit/638e413a7f400c7963d2fb8efa5592730508caee))
+
 ## [6.1.2](https://github.com/easimon/tado-exporter/compare/6.1.1...6.1.2) (2023-03-28)
 
 

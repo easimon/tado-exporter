@@ -20,9 +20,13 @@ management:
 
   metrics:
     use-global-registry: false
-    export:
-      prometheus:
+  prometheus:
+    metrics:
+      export:
         step: PT1M
+
 spring:
   main:
     banner-mode: off
+  profiles:
+    include: local

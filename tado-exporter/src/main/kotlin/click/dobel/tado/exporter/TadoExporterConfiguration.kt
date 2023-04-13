@@ -8,11 +8,13 @@ import click.dobel.tado.api.Zone
 import click.dobel.tado.api.ZoneState
 import click.dobel.tado.exporter.apiclient.TadoConfigurationProperties
 import click.dobel.tado.exporter.metrics.TadoMeterFactory
+import click.dobel.tado.exporter.metrics.ValueFilteringCollectorRegistry
 import click.dobel.tado.util.aop.CallLoggingInterceptor
 import com.github.benmanes.caffeine.cache.Caffeine
 import io.micrometer.core.instrument.Meter
 import io.micrometer.core.instrument.config.MeterFilter
 import io.micrometer.core.instrument.config.MeterFilterReply
+import io.prometheus.client.CollectorRegistry
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.cache.CacheManager
 import org.springframework.cache.annotation.EnableCaching
@@ -72,4 +74,9 @@ class TadoExporterConfiguration {
 
   @Bean
   fun aopLogger() = CallLoggingInterceptor()
+
+  @Bean
+  fun collectorRegistry(configProperties: TadoConfigurationProperties): CollectorRegistry {
+    return ValueFilteringCollectorRegistry(Double.NaN, true)
+  }
 }

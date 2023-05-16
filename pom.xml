@@ -44,7 +44,7 @@
     <go-offline-maven-plugin.version>1.2.8</go-offline-maven-plugin.version>
 
     <swagger-codegen-maven-plugin.version>2.4.31</swagger-codegen-maven-plugin.version>
-    <swagger-annotations.version>1.6.10</swagger-annotations.version>
+    <swagger-annotations.version>1.6.11</swagger-annotations.version>
   </properties>
 
   <modules>

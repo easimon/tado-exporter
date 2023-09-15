@@ -48,7 +48,7 @@ jobs:
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ${DOCKER_REGISTRY} -u ${{ github.actor }} --password-stdin
 
       - name: "Set up QEMU"
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
         with:
           platforms: all
 

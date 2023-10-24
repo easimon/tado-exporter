@@ -21,7 +21,7 @@
     <kotlin.version>1.9.10</kotlin.version>
     <jdk.version>17</jdk.version>
 
-    <logstash-encoder.version>7.3</logstash-encoder.version>
+    <logstash-encoder.version>7.4</logstash-encoder.version>
     <projectreactor.kotlin.version>1.1.7</projectreactor.kotlin.version>
 
     <kotest.version>5.7.2</kotest.version>

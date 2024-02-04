@@ -1,4 +1,5 @@
 {
+  "bootstrap-sha": "3d1faed5580f6efe330ce62d642ed00cc262d560",
   "packages": {
     ".": {
       "release-type": "simple",
@@ -7,7 +8,10 @@
       "include-component-in-tag": false,
       "extra-files": [
         "README.md",
-        "pom.xml"
+        "pom.xml",
+        "tado-api/pom.xml",
+        "tado-util/pom.xml",
+        "tado-exporter/pom.xml"
       ]
     }
   }

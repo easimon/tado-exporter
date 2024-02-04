@@ -14,16 +14,6 @@ jobs:
     steps:
       - uses: GoogleCloudPlatform/release-please-action@v4.0
         id: release
-        with:
-          package-name: tado-exporter
-          include-v-in-tag: false
-          release-type: simple
-          extra-files: |
-            README.md
-            pom.xml
-            tado-api/pom.xml
-            tado-util/pom.xml
-            tado-exporter/pom.xml
 
   trigger-build:
     name: "Trigger build"

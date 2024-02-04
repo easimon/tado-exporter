@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.2.3](https://github.com/easimon/tado-exporter/compare/6.2.2...v6.2.3) (2024-02-04)
+
+
+### Bug Fixes
+
+* trigger release build, updating dependencies ([1276cc7](https://github.com/easimon/tado-exporter/commit/1276cc7d102ce28b30bd132620652f77867b6ad1))
+
 ## [6.2.2](https://github.com/easimon/tado-exporter/compare/6.2.1...6.2.2) (2023-11-06)
 
 

@@ -1,0 +1,14 @@
+{
+  "packages": {
+    ".": {
+      "release-type": "simple",
+      "package-name": "tado-exporter",
+      "include-v-in-tag": false,
+      "include-component-in-tag": false,
+      "extra-files": [
+        "README.md",
+        "pom.xml"
+      ]
+    }
+  }
+}

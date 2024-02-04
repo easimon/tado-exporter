@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.2.4](https://github.com/easimon/tado-exporter/compare/v6.2.3...v6.2.4) (2024-02-04)
+
+
+### Bug Fixes
+
+* update to release-please-action 4 ([fb1d719](https://github.com/easimon/tado-exporter/commit/fb1d719fa8a1dc4d788e4e93c97b31354b4b9db1))
+
 ## [6.2.3](https://github.com/easimon/tado-exporter/compare/6.2.2...v6.2.3) (2024-02-04)
 
 

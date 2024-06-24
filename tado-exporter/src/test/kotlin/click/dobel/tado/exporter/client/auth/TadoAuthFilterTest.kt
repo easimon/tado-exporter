@@ -64,9 +64,9 @@ internal class TadoAuthFilterTest : StringSpec({
     filter.intercept(request, body, execution)
 
     verifySequence {
-      headers.accept = listOf(MediaType.APPLICATION_JSON)
       authClient.token(TadoAuthLoginRequest(tadoConfiguration))
       headers.setBearerAuth(AuthMockMappings.DEFAULT_ACCESS_TOKEN)
+      headers.accept = listOf(MediaType.APPLICATION_JSON)
       execution.execute(request, body)
     }
   }
@@ -97,14 +97,14 @@ internal class TadoAuthFilterTest : StringSpec({
     filter.intercept(request, body, execution)
 
     verifySequence {
-      headers.accept = listOf(MediaType.APPLICATION_JSON)
       authClient.token(TadoAuthLoginRequest(tadoConfiguration))
       headers.setBearerAuth(AuthMockMappings.DEFAULT_ACCESS_TOKEN)
+      headers.accept = listOf(MediaType.APPLICATION_JSON)
       execution.execute(request, body)
 
-      headers.accept = listOf(MediaType.APPLICATION_JSON)
       authClient.token(TadoAuthRefreshRequest(tadoConfiguration, AuthMockMappings.DEFAULT_REFRESH_TOKEN))
       headers.setBearerAuth(AuthMockMappings.DEFAULT_ACCESS_TOKEN)
+      headers.accept = listOf(MediaType.APPLICATION_JSON)
       execution.execute(request, body)
     }
   }
@@ -139,15 +139,15 @@ internal class TadoAuthFilterTest : StringSpec({
     filter.intercept(request, body, execution)
 
     verifySequence {
-      headers.accept = listOf(MediaType.APPLICATION_JSON)
       authClient.token(TadoAuthLoginRequest(tadoConfiguration))
       headers.setBearerAuth(AuthMockMappings.DEFAULT_ACCESS_TOKEN)
+      headers.accept = listOf(MediaType.APPLICATION_JSON)
       execution.execute(request, body)
 
-      headers.accept = listOf(MediaType.APPLICATION_JSON)
       authClient.token(TadoAuthRefreshRequest(tadoConfiguration, AuthMockMappings.DEFAULT_REFRESH_TOKEN))
       authClient.token(TadoAuthLoginRequest(tadoConfiguration))
       headers.setBearerAuth(AuthMockMappings.DEFAULT_ACCESS_TOKEN)
+      headers.accept = listOf(MediaType.APPLICATION_JSON)
       execution.execute(request, body)
     }
   }
@@ -173,7 +173,7 @@ internal class TadoAuthFilterTest : StringSpec({
 
     verifySequence {
       authClient.token(TadoAuthLoginRequest(tadoConfiguration))
-      request.headers wasNot called
+      headers wasNot called
       execution wasNot called
     }
   }

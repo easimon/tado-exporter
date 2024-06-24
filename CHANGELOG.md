@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.3.0](https://github.com/easimon/tado-exporter/compare/6.2.5...6.3.0) (2024-06-24)
+
+
+### Features
+
+* upgrade to spring boot 3.3, rework value-filtering registry ([1c602b3](https://github.com/easimon/tado-exporter/commit/1c602b3d07c3feee765981c0944219ccfdfeaf5e))
+
 ## [6.2.5](https://github.com/easimon/tado-exporter/compare/v6.2.4...6.2.5) (2024-02-04)
 
 

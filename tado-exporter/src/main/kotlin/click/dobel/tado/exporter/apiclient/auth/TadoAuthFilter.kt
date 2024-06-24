@@ -29,8 +29,8 @@ class TadoAuthFilter(
     body: ByteArray,
     execution: ClientHttpRequestExecution
   ): ClientHttpResponse {
-    request.headers.accept = listOf(MediaType.APPLICATION_JSON)
     request.headers.setBearerAuth(getAccessToken())
+    request.headers.accept = listOf(MediaType.APPLICATION_JSON)
     return execution.execute(request, body)
   }
 

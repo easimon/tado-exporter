@@ -40,4 +40,3 @@ class CallLoggingInterceptor : Ordered {
 
   override fun getOrder() = Ordered.LOWEST_PRECEDENCE
 }
-

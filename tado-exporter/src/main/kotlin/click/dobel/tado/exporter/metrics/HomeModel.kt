@@ -3,7 +3,7 @@ package click.dobel.tado.exporter.metrics
 import click.dobel.tado.api.UserHomes
 import click.dobel.tado.api.Zone
 import click.dobel.tado.exporter.apiclient.model.toEntrySet
-import click.dobel.tado.util.logger
+import mu.KLogging
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
 
@@ -14,9 +14,7 @@ data class HomeModel(
   val homes: Map<Int, UserHomes>
 ) {
 
-  companion object {
-    private val LOGGER = logger()
-  }
+  companion object : KLogging()
 
   private val homeZones: ConcurrentMap<Int, MutableSet<ZoneEntry>> = ConcurrentHashMap()
 
@@ -40,23 +38,17 @@ data class HomeModel(
     knownZoneEntries.removeAll(zoneEntriesToDelete)
     knownZoneEntries.addAll(zoneEntriesToAdd)
 
-    LOGGER.info(
-      "Zones for home '{}' ({}) updated, {} zones total, {} zones added, {} zones deleted.",
-      userHomes.name,
-      userHomes.id,
-      knownZoneEntries.size,
-      zoneEntriesToAdd.size,
-      zoneEntriesToDelete.size
-    )
+    logger.info {
+      "Zones for home '${userHomes.name}' (${userHomes.id}) updated, ${knownZoneEntries.size} zones total, " +
+        "${zoneEntriesToAdd.size} zones added, ${zoneEntriesToDelete.size} zones deleted."
+    }
 
     return zoneEntriesToAdd
   }
 
   private fun logZones(prefix: String, zones: Collection<ZoneEntry>) {
-    LOGGER.debug(
-      "${prefix}: {} ({})",
-      zones.size,
-      zones.joinToString(separator = ", ") { "${it.id}: ${it.name}" }
-    )
+    logger.debug {
+      "${prefix}: ${zones.size} (${zones.joinToString(separator = ", ") { "${it.id}: ${it.name}" }})"
+    }
   }
 }

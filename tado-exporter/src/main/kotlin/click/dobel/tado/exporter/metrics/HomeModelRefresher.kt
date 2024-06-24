@@ -1,7 +1,7 @@
 package click.dobel.tado.exporter.metrics
 
 import click.dobel.tado.exporter.apiclient.TadoApiClient
-import click.dobel.tado.util.logger
+import mu.KLogging
 import org.springframework.stereotype.Component
 
 @Component
@@ -9,14 +9,13 @@ class HomeModelRefresher(
   private val tadoMeterFactory: TadoMeterFactory,
   private val tadoApiClient: TadoApiClient
 ) {
-  companion object {
-    private val LOGGER = logger()
+  companion object : KLogging() {
 
     private fun initializeHomeModel(
       tadoMeterFactory: TadoMeterFactory,
       tadoApiClient: TadoApiClient
     ): HomeModel {
-      LOGGER.info("Initializing homes from API.")
+      logger.info("Initializing homes from API.")
       val result = HomeModel(
         tadoApiClient.me().homes
           .map { userHomes -> tadoMeterFactory.createHomeMeters(userHomes) }
@@ -24,7 +23,7 @@ class HomeModelRefresher(
           .toMap()
       )
 
-      LOGGER.info("{} homes initialized.", result.homes.size)
+      logger.info { "${result.homes.size} homes initialized." }
       return result
     }
   }
@@ -34,14 +33,12 @@ class HomeModelRefresher(
   }
 
   fun refreshHomeModel() {
-    LOGGER.info("Refreshing zones for all known homes.")
+    logger.info("Refreshing zones for all known homes.")
 
     homeModel.homes.values.forEach { userHomes ->
-      LOGGER.info(
-        "Refreshing zones for home '{}' ({}).",
-        userHomes.name,
-        userHomes.id
-      )
+      logger.info {
+        "Refreshing zones for home '${userHomes.name}' (${userHomes.id})."
+      }
 
       val allZones = tadoApiClient.zones(userHomes.id)
       val newZoneEntries = homeModel.updateHomeZones(userHomes, allZones)

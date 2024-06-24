@@ -4,7 +4,7 @@ import click.dobel.tado.exporter.apiclient.TadoConfigurationProperties
 import click.dobel.tado.exporter.apiclient.auth.model.request.TadoAuthLoginRequest
 import click.dobel.tado.exporter.apiclient.auth.model.request.TadoAuthRefreshRequest
 import click.dobel.tado.exporter.apiclient.auth.model.response.TadoAuthResponse
-import click.dobel.tado.util.logger
+import mu.KLogging
 import org.springframework.http.HttpRequest
 import org.springframework.http.MediaType
 import org.springframework.http.client.ClientHttpRequestExecution
@@ -20,9 +20,7 @@ class TadoAuthFilter(
   private val authClient: AuthClient,
 ) : ClientHttpRequestInterceptor {
 
-  private companion object {
-    private val LOGGER = logger()
-  }
+  private companion object : KLogging()
 
   private val lastAuthResponse = AtomicReference<TadoAuthResponse?>()
 
@@ -57,16 +55,16 @@ class TadoAuthFilter(
   }
 
   private fun newAuth(): TadoAuthResponse {
-    LOGGER.info("Obtaining new bearer token for {}.", configuration.username)
+    logger.info { "Obtaining new bearer token for ${configuration.username}." }
     return authClient.token(TadoAuthLoginRequest(configuration))
   }
 
   private fun refreshAuth(refreshToken: String): TadoAuthResponse {
-    LOGGER.info("Refreshing bearer token.")
+    logger.info("Refreshing bearer token.")
     return try {
       authClient.token(TadoAuthRefreshRequest(configuration, refreshToken))
     } catch (ex: RestClientException) {
-      LOGGER.warn("Refreshing bearer token failed.", ex)
+      logger.warn(ex) { "Refreshing bearer token failed." }
       newAuth()
     }
   }

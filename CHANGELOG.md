@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.3.1](https://github.com/easimon/tado-exporter/compare/6.3.0...6.3.1) (2025-01-12)
+
+
+### Bug Fixes
+
+* add explicit JsonCreator to Zones class, required by current Jackson ([58f9a6f](https://github.com/easimon/tado-exporter/commit/58f9a6fa2e16c4187238f9a2c1a31eb5f05233ad))
+
 ## [6.3.0](https://github.com/easimon/tado-exporter/compare/6.2.5...6.3.0) (2024-06-24)
 
 

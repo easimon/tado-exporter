@@ -36,13 +36,13 @@ class TadoAuthFilter(
 
   private fun updateLastAuthResponse(response: TadoAuthResponse): String {
     lastAuthResponse.set(response)
+    logger.info { "New bearer token obtained, expires in ${response.expiresIn} seconds, at ${response.expiresAt}." }
     return response.accessToken
   }
 
   private fun getAccessToken(): String {
     val auth = lastAuthResponse.get()
 
-    // TODO: how to synchronize parallel requests properly in Rx
     return when {
       auth == null -> newAuth()
         .run { updateLastAuthResponse(this) }

@@ -4,6 +4,7 @@ import click.dobel.tado.exporter.apiclient.TadoConfigurationProperties
 import click.dobel.tado.exporter.apiclient.auth.model.request.TadoAuthRequest
 import click.dobel.tado.exporter.apiclient.auth.model.response.TadoAuthResponse
 import click.dobel.tado.exporter.apiclient.postForObject
+import click.dobel.tado.exporter.ratelimit.RateLimiter
 import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestTemplate
@@ -11,19 +12,24 @@ import org.springframework.web.client.RestTemplate
 @Component
 class AuthClient(
   private val configuration: TadoConfigurationProperties,
-  restTemplateBuilder: RestTemplateBuilder
+  private val authRateLimiter: RateLimiter,
+  restTemplateBuilder: RestTemplateBuilder,
 ) {
 
   companion object {
     internal const val SERVICE_ID = "tado-auth"
-    const val TOKEN_PATH = "/oauth/token"
+    internal const val TOKEN_PATH = "/oauth/token"
   }
 
   private val restTemplate: RestTemplate = restTemplateBuilder
     .build()
 
-  fun token(auth: TadoAuthRequest): TadoAuthResponse = restTemplate.postForObject(
-    "${configuration.authServer}$TOKEN_PATH",
-    auth.asRequestEntity()
-  )
+  fun token(auth: TadoAuthRequest): TadoAuthResponse {
+    return authRateLimiter.executeRateLimited {
+      restTemplate.postForObject(
+        "${configuration.authServer}$TOKEN_PATH",
+        auth.asRequestEntity()
+      )
+    }
+  }
 }

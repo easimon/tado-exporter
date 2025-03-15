@@ -1,10 +1,11 @@
-package click.dobel.tado.exporter.client.auth
+package click.dobel.tado.exporter.apiclient.auth
 
 import click.dobel.tado.exporter.apiclient.TadoConfigurationProperties
-import click.dobel.tado.exporter.apiclient.auth.AuthClient
+import click.dobel.tado.exporter.apiclient.auth.AuthClientIntegrationTest.AuthClientIntegrationTestConfig
 import click.dobel.tado.exporter.apiclient.auth.model.request.TadoAuthLoginRequest
 import click.dobel.tado.exporter.apiclient.auth.model.request.TadoAuthRefreshRequest
 import click.dobel.tado.exporter.apiclient.auth.model.request.TadoAuthRequest
+import click.dobel.tado.exporter.ratelimit.RateLimiter
 import click.dobel.tado.exporter.test.AuthMockMappings
 import click.dobel.tado.exporter.test.IntegrationTest
 import click.dobel.tado.exporter.test.WireMockSupport
@@ -14,18 +15,37 @@ import com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
 import io.kotest.matchers.shouldBe
+import org.springframework.boot.test.context.TestConfiguration
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Import
+import org.springframework.context.annotation.Primary
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
+import org.springframework.web.client.HttpClientErrorException
 
 @IntegrationTest
+@Import(AuthClientIntegrationTestConfig::class)
 class AuthClientIntegrationTest(
   authClient: AuthClient,
   configuration: TadoConfigurationProperties,
   private val mock: WireMockSupport
 ) : StringSpec({
+
+  beforeTest {
+    mock.authServer.start()
+    mock.authServer.stubFor(AuthMockMappings.successfulUsernamePasswordAuthMapping())
+
+  }
+
+  afterTest {
+    try {
+      mock.authServer.findAllUnmatchedRequests().size shouldBe 0
+    } finally {
+      mock.authServer.resetAll()
+      mock.authServer.shutdown()
+    }
+  }
 
   "authenticates correctly" {
     val result = authClient.token(TadoAuthLoginRequest(configuration))
@@ -57,7 +77,7 @@ class AuthClientIntegrationTest(
 
     mock.authServer.stubFor(AuthMockMappings.failedRefreshAuthMapping())
 
-    shouldThrow<Exception> {
+    shouldThrow<HttpClientErrorException> {
       authClient.token(TadoAuthRefreshRequest(configuration, REFRESH_TOKEN))
     }
 
@@ -74,19 +94,15 @@ class AuthClientIntegrationTest(
 
     mock.authServer.allServeEvents.size shouldBe 1
   }
-
 }) {
-  override suspend fun beforeTest(testCase: TestCase) {
-    mock.authServer.start()
-    mock.authServer.stubFor(AuthMockMappings.successfulUsernamePasswordAuthMapping())
-  }
-
-  override suspend fun afterTest(testCase: TestCase, result: TestResult) {
-    try {
-      mock.authServer.findAllUnmatchedRequests().size shouldBe 0
-    } finally {
-      mock.authServer.resetAll()
-      mock.authServer.shutdown()
+  @TestConfiguration
+  internal class AuthClientIntegrationTestConfig {
+    @Bean
+    @Primary
+    fun authNoRateLimiter(): RateLimiter = object : RateLimiter {
+      override fun <T> executeRateLimited(block: () -> T): T {
+        return block()
+      }
     }
   }
 }

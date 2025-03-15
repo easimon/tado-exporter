@@ -11,7 +11,9 @@ import click.dobel.tado.exporter.metrics.TadoMeterFactory
 import click.dobel.tado.exporter.metrics.ValueFilteringPrometheusRegistry
 import click.dobel.tado.util.aop.CallLoggingInterceptor
 import com.github.benmanes.caffeine.cache.Caffeine
+import com.github.benmanes.caffeine.cache.stats.StatsCounter
 import io.micrometer.core.instrument.Meter
+import io.micrometer.core.instrument.MeterRegistry
 import io.micrometer.core.instrument.config.MeterFilter
 import io.micrometer.core.instrument.config.MeterFilterReply
 import io.prometheus.metrics.model.registry.PrometheusRegistry
@@ -44,12 +46,13 @@ class TadoExporterConfiguration {
 
   fun cacheNames(): Array<String> = API_CLASSES.map { it.simpleName!! }.toTypedArray()
 
-  // cache is only used to cache shelly http responses during a single metrics call
+  // cache is only used to cache tado http responses during a single metrics call
   // any reasonably short value (shorter than scrape interval) will so
   @Bean
-  fun caffeineConfig(): Caffeine<Any, Any> =
+  fun caffeineConfig(meterRegistry: MeterRegistry): Caffeine<Any, Any> =
     Caffeine
       .newBuilder()
+      .recordStats { StatsCounter.disabledStatsCounter() }
       .expireAfterWrite(10, TimeUnit.SECONDS)
 
   @Bean

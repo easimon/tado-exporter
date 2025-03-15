@@ -42,7 +42,6 @@ class TadoAuthFilter(
   private fun getAccessToken(): String {
     val auth = lastAuthResponse.get()
 
-    // TODO: how to synchronize parallel requests properly in Rx
     return when {
       auth == null -> newAuth()
         .run { updateLastAuthResponse(this) }

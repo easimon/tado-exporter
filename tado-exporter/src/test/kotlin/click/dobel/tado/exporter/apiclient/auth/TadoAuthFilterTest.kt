@@ -1,7 +1,5 @@
-package click.dobel.tado.exporter.client.auth
+package click.dobel.tado.exporter.apiclient.auth
 
-import click.dobel.tado.exporter.apiclient.auth.AuthClient
-import click.dobel.tado.exporter.apiclient.auth.TadoAuthFilter
 import click.dobel.tado.exporter.apiclient.auth.model.request.TadoAuthLoginRequest
 import click.dobel.tado.exporter.apiclient.auth.model.request.TadoAuthRefreshRequest
 import click.dobel.tado.exporter.apiclient.auth.model.response.TadoAuthResponse

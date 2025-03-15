@@ -1,6 +1,5 @@
-package click.dobel.tado.exporter.client
+package click.dobel.tado.exporter.apiclient
 
-import click.dobel.tado.exporter.apiclient.TadoApiClient
 import click.dobel.tado.exporter.test.ApiMockMappings
 import click.dobel.tado.exporter.test.AuthMockMappings
 import click.dobel.tado.exporter.test.IntegrationTest

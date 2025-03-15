@@ -9,6 +9,8 @@ import click.dobel.tado.api.ZoneState
 import click.dobel.tado.exporter.apiclient.TadoConfigurationProperties
 import click.dobel.tado.exporter.metrics.TadoMeterFactory
 import click.dobel.tado.exporter.metrics.ValueFilteringPrometheusRegistry
+import click.dobel.tado.exporter.ratelimit.OncePerIntervalRateLimiter
+import click.dobel.tado.exporter.ratelimit.RateLimiter
 import click.dobel.tado.util.aop.CallLoggingInterceptor
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.stats.StatsCounter
@@ -25,6 +27,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.scheduling.annotation.EnableScheduling
 import java.util.concurrent.TimeUnit
+import kotlin.time.Duration.Companion.minutes
 
 @Configuration
 @EnableCaching
@@ -74,6 +77,12 @@ class TadoExporterConfiguration {
       }
     }
   }
+
+  @Bean
+  fun authRateLimiter(): RateLimiter = OncePerIntervalRateLimiter(
+    "Authentication attempt",
+    1.minutes
+  )
 
   @Bean
   fun aopLogger() = CallLoggingInterceptor()

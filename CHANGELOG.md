@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.4.0](https://github.com/easimon/tado-exporter/compare/6.3.1...6.4.0) (2025-03-15)
+
+
+### Features
+
+* introduce a rate limit of one attempt per minute on authentication ([c530643](https://github.com/easimon/tado-exporter/commit/c530643fbe30de5f9cf658f5eb2a8d14bab1e535))
+
 ## [6.3.1](https://github.com/easimon/tado-exporter/compare/6.3.0...6.3.1) (2025-01-12)
 
 

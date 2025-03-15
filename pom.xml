@@ -14,7 +14,7 @@
 
   <groupId>click.dobel.tado</groupId>
   <artifactId>tado-exporter-parent</artifactId>
-  <version>6.3.1</version><!-- x-release-please-version -->
+  <version>6.4.0</version><!-- x-release-please-version -->
   <packaging>pom</packaging>
 
   <properties>
@@ -61,12 +61,12 @@
       <dependency>
         <groupId>click.dobel.tado</groupId>
         <artifactId>tado-api</artifactId>
-        <version>6.3.1</version><!-- x-release-please-version -->
+        <version>6.4.0</version><!-- x-release-please-version -->
       </dependency>
       <dependency>
         <groupId>click.dobel.tado</groupId>
         <artifactId>tado-util</artifactId>
-        <version>6.3.1</version><!-- x-release-please-version -->
+        <version>6.4.0</version><!-- x-release-please-version -->
       </dependency>
 
       <dependency>

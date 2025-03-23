@@ -5,29 +5,31 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.Instant
 
 data class TadoAuthResponse(
-
   @JsonProperty("access_token")
   val accessToken: String,
-  @JsonProperty("token_type")
-  val tokenType: String,
+  @JsonProperty("expires_in")
+  override val expiresInSeconds: Long,
   @JsonProperty("refresh_token")
   val refreshToken: String,
-  @JsonProperty("expires_in")
-  val expiresIn: Long,
   @JsonProperty("scope")
   val scope: String,
-  @JsonProperty("jti")
-  val jti: String
-) {
-
-  companion object {
-    const val EXPIRY_RESERVE = 10L
-  }
-
+  @JsonProperty("token_type")
+  val tokenType: String,
+  @JsonProperty("userId")
+  val userId: String,
   @JsonIgnore
-  val expiresAt: Instant = Instant.now()
-    .plusSeconds(expiresIn)
-    .minusSeconds(EXPIRY_RESERVE)
-
-  fun isExpired() = Instant.now() > expiresAt
+  override val creation: Instant = Instant.now()
+) : Expiring {
+  companion object {
+    fun fromPersistedRefreshToken(refreshToken: String): TadoAuthResponse {
+      return TadoAuthResponse(
+        accessToken = "invalid",
+        expiresInSeconds = -1L,
+        refreshToken = refreshToken,
+        scope = "offline_access",
+        tokenType = "invalid",
+        userId = "unknown"
+      )
+    }
+  }
 }

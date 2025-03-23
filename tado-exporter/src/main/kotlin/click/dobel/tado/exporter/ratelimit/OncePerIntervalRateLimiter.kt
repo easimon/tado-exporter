@@ -1,19 +1,23 @@
 package click.dobel.tado.exporter.ratelimit
 
-import click.dobel.tado.exporter.apiclient.auth.RateLimitException
 import java.time.Clock
 import java.time.Instant
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.time.Duration
 import kotlin.time.toJavaDuration
 
-class OncePerIntervalRateLimiter(
+class OncePerIntervalRateLimiter internal /* for tests */ constructor(
   private val usecase: String,
   interval: Duration,
-  private val clock: Clock = Clock.systemUTC()
+  private val clock: Clock
 ) : RateLimiter {
   private val interval = interval.toJavaDuration()
   private val lastExecution = AtomicReference(Instant.MIN)
+
+  constructor(
+    usecase: String,
+    duration: Duration
+  ) : this(usecase, duration, Clock.systemUTC())
 
   override fun <T> executeRateLimited(block: () -> T): T {
     checkRateLimit()

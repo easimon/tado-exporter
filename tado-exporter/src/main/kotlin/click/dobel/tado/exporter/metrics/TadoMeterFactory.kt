@@ -27,6 +27,8 @@ class TadoMeterFactory(
   companion object : KLogging() {
     internal const val PREFIX = "tado_"
 
+    internal const val AUHTENTICATED = "authenticated"
+
     internal const val SOLAR_INTENSITY_PERCENTAGE = "solar_intensity_percentage"
     internal const val TEMPERATURE_OUTSIDE_CELSIUS = "temperature_outside_celsius"
     internal const val TEMPERATURE_OUTSIDE_FAHRENHEIT = "temperature_outside_fahrenheit"
@@ -47,6 +49,17 @@ class TadoMeterFactory(
     internal const val TAG_ZONE_ID = "zone_id"
     internal const val TAG_ZONE_NAME = "zone_name"
     internal const val TAG_ZONE_TYPE = "zone_type"
+  }
+
+  init {
+    createStatusMeters()
+  }
+
+  private fun createStatusMeters() {
+    logger.info { "Adding tado-exporter status meters." }
+    registerBooleanGauge(AUHTENTICATED, "Authentication state of tado exporter", Tags.empty(), tadoApiClient) {
+      it.isAuthenticated
+    }
   }
 
   fun createHomeMeters(home: UserHomes): UserHomes {

@@ -5,22 +5,27 @@ import click.dobel.tado.api.HomeState
 import click.dobel.tado.api.User
 import click.dobel.tado.api.WeatherReport
 import click.dobel.tado.api.ZoneState
-import click.dobel.tado.exporter.apiclient.auth.TadoAuthFilter
+import click.dobel.tado.exporter.apiclient.auth.TadoAuthenticator
+import click.dobel.tado.exporter.apiclient.auth.model.accesstoken.AccessToken
+import click.dobel.tado.exporter.apiclient.logging.loggingIfConfigured
 import click.dobel.tado.exporter.apiclient.model.Zones
-import click.dobel.tado.util.aop.Logged
+import mu.KotlinLogging
 import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.cache.annotation.Cacheable
+import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
-import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.ResourceAccessException
+import org.springframework.web.client.RestClient
 
 @Component
 class TadoApiClient(
   private val configuration: TadoConfigurationProperties,
-  authFilter: TadoAuthFilter,
+  private val authenticationState: TadoAuthenticator,
   restTemplateBuilder: RestTemplateBuilder
 ) {
 
   companion object {
+    private val logger = KotlinLogging.logger {}
     const val BASE_URL = "/api/v2"
 
     const val ME_PATH = "/me"
@@ -29,6 +34,8 @@ class TadoApiClient(
     const val STATE_PATH = "/state"
     const val WEATHER_PATH = "/weather"
   }
+
+  val isAuthenticated: Boolean get() = authenticationState.accessToken is AccessToken.BearerToken
 
   @Cacheable("User", sync = true)
   fun me() = get<User>(ME_PATH)
@@ -46,19 +53,32 @@ class TadoApiClient(
     get("$HOMES_PATH/${homeId}/$ZONES_PATH")
 
   @Cacheable("ZoneState", sync = true)
-  @Logged("Retrieving fresh zone state for HomeId {}, ZoneId {}.", ["homeId", "zoneId"])
-  fun zoneState(homeId: Int, zoneId: Int): ZoneState =
-    get("$HOMES_PATH/${homeId}/$ZONES_PATH/${zoneId}/$STATE_PATH")
+  fun zoneState(homeId: Int, zoneId: Int): ZoneState = logger
+    .info { "Retrieving fresh zone state for HomeId $homeId, ZoneId $zoneId." }
+    .run { get("$HOMES_PATH/${homeId}/$ZONES_PATH/${zoneId}/$STATE_PATH") }
 
   @Cacheable("WeatherReport", sync = true)
-  @Logged("Retrieving fresh weather report for HomeId {}.", ["homeId"])
-  fun weather(homeId: Int): WeatherReport =
-    get("$HOMES_PATH/${homeId}/$WEATHER_PATH")
+  fun weather(homeId: Int): WeatherReport = logger
+    .info { "Retrieving fresh weather report for HomeId $homeId." }
+    .run { get("$HOMES_PATH/${homeId}/$WEATHER_PATH") }
 
   private inline fun <reified T : Any> get(
     path: String
-  ): T {
-    return restTemplate.getForObject(url(path))
+  ): T = when (val token = authenticationState.accessToken) {
+    is AccessToken.BearerToken -> {
+      restClient.get()
+        .uri(url(path))
+        .bearerAuth(token)
+        .accept(MediaType.APPLICATION_JSON)
+        .retrieve()
+        .bodyOrError()
+    }
+
+    else -> {
+      throw ResourceAccessException(
+        "Skipping request, not authenticated (${authenticationState.currentStateAsString})"
+      )
+    }
   }
 
   private fun url(
@@ -69,8 +89,10 @@ class TadoApiClient(
     path: String
   ): String = if (path.startsWith("/")) path else "/$path"
 
-  private val restTemplate: RestTemplate = restTemplateBuilder
-    .additionalInterceptors(authFilter)
-    .build()
+  private val restClient: RestClient = RestClient.create(
+    restTemplateBuilder
+      .loggingIfConfigured(configuration)
+      .userAgent()
+      .build()
+  )
 }
-

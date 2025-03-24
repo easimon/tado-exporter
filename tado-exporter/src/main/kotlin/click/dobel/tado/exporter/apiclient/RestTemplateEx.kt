@@ -1,7 +1,10 @@
 package click.dobel.tado.exporter.apiclient
 
+import click.dobel.tado.exporter.apiclient.auth.AccessToken
+import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.ResourceAccessException
+import org.springframework.web.client.RestClient.RequestHeadersSpec
 import org.springframework.web.client.RestTemplate
 
 inline fun <reified T : Any> RestTemplate.getForEntity(
@@ -27,3 +30,9 @@ inline fun <reified R : Any, reified T : Any> RestTemplate.postForObject(
   return postForObject(url, body, T::class.java, uriVariables)
     ?: throw ResourceAccessException("I/O error on POST $url: null response.")
 }
+
+fun <S : RequestHeadersSpec<S>> RequestHeadersSpec<S>.userAgent() =
+  header(HttpHeaders.USER_AGENT, "tado-exporter (https://github.com/easimon/tado-exporter)")
+
+fun <S : RequestHeadersSpec<S>> RequestHeadersSpec<S>.bearerAuth(token: AccessToken.BearerToken) =
+  header(HttpHeaders.AUTHORIZATION, "Bearer ${token.value}")

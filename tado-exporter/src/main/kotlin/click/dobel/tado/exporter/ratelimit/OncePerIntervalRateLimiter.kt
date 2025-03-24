@@ -1,6 +1,5 @@
 package click.dobel.tado.exporter.ratelimit
 
-import click.dobel.tado.exporter.apiclient.auth.RateLimitException
 import java.time.Clock
 import java.time.Instant
 import java.util.concurrent.atomic.AtomicReference

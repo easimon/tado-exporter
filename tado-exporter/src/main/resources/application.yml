@@ -1,12 +1,9 @@
 tado:
-  username: ""
-  password: ""
-  client-id: "public-api-preview"
-  client-secret: "4HJGRffVR8xb3XdEUQpjgZ1VplJi6Xgw"
-  scope: "home.user"
+  client-id: "1bb50063-6b0c-4d11-bd99-387f4a91cc46"
   zone-discovery-interval: PT5M
-  auth-server: https://auth.tado.com
+  auth-server: https://login.tado.com
   api-server: https://my.tado.com
+  auth-cache-path: /tmp/tado-exporter/auth
 
 management:
   endpoints:

@@ -16,6 +16,8 @@ data class HomeModel(
 
   companion object : KLogging()
 
+  val isEmpty: Boolean get() = homes.isEmpty()
+
   private val homeZones: ConcurrentMap<Int, MutableSet<ZoneEntry>> = ConcurrentHashMap()
 
   private fun homeZones(homeId: Int): MutableSet<ZoneEntry> = homeZones.getOrPut(homeId) {

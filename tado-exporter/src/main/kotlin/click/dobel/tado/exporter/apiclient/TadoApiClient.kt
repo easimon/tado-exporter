@@ -5,18 +5,22 @@ import click.dobel.tado.api.HomeState
 import click.dobel.tado.api.User
 import click.dobel.tado.api.WeatherReport
 import click.dobel.tado.api.ZoneState
-import click.dobel.tado.exporter.apiclient.auth.TadoAuthFilter
+import click.dobel.tado.exporter.apiclient.auth.AccessToken
+import click.dobel.tado.exporter.apiclient.auth.TadoAuthenticationState
+import click.dobel.tado.exporter.apiclient.logging.loggingIfConfigured
 import click.dobel.tado.exporter.apiclient.model.Zones
 import click.dobel.tado.util.aop.Logged
 import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.cache.annotation.Cacheable
+import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
-import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.ResourceAccessException
+import org.springframework.web.client.RestClient
 
 @Component
 class TadoApiClient(
   private val configuration: TadoConfigurationProperties,
-  authFilter: TadoAuthFilter,
+  private val authenticationState: TadoAuthenticationState,
   restTemplateBuilder: RestTemplateBuilder
 ) {
 
@@ -29,6 +33,8 @@ class TadoApiClient(
     const val STATE_PATH = "/state"
     const val WEATHER_PATH = "/weather"
   }
+
+  val isAuthenticated: Boolean get() = authenticationState.accessToken is AccessToken.BearerToken
 
   @Cacheable("User", sync = true)
   fun me() = get<User>(ME_PATH)
@@ -57,8 +63,22 @@ class TadoApiClient(
 
   private inline fun <reified T : Any> get(
     path: String
-  ): T {
-    return restTemplate.getForObject(url(path))
+  ): T = when (val token = authenticationState.accessToken) {
+    is AccessToken.BearerToken -> {
+      restClient.get()
+        .uri(url(path))
+        .userAgent()
+        .bearerAuth(token)
+        .accept(MediaType.APPLICATION_JSON)
+        .retrieve()
+        .body(T::class.java) ?: throw NullPointerException("HTTP request returned null")
+    }
+
+    else -> {
+      throw ResourceAccessException(
+        "Skipping request, not authenticated (${authenticationState.currentStateAsString})"
+      )
+    }
   }
 
   private fun url(
@@ -69,8 +89,10 @@ class TadoApiClient(
     path: String
   ): String = if (path.startsWith("/")) path else "/$path"
 
-  private val restTemplate: RestTemplate = restTemplateBuilder
-    .additionalInterceptors(authFilter)
-    .build()
+  private val restClient: RestClient = RestClient.create(
+    restTemplateBuilder
+      .loggingIfConfigured(configuration)
+      .build()
+  )
 }
 

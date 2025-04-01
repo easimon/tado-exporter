@@ -1,4 +1,4 @@
-package click.dobel.tado.exporter.apiclient.auth
+package click.dobel.tado.exporter.ratelimit
 
 class RateLimitException(
   message: String,

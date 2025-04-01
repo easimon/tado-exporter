@@ -1,6 +1,7 @@
 package click.dobel.tado.exporter.test
 
-import click.dobel.tado.exporter.apiclient.auth.AuthClient
+import click.dobel.tado.exporter.apiclient.auth.TadoAuthenticationClient
+import click.dobel.tado.exporter.apiclient.auth.model.request.TadoDeviceAuthRequest
 import com.github.tomakehurst.wiremock.client.WireMock
 import org.springframework.http.HttpStatus
 import java.util.UUID
@@ -13,6 +14,27 @@ object AuthMockMappings {
   const val DEFAULT_SCOPE = "test.scope"
   val DEFAULT_JTI = UUID.randomUUID().toString()
 
+  fun successfulDeviceAuthorization(auth: TadoDeviceAuthRequest) =
+    WireMock.post(TadoAuthenticationClient.DEVICE_AUTHORIZATION_PATH)
+      .withRequestBody(WireMock.containing("client_id=").and(WireMock.containing("scope=")))
+      .willReturn(
+        WireMock.aResponse()
+          .applicationJson()
+          .withStatus(HttpStatus.OK.value())
+          .withBody(
+            """
+              {
+                "device_code": "fake-device-code",
+                "expires_in": 300,
+                "interval": 5,
+                "user_code": "ABC1DE",
+                "verification_uri": "https://login.tado.com/oauth2/device",
+                "verification_uri_complete":"https://login.tado.com/oauth2/device?user_code=ABC1DE"
+              }
+            """.trimIndent()
+          )
+      )
+
   fun successfulUsernamePasswordAuthMapping(
     accessToken: String = DEFAULT_ACCESS_TOKEN,
     tokenType: String = DEFAULT_TOKEN_TYPE,
@@ -21,7 +43,7 @@ object AuthMockMappings {
     scope: String = DEFAULT_SCOPE,
     jti: String = DEFAULT_JTI
   ) =
-    WireMock.post(AuthClient.TOKEN_PATH)
+    WireMock.post(TadoAuthenticationClient.TOKEN_PATH)
       .withRequestBody(WireMock.containing("grant_type=password"))
       .willReturn(
         WireMock.aResponse()
@@ -42,7 +64,7 @@ object AuthMockMappings {
       )
 
   fun failedRefreshAuthMapping() =
-    WireMock.post(AuthClient.TOKEN_PATH)
+    WireMock.post(TadoAuthenticationClient.TOKEN_PATH)
       .withRequestBody(WireMock.containing("grant_type=refresh_token"))
       .willReturn(
         WireMock.aResponse()

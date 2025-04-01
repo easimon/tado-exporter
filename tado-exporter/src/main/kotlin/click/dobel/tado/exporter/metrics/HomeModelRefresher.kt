@@ -3,42 +3,47 @@ package click.dobel.tado.exporter.metrics
 import click.dobel.tado.exporter.apiclient.TadoApiClient
 import mu.KLogging
 import org.springframework.stereotype.Component
+import java.util.concurrent.atomic.AtomicReference
 
 @Component
 class HomeModelRefresher(
   private val tadoMeterFactory: TadoMeterFactory,
   private val tadoApiClient: TadoApiClient
 ) {
-  companion object : KLogging() {
+  companion object : KLogging()
 
-    private fun initializeHomeModel(
-      tadoMeterFactory: TadoMeterFactory,
-      tadoApiClient: TadoApiClient
-    ): HomeModel {
-      logger.info("Initializing homes from API.")
-      val result = HomeModel(
-        tadoApiClient.me().homes
-          .map { userHomes -> tadoMeterFactory.createHomeMeters(userHomes) }
-          .map { userHomes -> userHomes.id to userHomes }
-          .toMap()
-      )
-
-      logger.info { "${result.homes.size} homes initialized." }
-      return result
+  private fun initializedHomeModel(): HomeModel {
+    return homeModelRef.updateAndGet { current ->
+      if (!current.isEmpty) {
+        current
+      } else {
+        if (!tadoApiClient.isAuthenticated) {
+          logger.info { "Not authenticated, skipping home model initialization." }
+          current
+        } else {
+          logger.info { "Initializing homes from API." }
+          HomeModel(
+            tadoApiClient.me().homes
+              .map { userHomes -> tadoMeterFactory.createHomeMeters(userHomes) }
+              .associateBy { userHomes -> userHomes.id }
+          ).also { result ->
+            logger.info { "${result.homes.size} homes initialized." }
+          }
+        }
+      }
     }
   }
 
-  private val homeModel: HomeModel by lazy(this) {
-    initializeHomeModel(tadoMeterFactory, tadoApiClient)
-  }
+  private var homeModelRef = AtomicReference(HomeModel(emptyMap()))
+
+  val isInitialized: Boolean get() = !homeModelRef.get().isEmpty
 
   fun refreshHomeModel() {
+    val homeModel = initializedHomeModel()
     logger.info("Refreshing zones for all known homes.")
 
     homeModel.homes.values.forEach { userHomes ->
-      logger.info {
-        "Refreshing zones for home '${userHomes.name}' (${userHomes.id})."
-      }
+      logger.info { "Refreshing zones for home '${userHomes.name}' (${userHomes.id})." }
 
       val allZones = tadoApiClient.zones(userHomes.id)
       val newZoneEntries = homeModel.updateHomeZones(userHomes, allZones)

@@ -51,7 +51,6 @@
   </properties>
 
   <modules>
-    <module>tado-util</module>
     <module>tado-api</module>
     <module>tado-exporter</module>
   </modules>

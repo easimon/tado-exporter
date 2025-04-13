@@ -13,6 +13,14 @@ import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import io.mockk.mockk
 
 class TadoMeterFactoryTest : StringSpec({
+  
+  beforeEach {
+    Metrics.globalRegistry.add(SimpleMeterRegistry())
+  }
+
+  afterEach {
+    Metrics.globalRegistry.clear()
+  }
 
   "homeTags creates Tag for home Id" {
     val home = me.homes.first()
@@ -42,6 +50,7 @@ class TadoMeterFactoryTest : StringSpec({
     factory.createHomeMeters(home)
 
     meterRegistry.meters shouldContainMetersExactlyInAnyOrder setOf(
+      matching(TadoMeterFactory.AUHTENTICATED, Meter.Type.GAUGE),
       matching(TadoMeterFactory.IS_RESIDENT_PRESENT, Meter.Type.GAUGE, homeTags(home)),
       matching(TadoMeterFactory.SOLAR_INTENSITY_PERCENTAGE, Meter.Type.GAUGE, homeTags(home)),
       matching(TadoMeterFactory.TEMPERATURE_OUTSIDE_CELSIUS, Meter.Type.GAUGE, homeTags(home)),
@@ -60,6 +69,7 @@ class TadoMeterFactoryTest : StringSpec({
     factory.createZoneMeters(home, listOf(zone))
 
     meterRegistry.meters shouldContainMetersExactlyInAnyOrder setOf(
+      matching(TadoMeterFactory.AUHTENTICATED, Meter.Type.GAUGE),
       matching(TadoMeterFactory.IS_WINDOW_OPEN, Meter.Type.GAUGE, zoneTags(home, zone)),
       matching(TadoMeterFactory.IS_ZONE_POWERED, Meter.Type.GAUGE, zoneTags(home, zone)),
       matching(TadoMeterFactory.TEMPERATURE_SET_CELSIUS, Meter.Type.GAUGE, zoneTags(home, zone)),
@@ -82,6 +92,7 @@ class TadoMeterFactoryTest : StringSpec({
     factory.createZoneMeters(home, listOf(zone))
 
     meterRegistry.meters shouldContainMetersExactlyInAnyOrder setOf(
+      matching(TadoMeterFactory.AUHTENTICATED, Meter.Type.GAUGE),
       matching(TadoMeterFactory.IS_WINDOW_OPEN, Meter.Type.GAUGE, zoneTags(home, zone)),
       matching(TadoMeterFactory.IS_ZONE_POWERED, Meter.Type.GAUGE, zoneTags(home, zone)),
       matching(TadoMeterFactory.TEMPERATURE_SET_CELSIUS, Meter.Type.GAUGE, zoneTags(home, zone)),
@@ -103,18 +114,11 @@ class TadoMeterFactoryTest : StringSpec({
     factory.createZoneMeters(home, listOf(zone))
 
     meterRegistry.meters shouldContainMetersExactlyInAnyOrder setOf(
+      matching(TadoMeterFactory.AUHTENTICATED, Meter.Type.GAUGE),
       matching(TadoMeterFactory.IS_ZONE_POWERED, Meter.Type.GAUGE, zoneTags(home, zone))
     )
   }
-}) {
-  override suspend fun beforeTest(testCase: TestCase) {
-    Metrics.globalRegistry.add(SimpleMeterRegistry())
-  }
-
-  override suspend fun afterTest(testCase: TestCase, result: TestResult) {
-    Metrics.globalRegistry.clear()
-  }
-}
+})
 
 private infix fun <T : Collection<Meter>> T.shouldContainMetersExactlyInAnyOrder(matchers: Set<MeterIdMatcher>) =
   map { matching(it) } shouldContainExactlyInAnyOrder matchers
@@ -125,7 +129,7 @@ private data class MeterIdMatcher(
   val tags: List<Tag>
 )
 
-private fun matching(name: String, type: Meter.Type, tags: Iterable<Tag>): MeterIdMatcher {
+private fun matching(name: String, type: Meter.Type, tags: Iterable<Tag> = emptyList()): MeterIdMatcher {
   return MeterIdMatcher(name, type, tags.toList())
 }
 

@@ -18,6 +18,7 @@ internal class HomeModelRefresherTest : StringSpec({
     val client = mockk<TadoApiClient>()
     val modelRefresher = HomeModelRefresher(factory, client)
 
+    every { client.isAuthenticated } returns true
     every { client.me() } returns me
     every { client.zones(any()) } returns initialZones
 
@@ -33,6 +34,7 @@ internal class HomeModelRefresherTest : StringSpec({
     modelRefresher.refreshHomeModel()
 
     verifySequence {
+      client.isAuthenticated
       client.me()
       factory.createHomeMeters(me.homes.first())
       client.zones(homeId)
@@ -45,6 +47,7 @@ internal class HomeModelRefresherTest : StringSpec({
     val client = mockk<TadoApiClient>()
     val modelRefresher = HomeModelRefresher(factory, client)
 
+    every { client.isAuthenticated } returns true
     every { client.me() } returns me
     every { client.zones(any()) } returns initialZones andThen updatedZones
 
@@ -61,12 +64,45 @@ internal class HomeModelRefresherTest : StringSpec({
     modelRefresher.refreshHomeModel()
 
     verifySequence {
+      client.isAuthenticated
       client.me()
       factory.createHomeMeters(me.homes.first())
       client.zones(homeId)
       factory.createZoneMeters(me.homes.first(), initialZones.toEntrySet())
       client.zones(homeId)
       factory.createZoneMeters(me.homes.first(), setOf(ZoneEntry(bedRoom)))
+    }
+  }
+
+  "refreshHomeModel clears model on network failures" {
+    val factory = mockk<TadoMeterFactory>()
+    val client = mockk<TadoApiClient>()
+    val modelRefresher = HomeModelRefresher(factory, client)
+
+    every { client.isAuthenticated } returns true
+    every { client.me() } returns me
+    every { client.zones(any()) } returns initialZones andThenThrows RuntimeException("Something went wrong")
+
+    val createHomeMetersArgSlot = slot<UserHomes>()
+    every {
+      factory.createHomeMeters(capture(createHomeMetersArgSlot))
+    } answers {
+      createHomeMetersArgSlot.captured
+    }
+
+    every { factory.createZoneMeters(any(), any()) } just runs
+
+    modelRefresher.refreshHomeModel()
+    modelRefresher.refreshHomeModel()
+
+    verifySequence {
+      client.isAuthenticated
+      client.me()
+      factory.createHomeMeters(me.homes.first())
+      client.zones(homeId)
+      factory.createZoneMeters(me.homes.first(), initialZones.toEntrySet())
+      client.zones(homeId)
+      factory.createZoneMeters(me.homes.first(), emptyZones.toEntrySet())
     }
   }
 })

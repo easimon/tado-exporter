@@ -1,29 +1,17 @@
 package click.dobel.tado.exporter.apiclient
 
-import org.springframework.http.ResponseEntity
+import click.dobel.tado.exporter.apiclient.auth.model.accesstoken.AccessToken
+import org.springframework.boot.web.client.RestTemplateBuilder
+import org.springframework.http.HttpHeaders
 import org.springframework.web.client.ResourceAccessException
-import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.RestClient
+import org.springframework.web.client.RestClient.RequestHeadersSpec
 
-inline fun <reified T : Any> RestTemplate.getForEntity(
-  url: String,
-  vararg uriVariables: Any
-): ResponseEntity<T> {
-  return getForEntity(url, T::class.java, uriVariables)
-}
+fun RestTemplateBuilder.userAgent(): RestTemplateBuilder =
+  defaultHeader(HttpHeaders.USER_AGENT, "tado-exporter (https://github.com/easimon/tado-exporter)")
 
-inline fun <reified T : Any> RestTemplate.getForObject(
-  url: String,
-  vararg uriVariables: Any
-): T {
-  return getForObject(url, T::class.java, uriVariables)
-    ?: throw ResourceAccessException("I/O error on GET $url: null response.")
-}
+fun <S : RequestHeadersSpec<S>> RequestHeadersSpec<S>.bearerAuth(token: AccessToken.BearerToken) =
+  header(HttpHeaders.AUTHORIZATION, "Bearer ${token.value}")
 
-inline fun <reified R : Any, reified T : Any> RestTemplate.postForObject(
-  url: String,
-  body: R,
-  vararg uriVariables: Any
-): T {
-  return postForObject(url, body, T::class.java, uriVariables)
-    ?: throw ResourceAccessException("I/O error on POST $url: null response.")
-}
+inline fun <reified T> RestClient.ResponseSpec.bodyOrError(): T =
+  body(T::class.java) ?: throw ResourceAccessException("HTTP request returned null")

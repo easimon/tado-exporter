@@ -14,6 +14,7 @@ internal val livingRoom = createZone(1, TadoSystemType.HEATING, "LivingRoom")
 internal val bedRoom = createZone(0, TadoSystemType.AIR_CONDITIONING, "Bedroom")
 internal val initialZones = Zones(listOf(hotWaterZone, livingRoom))
 internal val updatedZones = Zones(listOf(hotWaterZone, bedRoom))
+internal val emptyZones = Zones(emptyList())
 
 private fun createMe(): User {
   return User()

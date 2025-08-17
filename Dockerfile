@@ -3,7 +3,7 @@ ARG TEST_IMAGE=eclipse-temurin:17
 ARG RUNTIME_IMAGE=eclipse-temurin:17-jre
 ARG MAVEN_OPTS="-Xmx2000m"
 
-FROM --platform=$BUILDPLATFORM $BUILD_IMAGE as builder
+FROM --platform=$BUILDPLATFORM $BUILD_IMAGE AS builder
 ARG MAVEN_OPTS
 
 WORKDIR /build
@@ -11,7 +11,6 @@ WORKDIR /build
 COPY .mvn /build/.mvn/
 COPY mvnw pom.xml /build/
 COPY tado-api/pom.xml /build/tado-api/pom.xml
-COPY tado-util/pom.xml /build/tado-util/pom.xml
 COPY tado-exporter/pom.xml /build/tado-exporter/pom.xml
 
 RUN ./mvnw -B de.qaware.maven:go-offline-maven-plugin:resolve-dependencies
@@ -19,14 +18,11 @@ RUN ./mvnw -B de.qaware.maven:go-offline-maven-plugin:resolve-dependencies
 COPY tado-api/src /build/tado-api/src
 RUN ./mvnw -DskipTests -B -pl tado-api -am install
 
-COPY tado-util/src /build/tado-util/src
-RUN ./mvnw -DskipTests -B -pl tado-util -am install
-
 COPY tado-exporter/src /build/tado-exporter/src
 RUN ./mvnw -DskipTests -B package
 
 # Integration tests
-FROM --platform=$BUILDPLATFORM $TEST_IMAGE as test
+FROM --platform=$BUILDPLATFORM $TEST_IMAGE AS test
 ARG MAVEN_OPTS
 
 WORKDIR /build
@@ -43,4 +39,4 @@ COPY --from=builder /build/tado-exporter/target/tado-exporter-*.jar tado-exporte
 ENV JAVA_OPTS="-Xmx64m -Xms64m"
 EXPOSE 8080
 USER 65535:65535
-CMD exec java ${JAVA_OPTS} -jar tado-exporter.jar
+CMD [ "sh", "-c", "exec java $JAVA_OPTS -jar tado-exporter.jar" ]

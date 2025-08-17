@@ -2,4 +2,4 @@ tado:
   username: "username@tado.test"
   password: "password"
   auth-server: http://localhost:18080
-  api-server:  http://localhost:18081
+  api-server: http://localhost:18081

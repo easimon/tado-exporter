@@ -10,6 +10,8 @@ object ApiMockMappings {
   const val USER_EMAIL = "username@tado.test"
   const val HOME_ID = 123456
 
+  fun apiPath(subPath: String) = TadoApiClient.BASE_URL + subPath
+
   fun successfulMeMapping() =
     WireMock.get(apiPath(TadoApiClient.ME_PATH))
       .willReturn(
@@ -102,5 +104,3 @@ object ApiMockMappings {
           )
       )
 }
-
-fun apiPath(subPath: String) = TadoApiClient.BASE_URL + subPath
